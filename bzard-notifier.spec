@@ -1,12 +1,12 @@
-Name:       iq-notifier
+Name:       bzard
 Version:    0.4.0
 Release:    1%{?dist}
 Summary:    Fancy and flexible notification daemon
 
 License:    GPLv3
-URL:        https://github.com/RussianBruteForce/iq-notifier
-Source0:    iq-notifier-%{version}.tar.gz
-Source1:    iq-notifier.desktop
+URL:        https://github.com/RussianBruteForce/bzard
+Source0:    bzard-%{version}.tar.gz
+Source1:    bzard.desktop
 
 BuildRequires:  cmake
 BuildRequires:  libqtxdg-devel
@@ -29,14 +29,14 @@ make %{?_smp_mflags}
 
 %install
 %make_install
-install -m 644 -D %{SOURCE1} %{buildroot}/%{_datadir}/applications/iq-notifier.desktop
+install -m 644 -D %{SOURCE1} %{buildroot}/%{_datadir}/applications/bzard.desktop
 
 
 %files
 %doc COPYING README.md
-%{_bindir}/iq-notifier
-%{_datadir}/iq-notifier
-%{_datadir}/applications/iq-notifier.desktop
+%{_bindir}/bzard
+%{_datadir}/bzard
+%{_datadir}/applications/bzard.desktop
 
 
 %changelog

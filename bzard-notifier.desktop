@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
 Version=1.1
-Name=iq-notifier
+Name=bzard
 GenericName=Notification daemon
 Comment=Fancy and flexible notification daemon
-Exec=iq-notifier
+Exec=bzard
 Terminal=false
 Implements=org.freedesktop.Notifications

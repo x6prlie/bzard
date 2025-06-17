@@ -59,7 +59,7 @@ QString BzardDBusService::GetServerInformation(QString &vendor,
 	spec_version = QString("1.2");
 	version = versionString();
 	vendor = QString("viktor.filnkov");
-	return QString("iq-notifier");
+	return QString("bzard");
 }
 
 uint32_t BzardDBusService::Notify(const QString &app_name, uint32_t replaces_id,

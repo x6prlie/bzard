@@ -1,4 +1,4 @@
-; IQ Notifier config
+; bzard config
 ;
 ; 'enabled' is false by default everywhere
 
@@ -28,7 +28,7 @@ extra_window_height = 32
 
 ;;;; next X11 only
 
-; when set, IQ Notifier will try to detect fullscreen windows on current desktop
+; when set, bzard will try to detect fullscreen windows on current desktop
 ; and will not show popups in this case
 ; disabled by default
 dont_show_when_fullscreen_current_desktop = false

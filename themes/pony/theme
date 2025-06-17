@@ -1,6 +1,6 @@
-; IQ Notifier My Little Pony theme
+; bzard My Little Pony theme
 ;
-; if size properties are not set, IQ Notifier will try to automatically adjust their values
+; if size properties are not set, bzard will try to automatically adjust their values
 
 [popup_notifications]
 ; default 120
@@ -22,7 +22,7 @@ font_size = 12
 
 bar_font_size = 10
 
-; if not set, IQ Notifier will try to automatically adjust icon size
+; if not set, bzard will try to automatically adjust icon size
 icon_size = 72
 
 ; size scale of button images
@@ -57,7 +57,7 @@ icon = tray.png
 close_icon = close.png
 bg_image = history_bg.png
 
-window_title = IQ Notifier
+window_title = bzard
 
 ; 0 for full height 
 height = 0

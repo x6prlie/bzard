@@ -78,25 +78,25 @@ To make opacity [of popups] works you need compositing. Try `compton -CG `, that
 
 Use `ag TODO` or your favorite IDE to find TODOs in code.
 # Config
-Config path: `$XDG_CONFIG_HOME/iq-notifier/config` (`~/.config/iq-notifier/config`)
+Config path: `$XDG_CONFIG_HOME/bzard/config` (`~/.config/bzard/config`)
 
 All 'modules' of bzard should be enabled in config file explicitly. To copy example config execute from repo root:
 ```bash
-cp config.example ~/.config/iq-notifier/config
+cp config.example ~/.config/bzard/config
 ```
 
 Or, if you installed bzard from package jut run it. Config will be copied to your home dir automatically at first start.
 
 
 # Themes
-Theme is a directory with `theme` file which is simple text. For default themes look at `/usr/share/iq-notifier/themes` dir. They will be copied to your home dir automatically at first start.
-Themes must be placed in `$XDG_CONFIG_HOME/iq-notifier/themes` (`~/.config/iq-notifier/themes`) directory.
+Theme is a directory with `theme` file which is simple text. For default themes look at `/usr/share/bzard/themes` dir. They will be copied to your home dir automatically at first start.
+Themes must be placed in `$XDG_CONFIG_HOME/bzard/themes` (`~/.config/bzard/themes`) directory.
 
 # Deb package
 ```bash
 cpack
 sudo apt update
-sudo dpkg -i iq-notifier-*-amd64.deb
+sudo dpkg -i bzard-*-amd64.deb
 sudo apt installf -f
 ```
 
