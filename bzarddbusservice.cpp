@@ -58,7 +58,7 @@ QString BzardDBusService::GetServerInformation(QString &vendor,
                                                QString &spec_version) {
 	spec_version = QString("1.2");
 	version = versionString();
-	vendor = QString("viktor.filnkov");
+	vendor = QString("bzard.project");
 	return QString("bzard");
 }
 
