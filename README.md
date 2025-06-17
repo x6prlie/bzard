@@ -1,6 +1,32 @@
 # bzard
 bzard is fancy and flexible notification daemon.
 
+
+# Developement dependencies
+
+```bash
+sudo apt update
+sudo apt install \
+  build-essential cmake pkg-config \
+  qt6-base-dev qt6-base-dev-tools \
+  qt6-declarative-dev qt6-qmltooling-plugins \
+  qt6-tools-dev qt6-tools-dev-tools \
+  libqt6xdg-dev \
+  libudev-dev \
+  libx11-dev # for X11 plugin
+```
+
+# Build Release
+
+```bash
+git clone https://github.com/x6prl/bzard.git
+mkdir bzard/build; cd bzard/build
+# set X11 if you want X11 plugin
+cmake -DCMAKE_BUILD_TYPE=Release -DX11 ..
+make
+```
+
+
 ## Screenshots
 ![0](/screenshots/0.png?raw=true)
 ![1](/screenshots/1.png?raw=true)
@@ -51,29 +77,6 @@ To make opacity [of popups] works you need compositing. Try `compton -CG `, that
 - ??????
 
 Use `ag TODO` or your favorite IDE to find TODOs in code.
-
-# Build deps
-```bash
-sudo apt install cmake qtbase5-dev qtdeclarative5-dev libqt5xdg-dev
-```
-
-For X11 plugin you also need:
-```bash
-sudo apt install libx11-dev
-```
-
-# Build
-To clone this repo with dependencies (GSL) use `--recursive` flag:
-```bash
-git clone --recursive git@github.com:RussianBruteForce/iq-notifier.git
-mkdir iq-notifier/build; cd iq-notifier/build
-# set X11 if you want X11 plugin
-cmake -DCMAKE_BUILD_TYPE=Release -DX11 ..
-make
-```
-
-Tested on ubuntu 16.04, GCC 5.4.0 and Clang 3.8.0.
-
 # Config
 Config path: `$XDG_CONFIG_HOME/iq-notifier/config` (`~/.config/iq-notifier/config`)
 
