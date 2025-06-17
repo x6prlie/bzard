@@ -8,7 +8,7 @@
 #include <expected>
 #include <optional>
 #include <stdexcept>
-#include <string> // Оставляем для ReadError
+#include <string> // Оставляем для std::string
 
 // --- Static Methods ---
 
@@ -76,30 +76,27 @@ QString BzardBrightnessMonitor::syspath() const { /* без изменений *
 	return canonicalSyspath;
 }
 
-/*static*/ BzardBrightnessMonitor::ReadResult
-BzardBrightnessMonitor::readLongFromFile(const QString &filePath) {
+int64_t BzardBrightnessMonitor::readLongFromFile(const QString &filePath) {
 	QFile file(filePath);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-		// Возвращаем QString как std::string в ошибке expected
-		return std::unexpected(QString("Could not open file %1: %2")
-		                             .arg(filePath, file.errorString())
-		                             .toStdString());
+		throw QString("Could not open file %1: %2")
+			  .arg(filePath, file.errorString())
+			  .toStdString();
 	}
 	bool ok = false;
 	const QString content = file.readAll().trimmed();
 	qlonglong value = content.toLongLong(&ok);
 	if (!ok) {
-		return std::unexpected(
-			  QString("Failed to parse value '%1' from file: %2")
-					.arg(content, filePath)
-					.toStdString());
+		throw QString("Failed to parse value '%1' from file: %2")
+			  .arg(content, filePath)
+			  .toStdString();
 	}
 	return value;
 }
 
 void BzardBrightnessMonitor::checkForUpdate() { /* без изменений */
-	ReadResult currentRes = readLongFromFile(brightnessFilePath);
-	ReadResult maxRes = readLongFromFile(maxBrightnessFilePath);
+	std::expected<qlonglong, std::string> currentRes = readLongFromFile(brightnessFilePath);
+	std::expected<qlonglong, std::string> maxRes = readLongFromFile(maxBrightnessFilePath);
 
 	if (!currentRes) {
 		qWarning() << Q_FUNC_INFO << QString::fromStdString(currentRes.error());
