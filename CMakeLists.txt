@@ -39,7 +39,7 @@ qt_standard_project_setup(REQUIRES 6.5)
 
 qt6_add_dbus_adaptor(SRC_LIST
      org.freedesktop.Notifications.xml
-     iqdbusservice.h BzardDBusService
+     bzarddbusservice.h BzardDBusService
 )
 
 # if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
