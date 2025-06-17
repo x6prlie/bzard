@@ -21,22 +21,20 @@
 
 #include "bzardnotification.h"
 
-class IQNotificationReceiver : public QObject
-{
+class IQNotificationReceiver : public QObject {
 	Q_OBJECT
 
-      public:
+  public:
 	using QObject::QObject;
 	virtual ~IQNotificationReceiver() = default;
 
-      signals:
+  signals:
 	void notificationDroppedSignal(IQNotification::id_t id,
-				       IQNotification::ClosingReason reason);
+	                               IQNotification::ClosingReason reason);
 	void actionInvokedSignal(IQNotification::id_t id,
-				 const QString &action_key);
+	                         const QString &action_key);
 
-      public slots:
-	virtual void
-	onCreateNotification(const IQNotification &notification) = 0;
+  public slots:
+	virtual void onCreateNotification(const IQNotification &notification) = 0;
 	virtual void onDropNotification(IQNotification::id_t id) = 0;
 };

@@ -28,10 +28,9 @@
 
 #include <bzardnotification.h>
 
-class IQDisposition : public QObject
-{
+class IQDisposition : public QObject {
 	Q_OBJECT
-      public:
+  public:
 	using ptr_t = std::unique_ptr<IQDisposition>;
 	template <class T> using optional = std::experimental::optional<T>;
 
@@ -50,14 +49,14 @@ class IQDisposition : public QObject
 
 	virtual void setSpacing(int value);
 
-      public slots:
+  public slots:
 	virtual void remove(IQNotification::id_t id) = 0;
 	virtual void removeAll() = 0;
 
-      signals:
+  signals:
 	void moveNotification(IQNotification::id_t id, QPoint pos);
 
-      protected:
+  protected:
 	int spacing;
 	QMargins margins;
 	QSize extraWindowSize{0, 0};
@@ -65,6 +64,6 @@ class IQDisposition : public QObject
 
 	virtual void recalculateAvailableScreenGeometry();
 
-      private:
+  private:
 	const QScreen *screen_;
 };

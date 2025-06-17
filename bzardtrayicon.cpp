@@ -17,20 +17,17 @@
 
 #include "bzardtrayicon.h"
 
-namespace
-{
-QIcon urlToIcon(const QUrl &url)
-{
+namespace {
+QIcon urlToIcon(const QUrl &url) {
 	auto iconFileName = url.toString();
 	iconFileName.replace("file:///", "");
 	return QIcon{iconFileName};
 }
-} // anonymouse namespace
+} // namespace
 
-BzardTrayIcon::BzardTrayIcon(QObject *parent) : QSystemTrayIcon(parent)
-{
+BzardTrayIcon::BzardTrayIcon(QObject *parent) : QSystemTrayIcon(parent) {
 	connect(this, &BzardTrayIcon::iconUrlChanged,
-		[this] { setIcon(urlToIcon(iconUrl_)); });
+	        [this] { setIcon(urlToIcon(iconUrl_)); });
 	connect(this, &BzardTrayIcon::activated, [this](ActivationReason reason) {
 		if (reason == Trigger)
 			emit leftClick();
@@ -39,8 +36,7 @@ BzardTrayIcon::BzardTrayIcon(QObject *parent) : QSystemTrayIcon(parent)
 
 QUrl BzardTrayIcon::iconUrl() const { return iconUrl_; }
 
-void BzardTrayIcon::setIconUrl(const QUrl &iconUrl)
-{
+void BzardTrayIcon::setIconUrl(const QUrl &iconUrl) {
 	iconUrl_ = iconUrl;
 	emit iconUrlChanged();
 }

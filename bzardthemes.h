@@ -29,23 +29,22 @@ class NotificationsTheme;
 class TrayIconTheme;
 class HistoryWindowTheme;
 
-class BzardThemes : public QObject
-{
+class BzardThemes : public QObject {
 	Q_OBJECT
-	Q_PROPERTY(NotificationsTheme *notificationsTheme READ
-		       notificationsTheme CONSTANT)
+	Q_PROPERTY(NotificationsTheme *notificationsTheme READ notificationsTheme
+	                 CONSTANT)
 	Q_PROPERTY(TrayIconTheme *trayIconTheme READ trayIconTheme CONSTANT)
-	Q_PROPERTY(HistoryWindowTheme *historyWindowTheme READ
-		       historyWindowTheme CONSTANT)
+	Q_PROPERTY(HistoryWindowTheme *historyWindowTheme READ historyWindowTheme
+	                 CONSTANT)
 
-      public:
+  public:
 	BzardThemes();
 
 	NotificationsTheme *notificationsTheme() const;
 	TrayIconTheme *trayIconTheme() const;
 	HistoryWindowTheme *historyWindowTheme() const;
 
-      private:
+  private:
 	IQ_CONF_VAR(THEME_NAME, "theme_name", "default")
 
 	IQConfig config;
@@ -61,23 +60,21 @@ class BzardThemes : public QObject
 	void registerThemeTypes() const;
 };
 
-class IQTheme : public QObject
-{
+class IQTheme : public QObject {
 	Q_OBJECT
-      public:
+  public:
 	IQTheme() = default;
-	IQTheme(const std::shared_ptr<IQConfig> &config_,
-		const QString &themeDir_, QObject *parent = nullptr);
+	IQTheme(const std::shared_ptr<IQConfig> &config_, const QString &themeDir_,
+	        QObject *parent = nullptr);
 
-      protected:
+  protected:
 	std::shared_ptr<IQConfig> themeConfig;
 	const QString themeDir;
 
 	QUrl toRelativeUrl(const QString &str) const;
 };
 
-class NotificationsTheme : public IQTheme
-{
+class NotificationsTheme : public IQTheme {
 	Q_OBJECT
 
 	Q_PROPERTY(bool iconPosition READ iconPosition CONSTANT)
@@ -86,14 +83,10 @@ class NotificationsTheme : public IQTheme
 	Q_PROPERTY(uint iconSize READ iconSize CONSTANT)
 	Q_PROPERTY(uint barHeight READ barHeight CONSTANT)
 	Q_PROPERTY(uint expirationBarHeight READ expirationBarHeight CONSTANT)
-	Q_PROPERTY(
-	    uint showAnimationDuration READ showAnimationDuration CONSTANT)
-	Q_PROPERTY(
-	    uint dropAnimationDuration READ dropAnimationDuration CONSTANT)
-	Q_PROPERTY(
-	    double closeButtonImageScale READ closeButtonImageScale CONSTANT)
-	Q_PROPERTY(
-	    double extraButtonImageScale READ extraButtonImageScale CONSTANT)
+	Q_PROPERTY(uint showAnimationDuration READ showAnimationDuration CONSTANT)
+	Q_PROPERTY(uint dropAnimationDuration READ dropAnimationDuration CONSTANT)
+	Q_PROPERTY(double closeButtonImageScale READ closeButtonImageScale CONSTANT)
+	Q_PROPERTY(double extraButtonImageScale READ extraButtonImageScale CONSTANT)
 	Q_PROPERTY(QColor bgColor READ bgColor CONSTANT)
 	Q_PROPERTY(QColor barBgColor READ barBgColor CONSTANT)
 	Q_PROPERTY(QColor barTextColor READ barTextColor CONSTANT)
@@ -103,19 +96,17 @@ class NotificationsTheme : public IQTheme
 	Q_PROPERTY(QColor buttonBgColor READ buttonBgColor CONSTANT)
 	Q_PROPERTY(QColor buttonTextColor READ buttonTextColor CONSTANT)
 	Q_PROPERTY(QColor extraBgColor READ extraBgColor CONSTANT)
-	Q_PROPERTY(
-	    QColor extraUreadCircleColor READ extraUreadCircleColor CONSTANT)
+	Q_PROPERTY(QColor extraUreadCircleColor READ extraUreadCircleColor CONSTANT)
 	Q_PROPERTY(QColor extraUreadTextColor READ extraUreadTextColor CONSTANT)
 	Q_PROPERTY(QUrl bgImage READ bgImage CONSTANT)
 	Q_PROPERTY(QUrl closeButtonImage READ closeButtonImage CONSTANT)
+	Q_PROPERTY(QUrl extraCloseButtonImage READ extraCloseButtonImage CONSTANT)
 	Q_PROPERTY(
-	    QUrl extraCloseButtonImage READ extraCloseButtonImage CONSTANT)
-	Q_PROPERTY(QUrl extraCloseAllButtonImage READ extraCloseAllButtonImage
-		       CONSTANT)
+		  QUrl extraCloseAllButtonImage READ extraCloseAllButtonImage CONSTANT)
 	Q_PROPERTY(QUrl extraCloseVisibleButtonImage READ
-		       extraCloseVisibleButtonImage CONSTANT)
+	                 extraCloseVisibleButtonImage CONSTANT)
 
-      public:
+  public:
 	using IQTheme::IQTheme;
 
 	// True to move to left side, false for top
@@ -146,7 +137,7 @@ class NotificationsTheme : public IQTheme
 	QUrl extraCloseAllButtonImage() const;
 	QUrl extraCloseVisibleButtonImage() const;
 
-      private:
+  private:
 	IQ_CONF_VAR(ICON_POSITION, "popup_notifications/icon_position", "top")
 
 	IQ_CONF_VAR(FONT_SIZE, "popup_notifications/font_size", 0)
@@ -154,66 +145,61 @@ class NotificationsTheme : public IQTheme
 	IQ_CONF_VAR(ICON_SIZE, "popup_notifications/icon_size", 0)
 	IQ_CONF_VAR(BAR_HEIGHT, "popup_notifications/bar_height", 0)
 	IQ_CONF_VAR(EXPIRATION_BAR_HEIGHT,
-		    "popup_notifications/expiration_bar_height", 0)
-	IQ_CONF_VAR(SHOW_DURATION,
-		    "popup_notifications/show_animation_duration", 120)
-	IQ_CONF_VAR(DROP_DURATION,
-		    "popup_notifications/drop_animation_duration", 120)
+	            "popup_notifications/expiration_bar_height", 0)
+	IQ_CONF_VAR(SHOW_DURATION, "popup_notifications/show_animation_duration",
+	            120)
+	IQ_CONF_VAR(DROP_DURATION, "popup_notifications/drop_animation_duration",
+	            120)
 	IQ_CONF_VAR(CLOSE_BUTTON_IMAGE_SCALE,
-		    "popup_notifications/close_button_image_scale", 0.4)
+	            "popup_notifications/close_button_image_scale", 0.4)
 	IQ_CONF_VAR(EXTRA_BUTTON_IMAGE_SCALE,
-		    "popup_notifications/extra_button_image_scale", 0.6)
+	            "popup_notifications/extra_button_image_scale", 0.6)
 
 	IQ_CONF_VAR(BG_COLOR, "popup_notifications/bg_color", "#19202d")
 	IQ_CONF_VAR(BAR_BG_COLOR, "popup_notifications/bar_bg_color", "#262d3a")
-	IQ_CONF_VAR(BAR_TEXT_COLOR, "popup_notifications/bar_text_color",
-		    "#92969c")
+	IQ_CONF_VAR(BAR_TEXT_COLOR, "popup_notifications/bar_text_color", "#92969c")
 	IQ_CONF_VAR(EXPIRATION_BAR_COLOR,
-		    "popup_notifications/expiration_bar_color", "#30394a")
+	            "popup_notifications/expiration_bar_color", "#30394a")
 	IQ_CONF_VAR(TITLE_TEXT_COLOR, "popup_notifications/title_text_color",
-		    "#ffffff")
+	            "#ffffff")
 	IQ_CONF_VAR(BODY_TEXT_COLOR, "popup_notifications/body_text_color",
-		    "#92969c")
+	            "#92969c")
 	IQ_CONF_VAR(BUTTON_BG_COLOR, "popup_notifications/button_bg_color",
-		    "#343b4d")
+	            "#343b4d")
 	IQ_CONF_VAR(BUTTON_TEXT_COLOR, "popup_notifications/button_text_color",
-		    "#ffffff")
-	IQ_CONF_VAR(EXTRA_BG_COLOR, "popup_notifications/extra_bg_color",
-		    "#262d3a")
+	            "#ffffff")
+	IQ_CONF_VAR(EXTRA_BG_COLOR, "popup_notifications/extra_bg_color", "#262d3a")
 	IQ_CONF_VAR(EXTRA_UNREAD_CIRCLE_COLOR,
-		    "popup_notifications/extra_unread_circle_color", "#d74a37")
+	            "popup_notifications/extra_unread_circle_color", "#d74a37")
 	IQ_CONF_VAR(EXTRA_UNREAD_TEXT_COLOR,
-		    "popup_notifications/extra_unread_text_color", "#ffffff")
+	            "popup_notifications/extra_unread_text_color", "#ffffff")
 
 	IQ_CONF_VAR(BG_IMAGE, "popup_notifications/bg_image", "")
-	IQ_CONF_VAR(CLOSE_BUTTON_IMAGE,
-		    "popup_notifications/close_button_image", "img/close.png")
+	IQ_CONF_VAR(CLOSE_BUTTON_IMAGE, "popup_notifications/close_button_image",
+	            "img/close.png")
 	IQ_CONF_VAR(EXTRA_CLOSE_BUTTON_IMAGE,
-		    "popup_notifications/extra_close_button_image",
-		    "img/close.png")
+	            "popup_notifications/extra_close_button_image", "img/close.png")
 	IQ_CONF_VAR(EXTRA_CLOSE_ALL_BUTTON_IMAGE,
-		    "popup_notifications/extra_close_all_button_image",
-		    "img/closeAll.png")
+	            "popup_notifications/extra_close_all_button_image",
+	            "img/closeAll.png")
 	IQ_CONF_VAR(EXTRA_CLOSE_VISIBLE_BUTTON_IMAGE,
-		    "popup_notifications/extra_close_visible_button_image",
-		    "img/closeVisible.png")
+	            "popup_notifications/extra_close_visible_button_image",
+	            "img/closeVisible.png")
 };
 
-class TrayIconTheme : public IQTheme
-{
+class TrayIconTheme : public IQTheme {
 	Q_OBJECT
 	Q_PROPERTY(QUrl icon READ icon CONSTANT)
-      public:
+  public:
 	using IQTheme::IQTheme;
 
 	QUrl icon() const;
 
-      private:
+  private:
 	IQ_CONF_VAR(ICON, "tray/icon", "img/warning.png")
 };
 
-class HistoryWindowTheme : public IQTheme
-{
+class HistoryWindowTheme : public IQTheme {
 	Q_OBJECT
 	Q_PROPERTY(QUrl closeIcon READ closeIcon CONSTANT)
 	Q_PROPERTY(QUrl bgImage READ bgImage CONSTANT)
@@ -236,7 +222,7 @@ class HistoryWindowTheme : public IQTheme
 	Q_PROPERTY(QString ntitleTextColor READ ntitleTextColor CONSTANT)
 	Q_PROPERTY(QString nbodyTextColor READ nbodyTextColor CONSTANT)
 
-      public:
+  public:
 	using IQTheme::IQTheme;
 	QUrl closeIcon() const;
 	QUrl bgImage() const;
@@ -261,23 +247,21 @@ class HistoryWindowTheme : public IQTheme
 	QString ntitleTextColor() const;
 	QString nbodyTextColor() const;
 
-      private:
+  private:
 	enum pos_t { UNDEFINED = 0, LEFT_TOP, LEFT_BOT, RIGHT_BOT, RIGHT_TOP };
 	pos_t windowPosition() const;
 
 	IQ_CONF_VAR(CLOSE_ICON, "history_window/close_icon", "img/close.png")
 	IQ_CONF_VAR(BG_IMAGE, "history_window/bg_image", "")
 	IQ_CONF_VAR(WINDOW_TITLE, "history_window/window_title", "bzard")
-	IQ_CONF_VAR(WINDOW_POSITION, "history_window/window_position",
-		    UNDEFINED)
+	IQ_CONF_VAR(WINDOW_POSITION, "history_window/window_position", UNDEFINED)
 
 	IQ_CONF_VAR(X, "history_window/x", 0)
 	IQ_CONF_VAR(Y, "history_window/y", 0)
 	IQ_CONF_VAR(HEIGHT, "history_window/height", 0)
 	IQ_CONF_VAR(WIDTH, "history_window/width", 0)
 	IQ_CONF_VAR(BAR_HEIGHT, "history_window/bar_height", 32)
-	IQ_CONF_VAR(NOTIFICATION_HEIGHT, "history_window/notification_height",
-		    0)
+	IQ_CONF_VAR(NOTIFICATION_HEIGHT, "history_window/notification_height", 0)
 	IQ_CONF_VAR(BAR_FONT_SIZE, "history_window/bar_font_size", 0)
 	IQ_CONF_VAR(NAPP_FONT_SIZE, "history_window/napp_font_size", 0)
 	IQ_CONF_VAR(NTITLE_FONT_SIZE, "history_window/ntitle_font_size", 0)
@@ -287,10 +271,7 @@ class HistoryWindowTheme : public IQTheme
 	IQ_CONF_VAR(BAR_BG_COLOR, "history_window/bar_bg_color", "#262d3a")
 	IQ_CONF_VAR(BAR_TEXT_COLOR, "history_window/bar_text_color", "#92969c")
 	IQ_CONF_VAR(NBG_COLOR, "history_window/nbg_color", "#19202d")
-	IQ_CONF_VAR(NAPP_TEXT_COLOR, "history_window/napp_text_color",
-		    "#92969c")
-	IQ_CONF_VAR(NTITLE_TEXT_COLOR, "history_window/ntitle_text_color",
-		    "white")
-	IQ_CONF_VAR(NBODY_TEXT_COLOR, "history_window/nbody_text_color",
-		    "#92969c")
+	IQ_CONF_VAR(NAPP_TEXT_COLOR, "history_window/napp_text_color", "#92969c")
+	IQ_CONF_VAR(NTITLE_TEXT_COLOR, "history_window/ntitle_text_color", "white")
+	IQ_CONF_VAR(NBODY_TEXT_COLOR, "history_window/nbody_text_color", "#92969c")
 };

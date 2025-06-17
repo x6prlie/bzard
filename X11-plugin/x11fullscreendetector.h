@@ -21,14 +21,13 @@
 
 #include <iqfullscreendetector.h>
 
-class X11FullscreenDetector final : public IQFullscreenDetector
-{
-      public:
+class X11FullscreenDetector final : public IQFullscreenDetector {
+  public:
 	X11FullscreenDetector();
 
 	bool fullscreenWindowsOnCurrentDesktop() const final;
 	bool fullscreenWindows() const final;
 
-      private:
+  private:
 	std::unique_ptr<IQFullscreenDetector> detectorPrivate;
 };

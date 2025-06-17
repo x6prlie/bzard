@@ -20,29 +20,25 @@
 #include <QApplication>
 
 IQDisposition::IQDisposition(QObject *parent)
-    : QObject{parent}, screen_{QApplication::screens().at(0)}
-{
+	  : QObject{parent}, screen_{QApplication::screens().at(0)} {
 	connect(screen_, &QScreen::availableGeometryChanged, this,
-		&IQDisposition::recalculateAvailableScreenGeometry);
+	        &IQDisposition::recalculateAvailableScreenGeometry);
 }
 
 const QScreen *IQDisposition::screen() const { return screen_; }
 
-void IQDisposition::setExtraWindowSize(const QSize &value)
-{
+void IQDisposition::setExtraWindowSize(const QSize &value) {
 	extraWindowSize = value;
 }
 
-void IQDisposition::setMargins(const QMargins &value)
-{
+void IQDisposition::setMargins(const QMargins &value) {
 	margins = value;
 	recalculateAvailableScreenGeometry();
 }
 
 void IQDisposition::setSpacing(int value) { spacing = value; }
 
-void IQDisposition::recalculateAvailableScreenGeometry()
-{
+void IQDisposition::recalculateAvailableScreenGeometry() {
 	auto screenGeometry = screen()->availableGeometry();
 	availableScreenGeometry = screenGeometry - margins;
 }

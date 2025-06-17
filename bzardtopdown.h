@@ -24,11 +24,10 @@
 
 #include <bzarddisposition.h>
 
-class BzardTopDown final : public IQDisposition
-{
+class BzardTopDown final : public IQDisposition {
 	Q_OBJECT
 
-      public:
+  public:
 	using IQDisposition::optional;
 
 	explicit BzardTopDown(QObject *parent = nullptr);
@@ -41,11 +40,11 @@ class BzardTopDown final : public IQDisposition
 
 	void setSpacing(int value) final;
 
-      public slots:
+  public slots:
 	void remove(IQNotification::id_t id) final;
 	void removeAll() final;
 
-      private:
+  private:
 	std::map<IQNotification::id_t, QRect> dispositions;
 
 	void recalculateAvailableScreenGeometry() final;

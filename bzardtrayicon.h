@@ -21,21 +21,19 @@
 #include <QSystemTrayIcon>
 #include <QUrl>
 
-class BzardTrayIcon : public QSystemTrayIcon
-{
+class BzardTrayIcon : public QSystemTrayIcon {
 	Q_OBJECT
-	Q_PROPERTY(
-	    QUrl iconUrl READ iconUrl WRITE setIconUrl NOTIFY iconUrlChanged)
-      public:
+	Q_PROPERTY(QUrl iconUrl READ iconUrl WRITE setIconUrl NOTIFY iconUrlChanged)
+  public:
 	explicit BzardTrayIcon(QObject *parent = nullptr);
 
 	QUrl iconUrl() const;
 	void setIconUrl(const QUrl &iconUrl);
 
-      signals:
+  signals:
 	void iconUrlChanged();
 	void leftClick();
 
-      private:
+  private:
 	QUrl iconUrl_;
 };

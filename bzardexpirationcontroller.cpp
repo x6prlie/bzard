@@ -17,13 +17,11 @@
 
 #include "bzardexpirationcontroller.h"
 
-bool BzardExpirationController::expiration() const
-{
+bool BzardExpirationController::expiration() const {
 	return t ? t->isActive() : false;
 }
 
-void BzardExpirationController::setExpiration(bool expiration)
-{
+void BzardExpirationController::setExpiration(bool expiration) {
 	if (t) {
 		if (expiration) {
 			t->start();
@@ -37,14 +35,12 @@ void BzardExpirationController::setExpiration(bool expiration)
 
 int BzardExpirationController::timeout() const { return t ? t->interval() : 0; }
 
-void BzardExpirationController::setTimeout(int timeout)
-{
+void BzardExpirationController::setTimeout(int timeout) {
 	if (timeout) {
 		if (!t) {
 			t = std::make_unique<QTimer>();
 			t->setSingleShot(true);
-			connect(t.get(), &QTimer::timeout,
-				[this] { emit expired(); });
+			connect(t.get(), &QTimer::timeout, [this] { emit expired(); });
 		}
 
 		t->setInterval(timeout);

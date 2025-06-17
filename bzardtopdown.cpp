@@ -17,14 +17,12 @@
 
 #include "bzardtopdown.h"
 
-BzardTopDown::BzardTopDown(QObject *parent) : IQDisposition(parent)
-{
+BzardTopDown::BzardTopDown(QObject *parent) : IQDisposition(parent) {
 	recalculateAvailableScreenGeometry();
 }
 
 BzardTopDown::optional<QPoint> BzardTopDown::poses(IQNotification::id_t id,
-					     QSize size)
-{
+                                                   QSize size) {
 	// Already here, must be replaced
 	auto current_pos_it = dispositions.find(id);
 	if (current_pos_it != dispositions.end())
@@ -33,13 +31,13 @@ BzardTopDown::optional<QPoint> BzardTopDown::poses(IQNotification::id_t id,
 	// Okay, lets calc new position
 	auto avail = availableGeometry();
 
-	auto pos_point = avail.topRight() -
-			 QPoint{size.width() - 1
-				// topRigth returns not correct coordinates
-				// So we add 1 to result (-(-1))
-				// Look at Qt's docs for more
-				,
-				0};
+	auto pos_point =
+		  avail.topRight() - QPoint{size.width() - 1
+	                                // topRigth returns not correct coordinates
+	                                // So we add 1 to result (-(-1))
+	                                // Look at Qt's docs for more
+	                                ,
+	                                0};
 	QRect pos{pos_point, size};
 	if (avail.contains(pos)) {
 		dispositions[id] = pos;
@@ -49,51 +47,47 @@ BzardTopDown::optional<QPoint> BzardTopDown::poses(IQNotification::id_t id,
 	}
 }
 
-QPoint BzardTopDown::externalWindowPos() const
-{
+QPoint BzardTopDown::externalWindowPos() const {
 	auto pos_point = availableScreenGeometry.bottomRight() -
-			 QPoint{extraWindowSize.width() - 1
-				// topRigth returns not correct coordinates
-				// So we add 1 to result (-(-1))
-				// Look at Qt's docs for more
-				,
-				0};
+	                 QPoint{extraWindowSize.width() - 1
+	                        // topRigth returns not correct coordinates
+	                        // So we add 1 to result (-(-1))
+	                        // Look at Qt's docs for more
+	                        ,
+	                        0};
 	return pos_point;
 }
 
-void BzardTopDown::setExtraWindowSize(const QSize &value)
-{
+void BzardTopDown::setExtraWindowSize(const QSize &value) {
 	IQDisposition::setExtraWindowSize(value);
 	recalculateAvailableScreenGeometry();
 }
 
-void BzardTopDown::setSpacing(int value)
-{
+void BzardTopDown::setSpacing(int value) {
 	IQDisposition::setSpacing(value);
 	recalculateAvailableScreenGeometry();
 }
 
-void BzardTopDown::remove(IQNotification::id_t id)
-{
+void BzardTopDown::remove(IQNotification::id_t id) {
 	static auto recalculateDispositions = [this](const auto &to_remove_it)
-	    -> std::map<IQNotification::id_t, QPoint> {
-		    auto end = dispositions.end();
-		    const QRect &to_remove = to_remove_it->second;
-		    auto move_up_for = spacing + to_remove.height();
+		  -> std::map<IQNotification::id_t, QPoint> {
+		auto end = dispositions.end();
+		const QRect &to_remove = to_remove_it->second;
+		auto move_up_for = spacing + to_remove.height();
 
-		    auto it = std::next(to_remove_it);
-		    if (it == end) {
-			    return {}; // Nothing to move up
-		    }
-		    std::map<IQNotification::id_t, QPoint> posToMove;
-		    for (; it != end; ++it) {
-			    auto d_id = it->first;
-			    auto &d_pos = it->second;
-			    d_pos.moveTop(d_pos.top() - move_up_for);
-			    posToMove.emplace(d_id, d_pos.topLeft());
-		    }
-		    return posToMove;
-	    };
+		auto it = std::next(to_remove_it);
+		if (it == end) {
+			return {}; // Nothing to move up
+		}
+		std::map<IQNotification::id_t, QPoint> posToMove;
+		for (; it != end; ++it) {
+			auto d_id = it->first;
+			auto &d_pos = it->second;
+			d_pos.moveTop(d_pos.top() - move_up_for);
+			posToMove.emplace(d_id, d_pos.topLeft());
+		}
+		return posToMove;
+	};
 
 	auto pos_it = dispositions.find(id);
 	if (pos_it != dispositions.end()) {
@@ -114,15 +108,13 @@ void BzardTopDown::remove(IQNotification::id_t id)
 
 void BzardTopDown::removeAll() { dispositions.clear(); }
 
-void BzardTopDown::recalculateAvailableScreenGeometry()
-{
+void BzardTopDown::recalculateAvailableScreenGeometry() {
 	IQDisposition::recalculateAvailableScreenGeometry();
 	auto extra_bottom_margin = extraWindowSize.height() + spacing;
 	availableScreenGeometry -= QMargins{0, 0, 0, extra_bottom_margin};
 }
 
-QRect BzardTopDown::availableGeometry() const
-{
+QRect BzardTopDown::availableGeometry() const {
 	auto ret = availableScreenGeometry;
 	ret.adjust(0, dispositions.empty() ? 0 : spacing, 0, 0);
 

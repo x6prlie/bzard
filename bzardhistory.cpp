@@ -20,16 +20,15 @@
 #include <QtQml/QtQml>
 
 BzardHistory::BzardHistory()
-    : IQConfigurable{"history"}, model_{std::make_unique<BzardHistoryModel>(this)}
-{
+	  : IQConfigurable{"history"},
+		model_{std::make_unique<BzardHistoryModel>(this)} {
 	qmlRegisterType<BzardHistoryNotification>("bzard", 1, 0,
-					       "HistoryNotification");
+	                                          "HistoryNotification");
 }
 
-void BzardHistory::onCreateNotification(const IQNotification &notification)
-{
+void BzardHistory::onCreateNotification(const IQNotification &notification) {
 	historyList.push_front(
-	    std::make_unique<BzardHistoryNotification>(notification));
+		  std::make_unique<BzardHistoryNotification>(notification));
 	emit rowInserted();
 }
 
@@ -39,19 +38,16 @@ void BzardHistory::remove(uint index) { model_->removeRow(index); }
 
 QAbstractListModel *BzardHistory::model() const { return model_.get(); }
 
-void BzardHistory::removeHistoryNotification(uint index)
-{
+void BzardHistory::removeHistoryNotification(uint index) {
 	auto it = historyList.begin();
 	std::advance(it, index);
 	historyList.erase(it);
 }
 
 BzardHistoryNotification::BzardHistoryNotification(const IQNotification &n,
-					     QObject *parent)
-    : QObject(parent), id__{n.id}, application_{n.application}, title_{n.title},
-      body_{n.body}, iconUrl_{n.icon_url}
-{
-}
+                                                   QObject *parent)
+	  : QObject(parent), id__{n.id}, application_{n.application},
+		title_{n.title}, body_{n.body}, iconUrl_{n.icon_url} {}
 
 uint BzardHistoryNotification::id_() const { return id__; }
 
@@ -63,14 +59,13 @@ QString BzardHistoryNotification::body() const { return body_; }
 
 QString BzardHistoryNotification::iconUrl() const { return iconUrl_; }
 
-BzardHistoryModel::BzardHistoryModel(BzardHistory::ptr_t history_) : iqHistory{history_}
-{
+BzardHistoryModel::BzardHistoryModel(BzardHistory::ptr_t history_)
+	  : iqHistory{history_} {
 	connect(iqHistory, &BzardHistory::rowInserted, this,
-		&BzardHistoryModel::onHistoryRowInserted);
+	        &BzardHistoryModel::onHistoryRowInserted);
 }
 
-int BzardHistoryModel::rowCount(const QModelIndex &parent) const
-{
+int BzardHistoryModel::rowCount(const QModelIndex &parent) const {
 	if (!iqHistory)
 		return 0;
 
@@ -78,8 +73,7 @@ int BzardHistoryModel::rowCount(const QModelIndex &parent) const
 	return iqHistory->historyList.size();
 }
 
-QVariant BzardHistoryModel::data(const QModelIndex &index, int role) const
-{
+QVariant BzardHistoryModel::data(const QModelIndex &index, int role) const {
 	if (!iqHistory)
 		return {};
 
@@ -109,8 +103,8 @@ QVariant BzardHistoryModel::data(const QModelIndex &index, int role) const
 	return {};
 }
 
-bool BzardHistoryModel::insertRows(int row, int count, const QModelIndex &parent)
-{
+bool BzardHistoryModel::insertRows(int row, int count,
+                                   const QModelIndex &parent) {
 	if (row || count > 1)
 		return false;
 
@@ -119,8 +113,8 @@ bool BzardHistoryModel::insertRows(int row, int count, const QModelIndex &parent
 	return true;
 }
 
-bool BzardHistoryModel::removeRows(int row, int count, const QModelIndex &parent)
-{
+bool BzardHistoryModel::removeRows(int row, int count,
+                                   const QModelIndex &parent) {
 	if (!iqHistory)
 		return false;
 
@@ -142,8 +136,7 @@ bool BzardHistoryModel::removeRows(int row, int count, const QModelIndex &parent
 	return true;
 }
 
-QHash<int, QByteArray> BzardHistoryModel::roleNames() const
-{
+QHash<int, QByteArray> BzardHistoryModel::roleNames() const {
 	QHash<int, QByteArray> roles;
 	roles[Id_Role] = "id_";
 	roles[ApplicationRole] = "application";

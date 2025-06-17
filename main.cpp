@@ -38,33 +38,32 @@
 /*
  * Should be called first
  */
-static BzardDBusService * get_service();
-static BzardHistory * get_history();
-static QDBusConnection
-connect_to_session_bus(BzardDBusService * service);
+static BzardDBusService *get_service();
+static BzardHistory *get_history();
+static QDBusConnection connect_to_session_bus(BzardDBusService *service);
 static QObject *bzardnotifications_provider(QQmlEngine *engine,
-					 QJSEngine *scriptEngine);
-static QObject *bzardthemes_provider(QQmlEngine *engine, QJSEngine *scriptEngine);
+                                            QJSEngine *scriptEngine);
+static QObject *bzardthemes_provider(QQmlEngine *engine,
+                                     QJSEngine *scriptEngine);
 
-BzardDBusService * get_service()
-{
+BzardDBusService *get_service() {
 	using namespace BzardNotificationModifiers; // NOLINT
 
 	auto disposition = std::make_unique<BzardTopDown>();
 	auto dbus_service =
-	    (new BzardDBusService)
-		->addModifier(make<IDGenerator>())
-		->addModifier(make<TitleToIcon>())
-		->addModifier(make<IconHandler>())
-		->addModifier(make<BodyToTitleWhenTitleIsAppName>())
-		->addModifier(make<DefaultTimeout>())
-		->addModifier(make<ReplaceMinusToDash>());
+		  (new BzardDBusService)
+				->addModifier(make<IDGenerator>())
+				->addModifier(make<TitleToIcon>())
+				->addModifier(make<IconHandler>())
+				->addModifier(make<BodyToTitleWhenTitleIsAppName>())
+				->addModifier(make<DefaultTimeout>())
+				->addModifier(make<ReplaceMinusToDash>());
 
 	auto notifications = BzardNotifications::get(std::move(disposition));
 	if (notifications->isEnabled())
 		dbus_service->connectReceiver(notifications);
 	if (get_history()->isEnabled())
-        dbus_service->connectReceiver(get_history());
+		dbus_service->connectReceiver(get_history());
 
 	std::unique_ptr<IQFullscreenDetector> fullscreenDetector;
 #ifdef IQ_X11
@@ -74,52 +73,46 @@ BzardDBusService * get_service()
 	return dbus_service;
 }
 
-BzardHistory * get_history()
-{
+BzardHistory *get_history() {
 	static BzardHistory history;
-    return &history;
+	return &history;
 }
 
-QObject *bzardnotifications_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
+QObject *bzardnotifications_provider(QQmlEngine *engine,
+                                     QJSEngine *scriptEngine) {
 	Q_UNUSED(engine);
 	Q_UNUSED(scriptEngine);
 	return BzardNotifications::get();
 }
 
-QObject *bzardthemes_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
+QObject *bzardthemes_provider(QQmlEngine *engine, QJSEngine *scriptEngine) {
 	Q_UNUSED(engine);
 	Q_UNUSED(scriptEngine);
 	static BzardThemes theme;
 	return &theme;
 }
 
-QObject *bzardhistory_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
+QObject *bzardhistory_provider(QQmlEngine *engine, QJSEngine *scriptEngine) {
 	Q_UNUSED(engine);
 	Q_UNUSED(scriptEngine);
-    return get_history();
+	return get_history();
 }
 
-QDBusConnection connect_to_session_bus(BzardDBusService *service)
-{
+QDBusConnection connect_to_session_bus(BzardDBusService *service) {
 	auto connection = QDBusConnection::sessionBus();
 	if (!connection.registerService("org.freedesktop.Notifications")) {
 		throw std::runtime_error{"DBus Service already registered!"};
 	}
-    new NotificationsAdaptor(service);
-	if (!connection.registerObject("/org/freedesktop/Notifications",
-				       service)) {
+	new NotificationsAdaptor(service);
+	if (!connection.registerObject("/org/freedesktop/Notifications", service)) {
 		throw std::runtime_error{"Can't register DBus service object!"};
 	}
 	return connection;
 }
 
-int main(int argc, char *argv[])
-{
-    // qputenv("QT_QPA_PLATFORM", QByteArray("wayland"));
-    qputenv("QT_WAYLAND_SHELL_INTEGRATION", QByteArray("layer-shell"));
+int main(int argc, char *argv[]) {
+	// qputenv("QT_QPA_PLATFORM", QByteArray("wayland"));
+	qputenv("QT_WAYLAND_SHELL_INTEGRATION", QByteArray("layer-shell"));
 
 	QApplication app(argc, argv);
 	app.setQuitOnLastWindowClosed(false);
@@ -128,15 +121,14 @@ int main(int argc, char *argv[])
 	connect_to_session_bus(dbus_service);
 
 	qmlRegisterSingletonType<BzardThemes>("bzard", 1, 0, "BzardThemes",
-                       bzardthemes_provider);
+	                                      bzardthemes_provider);
 	qmlRegisterType<BzardExpirationController>("bzard", 1, 0,
-						"BzardExpirationController");
+	                                           "BzardExpirationController");
 	qmlRegisterType<BzardTrayIcon>("bzard", 1, 0, "BzardTrayIcon");
 	qmlRegisterSingletonType<BzardNotifications>(
-        "bzard", 1, 0, "BzardNotifications", bzardnotifications_provider);
+		  "bzard", 1, 0, "BzardNotifications", bzardnotifications_provider);
 	qmlRegisterSingletonType<BzardHistory>("bzard", 1, 0, "BzardHistory",
-                        bzardhistory_provider);
-
+	                                       bzardhistory_provider);
 
 	QQmlApplicationEngine engine;
 	engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

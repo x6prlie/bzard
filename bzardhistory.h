@@ -27,18 +27,17 @@
 #include "bzardnotificationreceiver.h"
 class BzardHistoryModel;
 
-class BzardHistoryNotification : public QObject
-{
+class BzardHistoryNotification : public QObject {
 	Q_OBJECT
 	Q_PROPERTY(uint id_ READ id_ CONSTANT)
 	Q_PROPERTY(QString application READ application CONSTANT)
 	Q_PROPERTY(QString title READ title CONSTANT)
 	Q_PROPERTY(QString body READ body CONSTANT)
 	Q_PROPERTY(QString iconUrl READ iconUrl CONSTANT)
-      public:
+  public:
 	BzardHistoryNotification() = default;
 	BzardHistoryNotification(const IQNotification &n,
-			      QObject *parent = nullptr);
+	                         QObject *parent = nullptr);
 
 	uint id_() const;
 	QString application() const;
@@ -46,7 +45,7 @@ class BzardHistoryNotification : public QObject
 	QString body() const;
 	QString iconUrl() const;
 
-      private:
+  private:
 	const uint id__{0};
 	const QString application_;
 	const QString title_;
@@ -54,18 +53,17 @@ class BzardHistoryNotification : public QObject
 	const QString iconUrl_;
 };
 
-class BzardHistory : public IQNotificationReceiver, public IQConfigurable
-{
+class BzardHistory : public IQNotificationReceiver, public IQConfigurable {
 	friend class BzardHistoryModel;
 
 	Q_OBJECT
 	Q_PROPERTY(bool isEnabled READ isEnabled CONSTANT)
 	Q_PROPERTY(QAbstractItemModel *model READ model CONSTANT)
-      public:
+  public:
 	BzardHistory();
 	QAbstractListModel *model() const;
 
-      public slots:
+  public slots:
 	/*
 	 * External slots
 	 */
@@ -77,21 +75,20 @@ class BzardHistory : public IQNotificationReceiver, public IQConfigurable
 	 */
 	void remove(uint index);
 
-      signals:
+  signals:
 	void rowInserted();
 
-      private:
-    using ptr_t = BzardHistory *;
+  private:
+	using ptr_t = BzardHistory *;
 	std::deque<std::unique_ptr<BzardHistoryNotification>> historyList;
 	std::unique_ptr<BzardHistoryModel> model_;
 
 	void removeHistoryNotification(uint index);
 };
 
-class BzardHistoryModel : public QAbstractListModel
-{
+class BzardHistoryModel : public QAbstractListModel {
 	Q_OBJECT
-      public:
+  public:
 	enum HistoryRoles {
 		Id_Role = Qt::UserRole + 1,
 		ApplicationRole,
@@ -106,9 +103,9 @@ class BzardHistoryModel : public QAbstractListModel
 	bool removeRows(int row, int count, const QModelIndex &parent) final;
 	QHash<int, QByteArray> roleNames() const final;
 
-      private slots:
+  private slots:
 	void onHistoryRowInserted();
 
-      private:
+  private:
 	BzardHistory *iqHistory;
 };

@@ -21,71 +21,60 @@
 #include <QScreen>
 #include <QtQml/qqml.h>
 
-namespace
-{
-static QRect availableGeometry()
-{
+namespace {
+static QRect availableGeometry() {
 	QScreen *screen = QApplication::screens().at(0);
 	return screen->availableGeometry();
 }
-} // anonymouse namespace
+} // namespace
 
 BzardThemes::BzardThemes()
-    : config{"theme"},
-      themeName{
-	  config.value(CONFIG_THEME_NAME, CONFIG_THEME_NAME_DEFAULT).toString()}
-{
+	  : config{"theme"},
+		themeName{config.value(CONFIG_THEME_NAME, CONFIG_THEME_NAME_DEFAULT)
+                        .toString()} {
 	registerThemeTypes();
 	loadTheme(themeConfigFile());
 	auto themeDir = IQConfig::configDir() + '/' + themeConfigDir();
 	notificationsTheme_ =
-	    std::make_unique<NotificationsTheme>(themeConfig, themeDir);
+		  std::make_unique<NotificationsTheme>(themeConfig, themeDir);
 	trayIconTheme_ = std::make_unique<TrayIconTheme>(themeConfig, themeDir);
 	historyWindowTheme_ =
-	    std::make_unique<HistoryWindowTheme>(themeConfig, themeDir);
+		  std::make_unique<HistoryWindowTheme>(themeConfig, themeDir);
 }
 
-NotificationsTheme *BzardThemes::notificationsTheme() const
-{
+NotificationsTheme *BzardThemes::notificationsTheme() const {
 	return notificationsTheme_.get();
 }
 
-TrayIconTheme *BzardThemes::trayIconTheme() const { return trayIconTheme_.get(); }
+TrayIconTheme *BzardThemes::trayIconTheme() const {
+	return trayIconTheme_.get();
+}
 
-HistoryWindowTheme *BzardThemes::historyWindowTheme() const
-{
+HistoryWindowTheme *BzardThemes::historyWindowTheme() const {
 	return historyWindowTheme_.get();
 }
 
 QString BzardThemes::themeConfigDir() const { return "themes/" + themeName; }
 
-QString BzardThemes::themeConfigFile() const
-{
+QString BzardThemes::themeConfigFile() const {
 	return themeConfigDir() + "/theme";
 }
 
-void BzardThemes::loadTheme(const QString &fileName)
-{
+void BzardThemes::loadTheme(const QString &fileName) {
 	themeConfig = std::make_shared<IQConfig>(QString{}, fileName);
 }
 
-void BzardThemes::registerThemeTypes() const
-{
-	qmlRegisterType<NotificationsTheme>("bzard", 1, 0,
-					    "NotificationsTheme");
+void BzardThemes::registerThemeTypes() const {
+	qmlRegisterType<NotificationsTheme>("bzard", 1, 0, "NotificationsTheme");
 	qmlRegisterType<TrayIconTheme>("bzard", 1, 0, "TrayIconTheme");
-	qmlRegisterType<HistoryWindowTheme>("bzard", 1, 0,
-					    "HistoryWindowTheme");
+	qmlRegisterType<HistoryWindowTheme>("bzard", 1, 0, "HistoryWindowTheme");
 }
 
 IQTheme::IQTheme(const std::shared_ptr<IQConfig> &config_,
-		 const QString &themeDir_, QObject *parent)
-    : QObject(parent), themeConfig{config_}, themeDir{themeDir_}
-{
-}
+                 const QString &themeDir_, QObject *parent)
+	  : QObject(parent), themeConfig{config_}, themeDir{themeDir_} {}
 
-QUrl IQTheme::toRelativeUrl(const QString &str) const
-{
+QUrl IQTheme::toRelativeUrl(const QString &str) const {
 	return "file:///" + themeDir + '/' + str;
 }
 
@@ -106,159 +95,127 @@ QUrl IQTheme::toRelativeUrl(const QString &str) const
 #define IQ_THEME_COLOR(KEY__) IQ_THEME_STRING(KEY__)
 
 #define IQ_THEME_IMAGE(KEY__)                                                  \
-	auto str = IQ_THEME_STRING(KEY__);                                     \
-	if (str == KEY__##_DEFAULT)                                            \
-		return str;                                                    \
-	auto url = toRelativeUrl(str);                                         \
-	if (url.isValid())                                                     \
-		return url;                                                    \
-	else                                                                   \
+	auto str = IQ_THEME_STRING(KEY__);                                         \
+	if (str == KEY__##_DEFAULT)                                                \
+		return str;                                                            \
+	auto url = toRelativeUrl(str);                                             \
+	if (url.isValid())                                                         \
+		return url;                                                            \
+	else                                                                       \
 		return QString{KEY__##_DEFAULT};
 
-bool NotificationsTheme::iconPosition() const
-{
+bool NotificationsTheme::iconPosition() const {
 	auto pos =
-	    themeConfig
-		->value(CONFIG_ICON_POSITION, CONFIG_ICON_POSITION_DEFAULT)
-		.toString();
+		  themeConfig->value(CONFIG_ICON_POSITION, CONFIG_ICON_POSITION_DEFAULT)
+				.toString();
 	return pos.compare("left", Qt::CaseInsensitive) == 0;
 }
 
-uint NotificationsTheme::fontSize() const
-{
+uint NotificationsTheme::fontSize() const {
 	return IQ_THEME_UINT(CONFIG_FONT_SIZE);
 }
 
-uint NotificationsTheme::barFontSize() const
-{
+uint NotificationsTheme::barFontSize() const {
 	return IQ_THEME_UINT(CONFIG_BAR_FONT_SIZE);
 }
 
-uint NotificationsTheme::iconSize() const
-{
+uint NotificationsTheme::iconSize() const {
 	return IQ_THEME_UINT(CONFIG_ICON_SIZE);
 }
 
-uint NotificationsTheme::barHeight() const
-{
+uint NotificationsTheme::barHeight() const {
 	return IQ_THEME_UINT(CONFIG_BAR_HEIGHT);
 }
 
-uint NotificationsTheme::expirationBarHeight() const
-{
+uint NotificationsTheme::expirationBarHeight() const {
 	return IQ_THEME_UINT(CONFIG_EXPIRATION_BAR_HEIGHT);
 }
 
-uint NotificationsTheme::showAnimationDuration() const
-{
+uint NotificationsTheme::showAnimationDuration() const {
 	return IQ_THEME_UINT(CONFIG_SHOW_DURATION);
 }
 
-uint NotificationsTheme::dropAnimationDuration() const
-{
+uint NotificationsTheme::dropAnimationDuration() const {
 	return IQ_THEME_UINT(CONFIG_DROP_DURATION);
 }
 
-double NotificationsTheme::closeButtonImageScale() const
-{
+double NotificationsTheme::closeButtonImageScale() const {
 	return IQ_THEME_DOUBLE(CONFIG_CLOSE_BUTTON_IMAGE_SCALE);
 }
 
-double NotificationsTheme::extraButtonImageScale() const
-{
+double NotificationsTheme::extraButtonImageScale() const {
 	return IQ_THEME_DOUBLE(CONFIG_EXTRA_BUTTON_IMAGE_SCALE);
 }
 
-QColor NotificationsTheme::bgColor() const
-{
+QColor NotificationsTheme::bgColor() const {
 	return IQ_THEME_COLOR(CONFIG_BG_COLOR);
 }
 
-QColor NotificationsTheme::barBgColor() const
-{
+QColor NotificationsTheme::barBgColor() const {
 	return IQ_THEME_COLOR(CONFIG_BAR_BG_COLOR);
 }
 
-QColor NotificationsTheme::barTextColor() const
-{
+QColor NotificationsTheme::barTextColor() const {
 	return IQ_THEME_COLOR(CONFIG_BAR_TEXT_COLOR);
 }
 
-QColor NotificationsTheme::expirationBarColor() const
-{
+QColor NotificationsTheme::expirationBarColor() const {
 	return IQ_THEME_COLOR(CONFIG_EXPIRATION_BAR_COLOR);
 }
 
-QColor NotificationsTheme::titleTextColor() const
-{
+QColor NotificationsTheme::titleTextColor() const {
 	return IQ_THEME_COLOR(CONFIG_TITLE_TEXT_COLOR);
 }
 
-QColor NotificationsTheme::bodyTextColor() const
-{
+QColor NotificationsTheme::bodyTextColor() const {
 	return IQ_THEME_COLOR(CONFIG_BODY_TEXT_COLOR);
 }
 
-QColor NotificationsTheme::buttonBgColor() const
-{
+QColor NotificationsTheme::buttonBgColor() const {
 	return IQ_THEME_COLOR(CONFIG_BUTTON_BG_COLOR);
 }
 
-QColor NotificationsTheme::buttonTextColor() const
-{
+QColor NotificationsTheme::buttonTextColor() const {
 	return IQ_THEME_COLOR(CONFIG_BUTTON_TEXT_COLOR);
 }
 
-QColor NotificationsTheme::extraBgColor() const
-{
+QColor NotificationsTheme::extraBgColor() const {
 	return IQ_THEME_COLOR(CONFIG_EXTRA_BG_COLOR);
 }
 
-QColor NotificationsTheme::extraUreadCircleColor() const
-{
+QColor NotificationsTheme::extraUreadCircleColor() const {
 	return IQ_THEME_COLOR(CONFIG_EXTRA_UNREAD_CIRCLE_COLOR);
 }
 
-QColor NotificationsTheme::extraUreadTextColor() const
-{
+QColor NotificationsTheme::extraUreadTextColor() const {
 	return IQ_THEME_COLOR(CONFIG_EXTRA_UNREAD_TEXT_COLOR);
 }
 
-QUrl NotificationsTheme::bgImage() const { IQ_THEME_IMAGE(CONFIG_BG_IMAGE) }
+QUrl NotificationsTheme::bgImage() const {IQ_THEME_IMAGE(CONFIG_BG_IMAGE)}
 
-QUrl NotificationsTheme::closeButtonImage() const
-{
-	IQ_THEME_IMAGE(CONFIG_CLOSE_BUTTON_IMAGE)
-}
+QUrl NotificationsTheme::closeButtonImage() const {
+	  IQ_THEME_IMAGE(CONFIG_CLOSE_BUTTON_IMAGE)}
 
-QUrl NotificationsTheme::extraCloseButtonImage() const
-{
-	IQ_THEME_IMAGE(CONFIG_EXTRA_CLOSE_BUTTON_IMAGE)
-}
+QUrl NotificationsTheme::extraCloseButtonImage() const {
+	  IQ_THEME_IMAGE(CONFIG_EXTRA_CLOSE_BUTTON_IMAGE)}
 
-QUrl NotificationsTheme::extraCloseAllButtonImage() const
-{
-	IQ_THEME_IMAGE(CONFIG_EXTRA_CLOSE_ALL_BUTTON_IMAGE)
-}
+QUrl NotificationsTheme::extraCloseAllButtonImage() const {
+	  IQ_THEME_IMAGE(CONFIG_EXTRA_CLOSE_ALL_BUTTON_IMAGE)}
 
-QUrl NotificationsTheme::extraCloseVisibleButtonImage() const
-{
-	IQ_THEME_IMAGE(CONFIG_EXTRA_CLOSE_VISIBLE_BUTTON_IMAGE)
-}
+QUrl NotificationsTheme::extraCloseVisibleButtonImage() const {
+	  IQ_THEME_IMAGE(CONFIG_EXTRA_CLOSE_VISIBLE_BUTTON_IMAGE)}
 
-QUrl TrayIconTheme::icon() const { IQ_THEME_IMAGE(CONFIG_ICON) }
+QUrl TrayIconTheme::icon() const {IQ_THEME_IMAGE(CONFIG_ICON)}
 
-QUrl HistoryWindowTheme::closeIcon() const { IQ_THEME_IMAGE(CONFIG_CLOSE_ICON) }
+QUrl HistoryWindowTheme::closeIcon() const {IQ_THEME_IMAGE(CONFIG_CLOSE_ICON)}
 
-QUrl HistoryWindowTheme::bgImage() const { IQ_THEME_IMAGE(CONFIG_BG_IMAGE) }
+QUrl HistoryWindowTheme::bgImage() const {IQ_THEME_IMAGE(CONFIG_BG_IMAGE)}
 
-QString HistoryWindowTheme::windowTitle() const
-{
+QString HistoryWindowTheme::windowTitle() const {
 	return IQ_THEME_STRING(CONFIG_WINDOW_TITLE);
 }
 
-uint HistoryWindowTheme::x() const
-{
+uint HistoryWindowTheme::x() const {
 	switch (windowPosition()) {
 	case LEFT_BOT:
 	case LEFT_TOP:
@@ -266,8 +223,7 @@ uint HistoryWindowTheme::x() const
 		break;
 	case RIGHT_BOT:
 	case RIGHT_TOP:
-		return availableGeometry().x() + availableGeometry().width() -
-		       width();
+		return availableGeometry().x() + availableGeometry().width() - width();
 		break;
 	default:
 		break;
@@ -275,8 +231,7 @@ uint HistoryWindowTheme::x() const
 	return IQ_THEME_UINT(CONFIG_X);
 }
 
-uint HistoryWindowTheme::y() const
-{
+uint HistoryWindowTheme::y() const {
 	switch (windowPosition()) {
 	case RIGHT_TOP:
 	case LEFT_TOP:
@@ -297,75 +252,61 @@ uint HistoryWindowTheme::height() const { return IQ_THEME_UINT(CONFIG_HEIGHT); }
 
 uint HistoryWindowTheme::width() const { return IQ_THEME_UINT(CONFIG_WIDTH); }
 
-uint HistoryWindowTheme::barHeight() const
-{
+uint HistoryWindowTheme::barHeight() const {
 	return IQ_THEME_UINT(CONFIG_BAR_HEIGHT);
 }
 
-uint HistoryWindowTheme::notificationHeight() const
-{
+uint HistoryWindowTheme::notificationHeight() const {
 	return IQ_THEME_UINT(CONFIG_NOTIFICATION_HEIGHT);
 }
 
-uint HistoryWindowTheme::barFontSize() const
-{
+uint HistoryWindowTheme::barFontSize() const {
 	return IQ_THEME_UINT(CONFIG_BAR_FONT_SIZE);
 }
 
-uint HistoryWindowTheme::nappFontSize() const
-{
+uint HistoryWindowTheme::nappFontSize() const {
 	return IQ_THEME_UINT(CONFIG_NAPP_FONT_SIZE);
 }
 
-uint HistoryWindowTheme::ntitleFontSize() const
-{
+uint HistoryWindowTheme::ntitleFontSize() const {
 	return IQ_THEME_UINT(CONFIG_NTITLE_FONT_SIZE);
 }
 
-uint HistoryWindowTheme::nbodyFontSize() const
-{
+uint HistoryWindowTheme::nbodyFontSize() const {
 	return IQ_THEME_UINT(CONFIG_NBODY_FONT_SIZE);
 }
 
-QString HistoryWindowTheme::bgColor() const
-{
+QString HistoryWindowTheme::bgColor() const {
 	return IQ_THEME_STRING(CONFIG_BG_COLOR);
 }
 
-QString HistoryWindowTheme::barBgColor() const
-{
+QString HistoryWindowTheme::barBgColor() const {
 	return IQ_THEME_STRING(CONFIG_BAR_BG_COLOR);
 }
 
-QString HistoryWindowTheme::barTextColor() const
-{
+QString HistoryWindowTheme::barTextColor() const {
 	return IQ_THEME_STRING(CONFIG_BAR_TEXT_COLOR);
 }
 
-QString HistoryWindowTheme::nbgColor() const
-{
+QString HistoryWindowTheme::nbgColor() const {
 	return IQ_THEME_STRING(CONFIG_NBG_COLOR);
 }
 
-QString HistoryWindowTheme::nappTextColor() const
-{
+QString HistoryWindowTheme::nappTextColor() const {
 	return IQ_THEME_STRING(CONFIG_NAPP_TEXT_COLOR);
 }
 
-QString HistoryWindowTheme::ntitleTextColor() const
-{
+QString HistoryWindowTheme::ntitleTextColor() const {
 	return IQ_THEME_STRING(CONFIG_NTITLE_TEXT_COLOR);
 }
 
-QString HistoryWindowTheme::nbodyTextColor() const
-{
+QString HistoryWindowTheme::nbodyTextColor() const {
 	return IQ_THEME_STRING(CONFIG_NBODY_TEXT_COLOR);
 }
 
-HistoryWindowTheme::pos_t HistoryWindowTheme::windowPosition() const
-{
+HistoryWindowTheme::pos_t HistoryWindowTheme::windowPosition() const {
 	return static_cast<HistoryWindowTheme::pos_t>(
-	    IQ_THEME_UINT(CONFIG_WINDOW_POSITION));
+		  IQ_THEME_UINT(CONFIG_WINDOW_POSITION));
 }
 
 #undef IQ_THEME_IMAGE

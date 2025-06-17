@@ -17,8 +17,7 @@
 
 #include "bzardnotification.h"
 
-IQNotification::operator QString() const
-{
+IQNotification::operator QString() const {
 	QString ret;
 	ret += "#" + QString::number(id);
 	if (replaces_id)

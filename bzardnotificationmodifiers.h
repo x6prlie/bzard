@@ -20,11 +20,9 @@
 #include "bzardconfig.h"
 #include "bzardnotification.h"
 
-namespace BzardNotificationModifiers
-{
+namespace BzardNotificationModifiers {
 
-template <class T, class... A> std::unique_ptr<T> make(A &&... args)
-{
+template <class T, class... A> std::unique_ptr<T> make(A &&...args) {
 	return std::make_unique<T>(std::forward<A>(args)...);
 }
 
@@ -39,33 +37,33 @@ struct IconHandler final : public IQNotificationModifier {
 };
 
 struct DefaultTimeout final : public IQNotificationModifier,
-			      public IQConfigurable {
+							  public IQConfigurable {
 	DefaultTimeout();
 	void modify(IQNotification &notification) final;
 
-      private:
+  private:
 	uint16_t defaultTimeout;
 };
 
 struct TitleToIcon final : public IQNotificationModifier,
-			   public IQConfigurable {
+						   public IQConfigurable {
 	TitleToIcon();
 	void modify(IQNotification &notification) final;
 };
 
 struct BodyToTitleWhenTitleIsAppName final : public IQNotificationModifier,
-					     public IQConfigurable {
+											 public IQConfigurable {
 	BodyToTitleWhenTitleIsAppName();
 	void modify(IQNotification &notification) final;
 };
 
 struct ReplaceMinusToDash final : public IQNotificationModifier,
-				  public IQConfigurable {
+								  public IQConfigurable {
 	ReplaceMinusToDash();
 
 	void modify(IQNotification &notification) final;
 
-      private:
+  private:
 	bool fixTitle, fixBody;
 
 	static void replaceMinusToDash(QString &str);

@@ -26,27 +26,24 @@
 #include "bzardconfig.h"
 #include "bzardnotificationreceiver.h"
 
-class BzardDBusService : public QObject
-{
+class BzardDBusService : public QObject {
 	Q_OBJECT
 
-      public:
+  public:
 	static QString versionString();
 	static QString appString();
 
 	using QObject::QObject;
 
-    BzardDBusService *
-	connectReceiver(IQNotificationReceiver *receiver);
+	BzardDBusService *connectReceiver(IQNotificationReceiver *receiver);
 
 	/*
 	 * For configurable modifiers we should check is it enabled in config
 	 */
 	template <class T>
 	typename std::enable_if_t<std::is_base_of<IQConfigurable, T>::value,
-                  BzardDBusService *>
-	addModifier(std::unique_ptr<T> modifier)
-	{
+	                          BzardDBusService *>
+	addModifier(std::unique_ptr<T> modifier) {
 		if (modifier->isEnabled())
 			modifers.push_back(std::move(modifier));
 		return this;
@@ -54,9 +51,8 @@ class BzardDBusService : public QObject
 
 	template <class T>
 	typename std::enable_if_t<!std::is_base_of<IQConfigurable, T>::value,
-                  BzardDBusService *>
-	addModifier(std::unique_ptr<T> modifier)
-	{
+	                          BzardDBusService *>
+	addModifier(std::unique_ptr<T> modifier) {
 		modifers.push_back(std::move(modifier));
 		return this;
 	}
@@ -65,16 +61,16 @@ class BzardDBusService : public QObject
 	QStringList GetCapabilities();
 
 	QString GetServerInformation(QString &vendor, QString &version,
-				     QString &spec_version);
+	                             QString &spec_version);
 
 	uint32_t Notify(const QString &app_name, uint32_t replaces_id,
-			const QString &app_icon, const QString &summary,
-			const QString &body, const QStringList &actions,
-			const QVariantMap &hints, uint32_t expire_timeout);
+	                const QString &app_icon, const QString &summary,
+	                const QString &body, const QStringList &actions,
+	                const QVariantMap &hints, uint32_t expire_timeout);
 
 	void CloseNotification(uint32_t id);
 
-      signals:
+  signals:
 	// DBus signals
 	void ActionInvoked(uint32_t notification_id, const QString &action_key);
 
@@ -84,13 +80,12 @@ class BzardDBusService : public QObject
 	void createNotificationSignal(const IQNotification &notification);
 	void dropNotificationSignal(IQNotification::id_t id);
 
-      public slots:
+  public slots:
 	void onNotificationDropped(IQNotification::id_t id,
-				   IQNotification::ClosingReason reason);
-	void onActionInvoked(IQNotification::id_t id,
-			     const QString &action_key);
+	                           IQNotification::ClosingReason reason);
+	void onActionInvoked(IQNotification::id_t id, const QString &action_key);
 
-      private:
+  private:
 	std::vector<IQNotificationModifier::ptr_t> modifers;
 
 	IQNotification modify(IQNotification notification);

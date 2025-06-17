@@ -23,28 +23,27 @@
 #include <QSettings>
 
 #define IQ_CONF_VAR(VAR__, NAME__, DEFAULT__)                                  \
-	static constexpr auto CONFIG_##VAR__ = NAME__;                         \
+	static constexpr auto CONFIG_##VAR__ = NAME__;                             \
 	static constexpr auto CONFIG_##VAR__##_DEFAULT = DEFAULT__;
 
 #define IQ_CONF_FACTOR(VAR__, NAME__, DEFAULT__)                               \
-	static constexpr auto CONFIG_##VAR__ = NAME__;                         \
+	static constexpr auto CONFIG_##VAR__ = NAME__;                             \
 	static constexpr auto VAR__##_DEFAULT_FACTOR = DEFAULT__;
 
-class IQConfig
-{
-      public:
+class IQConfig {
+  public:
 	static QString applicationVersion();
 	static QString applicationName();
 	static QString configDir();
 
 	explicit IQConfig(const QString &category_,
-			  const QString &fileName_ = "config");
+	                  const QString &fileName_ = "config");
 
 	QVariant value(const QString &key,
-		       const QVariant &defaultValue = QVariant()) const;
+	               const QVariant &defaultValue = QVariant()) const;
 	void setValue(const QString &key, const QVariant &value);
 
-      private:
+  private:
 	const QString category;
 	const QString fileName;
 	std::unique_ptr<QSettings> settings;
@@ -59,7 +58,7 @@ struct IQConfigurable {
 	const QString &name() const;
 	bool isEnabled() const;
 
-      protected:
+  protected:
 	explicit IQConfigurable(const QString &name);
 	const QString name_;
 	IQConfig config;

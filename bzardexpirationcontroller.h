@@ -22,15 +22,13 @@
 #include <QObject>
 #include <QTimer>
 
-class BzardExpirationController : public QObject
-{
+class BzardExpirationController : public QObject {
 	Q_OBJECT
 
 	Q_PROPERTY(bool expiration READ expiration WRITE setExpiration NOTIFY
-		       expirationChanged)
-	Q_PROPERTY(
-	    int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
-      public:
+	                 expirationChanged)
+	Q_PROPERTY(int timeout READ timeout WRITE setTimeout NOTIFY timeoutChanged)
+  public:
 	using QObject::QObject;
 
 	bool expiration() const;
@@ -39,13 +37,13 @@ class BzardExpirationController : public QObject
 	int timeout() const;
 	void setTimeout(int timeout);
 
-      signals:
+  signals:
 	void expired();
 	void expirationChanged();
 	void timeoutChanged();
 
-      public slots:
+  public slots:
 
-      private:
+  private:
 	std::unique_ptr<QTimer> t;
 };
