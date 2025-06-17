@@ -1,8 +1,9 @@
 # bzard
 bzard is fancy and flexible notification daemon.
 
+## Developement 
 
-# Developement dependencies
+### Dependencies
 
 ```bash
 sudo apt update
@@ -16,7 +17,27 @@ sudo apt install \
   libx11-dev # for X11 plugin
 ```
 
-# Build Release
+### C++ Naming Convention
+
+| Entity                              | Style                   | Example                        |
+| ----------------------------------- | ----------------------- | ------------------------------ |
+| **Classes**                         | `CamelCase`             | `MyClass`                      |
+| **Methods (member functions)**      | `camelCase`             | `processData()`                |
+| **Free functions**                  | `snake_case`            | `calculate_sum()`              |
+| **Source files**                    | `snake_case`            | `data_processor.cpp`           |
+| **Header files**                    | `snake_case`            | `data_processor.h`             |
+| **Class member variables (fields)** | `camelCase` (no prefix) | `currentValue`                 |
+| **Local variables**                 | `camelCase`             | `localValue`                   |
+| **Constants**                       | `UPPER_CASE`            | `MAX_BUFFER_SIZE`              |
+| **Enums (types)**                   | `CamelCase`             | `ColorType`                    |
+| **Enum values**                     | `UPPER_CASE`            | `RED`, `BLUE`                  |
+| **Template parameters**             | `CamelCase`             | `template<typename ValueType>` |
+| **Macros**                          | `UPPER_CASE`            | `MY_LIBRARY_EXPORT`            |
+| **Namespaces**                      | `snake_case`            | `my_project::utils`            |
+| **Type aliases (`using`)**          | `CamelCase`             | `using StringMap = ...`        |
+| **Global static variables**         | `g_snake_case`          | `g_config_path`                |
+
+## Build Release
 
 ```bash
 git clone https://github.com/x6prl/bzard.git
@@ -25,7 +46,6 @@ mkdir bzard/build; cd bzard/build
 cmake -DCMAKE_BUILD_TYPE=Release -DX11 ..
 make
 ```
-
 
 ## Screenshots
 ![0](/screenshots/0.png?raw=true)
