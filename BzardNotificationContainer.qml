@@ -161,7 +161,7 @@ BzardFancyContainer {
             Layout.fillHeight: false
             Repeater {
                 model: buttons
-                IQButton {
+                BzardButton {
                     height: referenceHeight * buttonFactor
                     color: BzardThemes.notificationsTheme.buttonBgColor
                     textColor: BzardThemes.notificationsTheme.buttonTextColor
