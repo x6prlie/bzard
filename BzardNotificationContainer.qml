@@ -35,7 +35,7 @@ BzardFancyContainer {
     property alias title: titleText.text
     property alias body: bodyText.text
     property url iconUrl: ""
-    property variant buttons: ""
+    property string buttons: ""
 
     property alias expireTimeout: expirationBar.expireTimeout
     property bool expiration: false
@@ -59,13 +59,13 @@ BzardFancyContainer {
     property real buttonFactor: 0.13;
     property real fontPointSizeFactor: 0.045;
 
-    IQNotificationBar {
+    BzardNotificationBar {
         id: bar
         color: BzardThemes.notificationsTheme.barBgColor
         textColor: BzardThemes.notificationsTheme.barTextColor
         textFontSize: BzardThemes.notificationsTheme.barFontSize ?
-                          BzardThemes.notificationsTheme.barFontSize :
-                          height*0.4
+        BzardThemes.notificationsTheme.barFontSize :
+                      height*0.4
         closeButtonImageSource: BzardThemes.notificationsTheme.closeButtonImage
         elementsScale: BzardThemes.notificationsTheme.closeButtonImageScale
         height: barHeight;
@@ -76,14 +76,14 @@ BzardFancyContainer {
         onCloseClicked: root.closeClicked()
     }
 
-    IQExpirationBar {
+    BzardExpirationBar {
         id: expirationBar
         anchors.top: bar.bottom
         anchors.left: parent.left
         color: BzardThemes.notificationsTheme.expirationBarColor
         height: expirationBarHeight
         // Crutch to run animation after object created
-        runnig: expiration && root.height == root.referenceHeight && root.height > 0
+        runnig: expiration && root.height === root.referenceHeight && root.height > 0
     }
 
     Component {
