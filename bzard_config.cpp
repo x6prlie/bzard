@@ -15,7 +15,7 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzardconfig.h"
+#include "bzard_config.h"
 
 #include <qt6xdg/XdgDirs>
 
