@@ -37,11 +37,11 @@ static bool copyRecursively(const QString &SRC_FILE_PATH,
 		QStringList fileNames = sourceDir.entryList(
 			  QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden |
 			  QDir::System);
-		for (const QString &fileName : fileNames) {
+		for (const QString &FILE_NAEM : fileNames) {
 			const QString NEW_SRC_FILE_PATH =
-				  SRC_FILE_PATH + QLatin1Char('/') + fileName;
+				  SRC_FILE_PATH + QLatin1Char('/') + FILE_NAEM;
 			const QString NEW_TGT_FILE_PATH =
-				  TGT_FILE_PATH + QLatin1Char('/') + fileName;
+				  TGT_FILE_PATH + QLatin1Char('/') + FILE_NAEM;
 			if (!copyRecursively(NEW_SRC_FILE_PATH, TGT_FILE_PATH))
 				return false;
 		}
@@ -106,18 +106,18 @@ QString BzardConfig::getConfigFileName() const {
 	return config;
 }
 
-bool BzardConfig::copyConfigFileFromExample(const QString &destination) const {
+bool BzardConfig::copyConfigFileFromExample(const QString &DESTINATION) const {
 	auto config_example_path =
 		  "/usr/share/" + applicationName() + '/' + FILE_NAME + ".example";
 	QFile config_example_file{config_example_path};
 	if (!config_example_file.exists())
 		return false;
-	return config_example_file.copy(destination);
+	return config_example_file.copy(DESTINATION);
 }
 
-bool BzardConfig::copyThemesFromShare(const QString &destination) const {
+bool BzardConfig::copyThemesFromShare(const QString &DESTINATION) const {
 	auto shareThemesPath = "/usr/share/" + applicationName() + "/themes";
-	return copyRecursively(shareThemesPath, destination);
+	return copyRecursively(shareThemesPath, DESTINATION);
 }
 
 BzardConfigurable::BzardConfigurable(const QString &NAME)
