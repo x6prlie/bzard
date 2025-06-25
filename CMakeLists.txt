@@ -74,17 +74,17 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 #     URI ${PROJECT_NAME}
 #     VERSION 1.0
 #     QML_FILES
-#         IQButton.qml
-#         IQExtraNotifications.qml
+#         BzardButton.qml
+#         BzardExtraNotifications.qml
 #         BzardHistoryNotification.qml
-#         IQNotificationBar.qml
-#         IQNotification.qml
+#         BzardNotificationBar.qml
+#         BzardNotification.qml
 #         main.qml
-#         IQExpirationBar.qml
-#         IQFancyContainer.qml
+#         BzardExpirationBar.qml
+#         BzardFancyContainer.qml
 #         BzardHistoryWindow.qml
-#         IQNotificationContainer.qml
-#         IQPopup.qml
+#         BzardNotificationContainer.qml
+#         BzardPopup.qml
 # )
 # target_link_libraries(${PROJECT_NAME} Qt5::Qml)
 # target_link_libraries(${PROJECT_NAME} Qt5::Quick)
