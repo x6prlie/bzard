@@ -36,7 +36,7 @@ class BzardHistoryNotification : public QObject {
 	Q_PROPERTY(QString iconUrl READ iconUrl CONSTANT)
   public:
 	BzardHistoryNotification() = default;
-	BzardHistoryNotification(const BzardNotification &n,
+	BzardHistoryNotification(const BzardNotification &NOTIFICATION,
 	                         QObject *parent = nullptr);
 
 	uint id_() const;
@@ -46,11 +46,11 @@ class BzardHistoryNotification : public QObject {
 	QString iconUrl() const;
 
   private:
-	const uint id__{0};
-	const QString application_;
-	const QString title_;
-	const QString body_;
-	const QString iconUrl_;
+	const uint ID__{0};
+	const QString APPLICATION;
+	const QString TITLE_;
+	const QString BODY_;
+	const QString ICON_URL_;
 };
 
 class BzardHistory : public BzardNotificationReceiver,
@@ -68,7 +68,7 @@ class BzardHistory : public BzardNotificationReceiver,
 	/*
 	 * External slots
 	 */
-	void onCreateNotification(const BzardNotification &notification) final;
+	void onCreateNotification(const BzardNotification &NOTIFICATION) final;
 	void onDropNotification(BzardNotification::id_t id) final;
 
 	/*
@@ -98,10 +98,10 @@ class BzardHistoryModel : public QAbstractListModel {
 		IconUrlRole
 	};
 	explicit BzardHistoryModel(BzardHistory::ptr_t history_);
-	int rowCount(const QModelIndex &parent) const final;
-	QVariant data(const QModelIndex &index, int role) const final;
-	bool insertRows(int row, int count, const QModelIndex &parent) final;
-	bool removeRows(int row, int count, const QModelIndex &parent) final;
+	int rowCount(const QModelIndex &PARETN) const final;
+	QVariant data(const QModelIndex &INDEX, int role) const final;
+	bool insertRows(int row, int count, const QModelIndex &PARENT) final;
+	bool removeRows(int row, int count, const QModelIndex &PARENT) final;
 	QHash<int, QByteArray> roleNames() const final;
 
   private slots:

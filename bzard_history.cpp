@@ -48,19 +48,19 @@ void BzardHistory::removeHistoryNotification(uint index) {
 
 BzardHistoryNotification::BzardHistoryNotification(
 	  const BzardNotification &NOTIFICATION, QObject *parent)
-	  : QObject(parent), id__{NOTIFICATION.id},
-		application_{NOTIFICATION.application}, title_{NOTIFICATION.title},
-		body_{NOTIFICATION.body}, iconUrl_{NOTIFICATION.icon_url} {}
+	  : QObject(parent), ID__{NOTIFICATION.id},
+		APPLICATION{NOTIFICATION.application}, TITLE_{NOTIFICATION.title},
+		BODY_{NOTIFICATION.body}, ICON_URL_{NOTIFICATION.icon_url} {}
 
-uint BzardHistoryNotification::id_() const { return id__; }
+uint BzardHistoryNotification::id_() const { return ID__; }
 
-QString BzardHistoryNotification::application() const { return application_; }
+QString BzardHistoryNotification::application() const { return APPLICATION; }
 
-QString BzardHistoryNotification::title() const { return title_; }
+QString BzardHistoryNotification::title() const { return TITLE_; }
 
-QString BzardHistoryNotification::body() const { return body_; }
+QString BzardHistoryNotification::body() const { return BODY_; }
 
-QString BzardHistoryNotification::iconUrl() const { return iconUrl_; }
+QString BzardHistoryNotification::iconUrl() const { return ICON_URL_; }
 
 BzardHistoryModel::BzardHistoryModel(BzardHistory::ptr_t history_)
 	  : bzardHistory{history_} {
