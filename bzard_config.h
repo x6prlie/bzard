@@ -22,44 +22,44 @@
 #include <QObject>
 #include <QSettings>
 
-#define IQ_CONF_VAR(VAR__, NAME__, DEFAULT__)                                  \
+#define BZARD_CONF_VAR(VAR__, NAME__, DEFAULT__)                               \
 	static constexpr auto CONFIG_##VAR__ = NAME__;                             \
 	static constexpr auto CONFIG_##VAR__##_DEFAULT = DEFAULT__;
 
-#define IQ_CONF_FACTOR(VAR__, NAME__, DEFAULT__)                               \
+#define BZARD_CONF_FACTOR(VAR__, NAME__, DEFAULT__)                            \
 	static constexpr auto CONFIG_##VAR__ = NAME__;                             \
 	static constexpr auto VAR__##_DEFAULT_FACTOR = DEFAULT__;
 
-class IQConfig {
+class BzardConfig {
   public:
 	static QString applicationVersion();
 	static QString applicationName();
 	static QString configDir();
 
-	explicit IQConfig(const QString &category_,
-	                  const QString &fileName_ = "config");
+	explicit BzardConfig(const QString &CATEGORY_,
+	                     const QString &FILE_NAME_ = "config");
 
-	QVariant value(const QString &key,
-	               const QVariant &defaultValue = QVariant()) const;
-	void setValue(const QString &key, const QVariant &value);
+	QVariant value(const QString &KEY,
+	               const QVariant &DEAFAULT_VALUE = QVariant()) const;
+	void setValue(const QString &KEY, const QVariant &VALUE);
 
   private:
-	const QString category;
-	const QString fileName;
+	const QString CATEGORY;
+	const QString FILE_NAME;
 	std::unique_ptr<QSettings> settings;
 
 	QString getConfigFileName() const;
-	bool copyConfigFileFromExample(const QString &destination) const;
-	bool copyThemesFromShare(const QString &destination) const;
+	bool copyConfigFileFromExample(const QString &DESTINATION) const;
+	bool copyThemesFromShare(const QString &DESTINATION) const;
 };
 
-struct IQConfigurable {
-	IQConfigurable() = delete;
-	const QString &name() const;
+struct BzardConfigurable {
+	BzardConfigurable() = delete;
+	const QString &NAME() const;
 	bool isEnabled() const;
 
   protected:
-	explicit IQConfigurable(const QString &name);
-	const QString name_;
-	IQConfig config;
+	explicit BzardConfigurable(const QString &NAME);
+	const QString NAME_;
+	BzardConfig config;
 };

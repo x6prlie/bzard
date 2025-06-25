@@ -22,30 +22,30 @@
 #include <QObject>
 #include <QPoint>
 
-#include <bzarddisposition.h>
+#include <bzard_disposition.h>
 
-class BzardTopDown final : public IQDisposition {
+class BzardTopDown final : public BzardDisposition {
 	Q_OBJECT
 
   public:
-	using IQDisposition::optional;
+	using BzardDisposition::optional;
 
 	explicit BzardTopDown(QObject *parent = nullptr);
 
-	optional<QPoint> poses(IQNotification::id_t id, QSize size) final;
+	optional<QPoint> poses(BzardNotification::id_t id, QSize size) final;
 
 	QPoint externalWindowPos() const final;
 
-	void setExtraWindowSize(const QSize &value) final;
+	void setExtraWindowSize(const QSize &VALUE) final;
 
 	void setSpacing(int value) final;
 
   public slots:
-	void remove(IQNotification::id_t id) final;
+	void remove(BzardNotification::id_t id) final;
 	void removeAll() final;
 
   private:
-	std::map<IQNotification::id_t, QRect> dispositions;
+	std::map<BzardNotification::id_t, QRect> dispositions;
 
 	void recalculateAvailableScreenGeometry() final;
 	QRect availableGeometry() const;

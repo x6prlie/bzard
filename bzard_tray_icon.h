@@ -28,7 +28,7 @@ class BzardTrayIcon : public QSystemTrayIcon {
 	explicit BzardTrayIcon(QObject *parent = nullptr);
 
 	QUrl iconUrl() const;
-	void setIconUrl(const QUrl &iconUrl);
+	void setIconUrl(const QUrl &ICON_URL);
 
   signals:
 	void iconUrlChanged();

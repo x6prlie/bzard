@@ -27,13 +27,13 @@
 #pragma clang diagnostic ignored "-Wweak-vtables"
 #pragma clang diagnostic pop
 
-#include "bzardconfig.h"
-#include "bzarddisposition.h"
-#include "bzardfullscreendetector.h"
-#include "bzardnotificationreceiver.h"
+#include "bzard_config.h"
+#include "bzard_disposition.h"
+#include "bzard_fullscreen_detector.h"
+#include "bzard_notification_receiver.h"
 
-class BzardNotifications final : public IQNotificationReceiver,
-								 public IQConfigurable {
+class BzardNotifications final : public BzardNotificationReceiver,
+								 public BzardConfigurable {
 	Q_OBJECT
 	Q_PROPERTY(int extraNotifications READ extraNotificationsCount NOTIFY
 	                 extraNotificationsCountChanged)
@@ -54,13 +54,15 @@ class BzardNotifications final : public IQNotificationReceiver,
 	                       setDontShowWhenFullscreenCurrentDesktop NOTIFY
 	                             dontShowWhenFullscreenCurrentDesktopChanged)
 
-	BzardNotifications(IQDisposition::ptr_t disposition_,
+	BzardNotifications(BzardDisposition::ptr_t disposition_,
 	                   QObject *parent = nullptr);
 
   public:
-	static BzardNotifications *get(IQDisposition::ptr_t disposition = nullptr);
+	static BzardNotifications *
+	get(BzardDisposition::ptr_t disposition = nullptr);
 
-	void setFullscreenDetector(std::unique_ptr<IQFullscreenDetector> detector_);
+	void
+	setFullscreenDetector(std::unique_ptr<BzardFullscreenDetector> detector_);
 
 	QSize extraWindowSize() const;
 	QPoint extraWindowPos() const;
@@ -92,49 +94,50 @@ class BzardNotifications final : public IQNotificationReceiver,
 	void dontShowWhenFullscreenCurrentDesktopChanged();
 
   public slots:
-	void onCreateNotification(const IQNotification &notification) final;
-	void onDropNotification(IQNotification::id_t id) final;
+	void onCreateNotification(const BzardNotification &NOTIFICATION) final;
+	void onDropNotification(BzardNotification::id_t id) final;
 
 	// QML slots
 	void onCloseButtonPressed(int id);
-	void onActionButtonPressed(int id, const QString &action);
+	void onActionButtonPressed(int id, const QString &ACTION);
 	void onExpired(int id);
 	void onDropAll();
 	void onDropStacked();
 	void onDropVisible();
 
   private:
-	IQ_CONF_VAR(CLOSE_ALL_BY_RIGHT_CLICK, "close_all_by_right_click", true)
-	IQ_CONF_VAR(CLOSE_VISIBLE_BY_MIDDLE_CLICK, "close_visible_by_middle_click",
-	            true)
-	IQ_CONF_VAR(CLOSE_BY_LEFT_CLICK, "close_by_left_click", false)
-	IQ_CONF_VAR(SPACING, "spacing", 0)
-	IQ_CONF_FACTOR(GLOBAL_MARGINS, "global_margins", 0.02610966057441253264)
-	IQ_CONF_FACTOR(EXTRA_WINDOW_WIDTH, "extra_window_width",
-	               0.21961932650073206442)
-	IQ_CONF_FACTOR(EXTRA_WINDOW_HEIGHT, "extra_window_height",
-	               0.08355091383812010444 / 2)
-	IQ_CONF_FACTOR(WIDTH, "width", 0.21961932650073206442)
-	IQ_CONF_FACTOR(HEIGHT, "height", 0.28198433420365535248)
-	IQ_CONF_VAR(DONT_SHOW_WHEN_FULLSCREEN_ANY, "dont_show_when_fullscreen_any",
-	            false)
+	BZARD_CONF_VAR(CLOSE_ALL_BY_RIGHT_CLICK, "close_all_by_right_click", true)
+	BZARD_CONF_VAR(CLOSE_VISIBLE_BY_MIDDLE_CLICK,
+	               "close_visible_by_middle_click", true)
+	BZARD_CONF_VAR(CLOSE_BY_LEFT_CLICK, "close_by_left_click", false)
+	BZARD_CONF_VAR(SPACING, "spacing", 0)
+	BZARD_CONF_FACTOR(GLOBAL_MARGINS, "global_margins", 0.02610966057441253264)
+	BZARD_CONF_FACTOR(EXTRA_WINDOW_WIDTH, "extra_window_width",
+	                  0.21961932650073206442)
+	BZARD_CONF_FACTOR(EXTRA_WINDOW_HEIGHT, "extra_window_height",
+	                  0.08355091383812010444 / 2)
+	BZARD_CONF_FACTOR(WIDTH, "width", 0.21961932650073206442)
+	BZARD_CONF_FACTOR(HEIGHT, "height", 0.28198433420365535248)
+	BZARD_CONF_VAR(DONT_SHOW_WHEN_FULLSCREEN_ANY,
+	               "dont_show_when_fullscreen_any", false)
 
 	/*
 	 * Changable on-the-fly
 	 */
-	IQ_CONF_VAR(DONT_SHOW_WHEN_FULLSCREEN_CURRENT_DESKTOP,
-	            "dont_show_when_fullscreen_current_desktop", false)
+	BZARD_CONF_VAR(DONT_SHOW_WHEN_FULLSCREEN_CURRENT_DESKTOP,
+	               "dont_show_when_fullscreen_current_desktop", false)
 
-	IQDisposition::ptr_t disposition;
-	std::queue<IQNotification> extraNotifications;
-	std::unique_ptr<IQFullscreenDetector> fullscreenDetector;
+	BzardDisposition::ptr_t disposition;
+	std::queue<BzardNotification> extraNotifications;
+	std::unique_ptr<BzardFullscreenDetector> fullscreenDetector;
 
 	int spacing() const;
 	QMargins margins() const;
 	QSize windowSize() const;
-	QSize windowSize(const QString &width_key, const QString &height_key,
+	QSize windowSize(const QString &WIDTH_KEY, const QString &HEIGHT_KEY,
 	                 double width_factor, double height_factor) const;
-	bool createNotificationIfSpaceAvailable(const IQNotification &n);
+	bool
+	createNotificationIfSpaceAvailable(const BzardNotification &NOTIFICATION);
 	void checkExtraNotifications();
 	bool shouldShowPopup() const;
 };

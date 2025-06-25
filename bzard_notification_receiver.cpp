@@ -15,4 +15,4 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzardnotificationreceiver.h"
+#include "bzard_notification_receiver.h"

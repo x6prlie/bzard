@@ -15,7 +15,7 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzardnotifications.h"
+#include "bzard_notifications.h"
 
 #include <experimental/optional>
 #include <memory>
@@ -27,9 +27,10 @@
 
 template <class T> using optional = std::experimental::optional<T>;
 
-BzardNotifications::BzardNotifications(IQDisposition::ptr_t disposition_,
+BzardNotifications::BzardNotifications(BzardDisposition::ptr_t disposition_,
                                        QObject *parent)
-	  : IQNotificationReceiver(parent), IQConfigurable{"popup_notifications"},
+	  : BzardNotificationReceiver(parent),
+		BzardConfigurable{"popup_notifications"},
 		disposition{std::move(disposition_)} {
 	if (!disposition)
 		throw std::invalid_argument{"BzardNotifications: provide disposition"};
@@ -38,19 +39,20 @@ BzardNotifications::BzardNotifications(IQDisposition::ptr_t disposition_,
 	disposition->setMargins(margins());
 
 	connect(this, &BzardNotifications::dropNotification, disposition.get(),
-	        &IQDisposition::remove);
-	connect(disposition.get(), &IQDisposition::moveNotification,
-	        [this](IQNotification::id_t id, QPoint pos) {
+	        &BzardDisposition::remove);
+	connect(disposition.get(), &BzardDisposition::moveNotification,
+	        [this](BzardNotification::id_t id, QPoint pos) {
 				emit moveNotification(static_cast<int>(id), pos);
 				checkExtraNotifications();
 			});
 }
 
-BzardNotifications *BzardNotifications::get(IQDisposition::ptr_t disposition) {
+BzardNotifications *
+BzardNotifications::get(BzardDisposition::ptr_t disposition) {
 	static BzardNotifications *ptr_{nullptr};
 	if (!ptr_) {
 		if (!disposition)
-			throw std::invalid_argument("IQDisposition: call get "
+			throw std::invalid_argument("BzardDisposition: call get "
 			                            "with valid disposition "
 			                            "first");
 
@@ -60,7 +62,7 @@ BzardNotifications *BzardNotifications::get(IQDisposition::ptr_t disposition) {
 }
 
 void BzardNotifications::setFullscreenDetector(
-	  std::unique_ptr<IQFullscreenDetector> detector) {
+	  std::unique_ptr<BzardFullscreenDetector> detector) {
 	fullscreenDetector = std::move(detector);
 }
 
@@ -107,7 +109,7 @@ void BzardNotifications::setDontShowWhenFullscreenCurrentDesktop(bool value) {
 	emit dontShowWhenFullscreenCurrentDesktopChanged();
 }
 
-void BzardNotifications::onCreateNotification(const IQNotification &n) {
+void BzardNotifications::onCreateNotification(const BzardNotification &n) {
 	if (!shouldShowPopup())
 		return;
 	if (!createNotificationIfSpaceAvailable(n)) {
@@ -116,29 +118,32 @@ void BzardNotifications::onCreateNotification(const IQNotification &n) {
 	}
 }
 
-void BzardNotifications::onDropNotification(IQNotification::id_t id) {
+void BzardNotifications::onDropNotification(BzardNotification::id_t id) {
 	emit dropNotification(static_cast<int>(id));
-	emit notificationDroppedSignal(id, IQNotification::CR_NOTIFICATION_CLOSED);
+	emit notificationDroppedSignal(id,
+	                               BzardNotification::CR_NOTIFICATION_CLOSED);
 }
 
 void BzardNotifications::onCloseButtonPressed(int id) {
 	emit dropNotification(id);
-	emit notificationDroppedSignal(static_cast<IQNotification::id_t>(id),
-	                               IQNotification::CR_NOTIFICATION_DISMISSED);
+	emit notificationDroppedSignal(
+		  static_cast<BzardNotification::id_t>(id),
+		  BzardNotification::CR_NOTIFICATION_DISMISSED);
 	checkExtraNotifications();
 }
 
-void BzardNotifications::onActionButtonPressed(int id, const QString &action) {
+void BzardNotifications::onActionButtonPressed(int id, const QString &ACTION) {
 	emit dropNotification(id);
-	emit actionInvokedSignal(static_cast<IQNotification::id_t>(id), action);
-	emit notificationDroppedSignal(static_cast<IQNotification::id_t>(id),
-	                               IQNotification::CR_NOTIFICATION_DISMISSED);
+	emit actionInvokedSignal(static_cast<BzardNotification::id_t>(id), ACTION);
+	emit notificationDroppedSignal(
+		  static_cast<BzardNotification::id_t>(id),
+		  BzardNotification::CR_NOTIFICATION_DISMISSED);
 }
 
 void BzardNotifications::onExpired(int id) {
 	emit dropNotification(id);
-	emit notificationDroppedSignal(static_cast<IQNotification::id_t>(id),
-	                               IQNotification::CR_NOTIFICATION_EXPIRED);
+	emit notificationDroppedSignal(static_cast<BzardNotification::id_t>(id),
+	                               BzardNotification::CR_NOTIFICATION_EXPIRED);
 }
 
 void BzardNotifications::onDropAll() {
@@ -174,7 +179,7 @@ QMargins BzardNotifications::margins() const {
 			bool ok{true};
 			auto value = list[index].toInt(&ok);
 			if (!ok)
-				throw std::logic_error{"IQConfig: "
+				throw std::logic_error{"BzardConfig: "
 				                       "ui::global_margins "
 				                       "wrong value!"};
 			return value;
@@ -193,7 +198,7 @@ QMargins BzardNotifications::margins() const {
 	if (config_margin) {
 		return *config_margin;
 	} else {
-		auto screen = disposition->screen()->availableSize();
+		auto screen = disposition->SCREEN()->availableSize();
 		auto margin = GLOBAL_MARGINS_DEFAULT_FACTOR * screen.height();
 		auto m = static_cast<int>(margin);
 		return {m, m, m, m};
@@ -205,26 +210,26 @@ QSize BzardNotifications::windowSize() const {
 	                  HEIGHT_DEFAULT_FACTOR);
 }
 
-QSize BzardNotifications::windowSize(const QString &width_key,
-                                     const QString &height_key,
+QSize BzardNotifications::windowSize(const QString &WIDTH_KEY,
+                                     const QString &HEIGTH_KEY,
                                      double width_factor,
                                      double height_factor) const {
 	// TODO: cache values
 
 	auto get_window_size_from_config =
-		  [width_key, height_key](const auto &config) -> optional<QSize> {
-		auto get = [&config](auto key) {
+		  [WIDTH_KEY, HEIGTH_KEY](const auto &CONFIG) -> optional<QSize> {
+		auto get = [&CONFIG](auto key) {
 			bool ok{true};
-			auto value = config.value(key, 0).toInt(&ok);
+			auto value = CONFIG.value(key, 0).toInt(&ok);
 			if (!ok || value < 0)
-				throw std::logic_error{"IQConfig: window or "
+				throw std::logic_error{"BzardConfig: window or "
 				                       "extra_window size "
 				                       "wrong value!"};
 			return value;
 		};
 
-		auto w = get(width_key);
-		auto h = get(height_key);
+		auto w = get(WIDTH_KEY);
+		auto h = get(HEIGTH_KEY);
 
 		if (!w || !h)
 			return {};
@@ -236,7 +241,7 @@ QSize BzardNotifications::windowSize(const QString &width_key,
 	if (config_size) {
 		return *config_size;
 	} else {
-		auto screen = disposition->screen()->availableSize();
+		auto screen = disposition->SCREEN()->availableSize();
 		auto w = width_factor * screen.width();
 		auto h = height_factor * screen.height();
 		return QSize{static_cast<int>(w), static_cast<int>(h)};
@@ -254,14 +259,16 @@ QPoint BzardNotifications::extraWindowPos() const {
 }
 
 bool BzardNotifications::createNotificationIfSpaceAvailable(
-	  const IQNotification &n) {
+	  const BzardNotification &NOTIFICATION) {
 	auto size = windowSize();
-	auto pos = disposition->poses(n.id, size);
+	auto pos = disposition->poses(NOTIFICATION.id, size);
 	if (pos) {
-		auto id = n.replaces_id ? n.replaces_id : n.id;
-		emit createNotification(static_cast<int>(id), size, *pos,
-		                        n.expire_timeout, n.application, n.body,
-		                        n.title, n.icon_url, n.actions);
+		auto id = NOTIFICATION.replaces_id ? NOTIFICATION.replaces_id
+		                                   : NOTIFICATION.id;
+		emit createNotification(
+			  static_cast<int>(id), size, *pos, NOTIFICATION.expire_timeout,
+			  NOTIFICATION.application, NOTIFICATION.body, NOTIFICATION.title,
+			  NOTIFICATION.icon_url, NOTIFICATION.actions);
 		return true;
 	} else {
 		return false;

@@ -15,30 +15,30 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzarddbusservice.h"
+#include "bzard_dbus_service.h"
 
-#include "bzardconfig.h"
+#include "bzard_config.h"
 
 QString BzardDBusService::versionString() {
-	return IQConfig::applicationVersion();
+	return BzardConfig::applicationVersion();
 }
 
-QString BzardDBusService::appString() { return IQConfig::applicationName(); }
+QString BzardDBusService::appString() { return BzardConfig::applicationName(); }
 
 BzardDBusService *
-BzardDBusService::connectReceiver(IQNotificationReceiver *receiver) {
+BzardDBusService::connectReceiver(BzardNotificationReceiver *receiver) {
 	connect(this, &BzardDBusService::createNotificationSignal, receiver,
-	        &IQNotificationReceiver::onCreateNotification);
+	        &BzardNotificationReceiver::onCreateNotification);
 	connect(this, &BzardDBusService::dropNotificationSignal, receiver,
-	        &IQNotificationReceiver::onDropNotification);
-	connect(receiver, &IQNotificationReceiver::actionInvokedSignal, this,
+	        &BzardNotificationReceiver::onDropNotification);
+	connect(receiver, &BzardNotificationReceiver::actionInvokedSignal, this,
 	        &BzardDBusService::onActionInvoked);
-	connect(receiver, &IQNotificationReceiver::notificationDroppedSignal, this,
-	        &BzardDBusService::onNotificationDropped);
+	connect(receiver, &BzardNotificationReceiver::notificationDroppedSignal,
+	        this, &BzardDBusService::onNotificationDropped);
 	return this;
 }
 
-QStringList BzardDBusService::GetCapabilities() {
+QStringList BzardDBusService::getCapabilities() {
 	auto caps = QStringList{} << "actions"
 	                          // << "action-icons"
 	                          << "body"
@@ -53,7 +53,7 @@ QStringList BzardDBusService::GetCapabilities() {
 	return caps;
 }
 
-QString BzardDBusService::GetServerInformation(QString &vendor,
+QString BzardDBusService::getServerInformation(QString &vendor,
                                                QString &version,
                                                QString &spec_version) {
 	spec_version = QString("1.2");
@@ -62,35 +62,35 @@ QString BzardDBusService::GetServerInformation(QString &vendor,
 	return QString("bzard");
 }
 
-uint32_t BzardDBusService::Notify(const QString &app_name, uint32_t replaces_id,
-                                  const QString &app_icon,
-                                  const QString &summary, const QString &body,
-                                  const QStringList &actions,
-                                  const QVariantMap &hints,
+uint32_t BzardDBusService::notify(const QString &APP_NAME, uint32_t replaces_id,
+                                  const QString &APP_ICON,
+                                  const QString &SUMMARY, const QString &BODY,
+                                  const QStringList &ACTIONS,
+                                  const QVariantMap &HINTS,
                                   uint32_t expire_timeout) {
 	auto notification = modify(
-		  {replaces_id, app_name, body, summary, app_icon, actions, hints,
-	       static_cast<IQNotification::ExpireTimeout>(expire_timeout),
+		  {replaces_id, APP_NAME, BODY, SUMMARY, APP_ICON, ACTIONS, HINTS,
+	       static_cast<BzardNotification::ExpireTimeout>(expire_timeout),
 	       replaces_id});
 	emit createNotificationSignal(notification);
 	return notification.id;
 }
 
-void BzardDBusService::CloseNotification(uint32_t id) {
+void BzardDBusService::closeNotification(uint32_t id) {
 	emit dropNotificationSignal(id);
 }
 
 void BzardDBusService::onNotificationDropped(
-	  IQNotification::id_t id, IQNotification::ClosingReason reason) {
-	emit NotificationClosed(id, reason);
+	  BzardNotification::id_t id, BzardNotification::ClosingReason reason) {
+	emit notificationClosed(id, reason);
 }
 
-void BzardDBusService::onActionInvoked(IQNotification::id_t id,
-                                       const QString &action_key) {
-	emit ActionInvoked(id, action_key);
+void BzardDBusService::onActionInvoked(BzardNotification::id_t id,
+                                       const QString &ACTION_KEY) {
+	emit actionInvoked(id, ACTION_KEY);
 }
 
-IQNotification BzardDBusService::modify(IQNotification notification) {
+BzardNotification BzardDBusService::modify(BzardNotification notification) {
 	qDebug() << "========*****========";
 	qDebug() << notification;
 	for (auto &m : modifers)

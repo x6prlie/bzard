@@ -20,16 +20,16 @@
 #include <QtDBus/QDBusConnection>
 #include <QtQml>
 
-#include "notificationsadaptor.h"
+// #include "notificationsadaptor.h"
 
-#include "bzarddbusservice.h"
-#include "bzardexpirationcontroller.h"
-#include "bzardhistory.h"
-#include "bzardnotificationmodifiers.h"
-#include "bzardnotifications.h"
-#include "bzardthemes.h"
-#include "bzardtopdown.h"
-#include "bzardtrayicon.h"
+#include "bzard_dbus_service.h"
+#include "bzard_expiration_controller.h"
+#include "bzard_history.h"
+#include "bzard_notification_modifiers.h"
+#include "bzard_notifications.h"
+#include "bzard_themes.h"
+#include "bzard_top_down.h"
+#include "bzard_tray_icon.h"
 
 #ifdef IQ_X11
 #include "X11-plugin/x11fullscreendetector.h"
@@ -52,7 +52,7 @@ BzardDBusService *get_service() {
 	auto disposition = std::make_unique<BzardTopDown>();
 	auto dbus_service =
 		  (new BzardDBusService)
-				->addModifier(make<IDGenerator>())
+				->addModifier(make<BzardGenerator>())
 				->addModifier(make<TitleToIcon>())
 				->addModifier(make<IconHandler>())
 				->addModifier(make<BodyToTitleWhenTitleIsAppName>())
@@ -65,7 +65,7 @@ BzardDBusService *get_service() {
 	if (get_history()->isEnabled())
 		dbus_service->connectReceiver(get_history());
 
-	std::unique_ptr<IQFullscreenDetector> fullscreenDetector;
+	std::unique_ptr<BzardFullscreenDetector> fullscreenDetector;
 #ifdef IQ_X11
 	fullscreenDetector = std::make_unique<X11FullscreenDetector>();
 #endif // IQ_X11
@@ -103,7 +103,7 @@ QDBusConnection connect_to_session_bus(BzardDBusService *service) {
 	if (!connection.registerService("org.freedesktop.Notifications")) {
 		throw std::runtime_error{"DBus Service already registered!"};
 	}
-	new NotificationsAdaptor(service);
+	// new NotificationsAdaptor(service);
 	if (!connection.registerObject("/org/freedesktop/Notifications", service)) {
 		throw std::runtime_error{"Can't register DBus service object!"};
 	}

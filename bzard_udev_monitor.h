@@ -27,11 +27,11 @@ class UdevMonitor : public QObject {
 	~UdevMonitor() override;
 
 	bool initialize();
-	bool addSubsystemFilter(const QString &subsystem);
+	bool addSubsystemFilter(const QString &SUBSYSTEM);
 
   signals:
-	void udevEvent(const QString &action, const QString &syspath);
-	void errorOccurred(const QString &errorString);
+	void udevEvent(const QString &ACTION, const QString &SYS_PATH);
+	void errorOccurred(const QString &ERROR_STRING);
 
   private slots:
 	void onUdevFdReadable();

@@ -15,13 +15,13 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzardtopdown.h"
+#include "bzard_top_down.h"
 
-BzardTopDown::BzardTopDown(QObject *parent) : IQDisposition(parent) {
+BzardTopDown::BzardTopDown(QObject *parent) : BzardDisposition(parent) {
 	recalculateAvailableScreenGeometry();
 }
 
-BzardTopDown::optional<QPoint> BzardTopDown::poses(IQNotification::id_t id,
+BzardTopDown::optional<QPoint> BzardTopDown::poses(BzardNotification::id_t id,
                                                    QSize size) {
 	// Already here, must be replaced
 	auto current_pos_it = dispositions.find(id);
@@ -58,28 +58,28 @@ QPoint BzardTopDown::externalWindowPos() const {
 	return pos_point;
 }
 
-void BzardTopDown::setExtraWindowSize(const QSize &value) {
-	IQDisposition::setExtraWindowSize(value);
+void BzardTopDown::setExtraWindowSize(const QSize &VALUE) {
+	BzardDisposition::setExtraWindowSize(VALUE);
 	recalculateAvailableScreenGeometry();
 }
 
 void BzardTopDown::setSpacing(int value) {
-	IQDisposition::setSpacing(value);
+	BzardDisposition::setSpacing(value);
 	recalculateAvailableScreenGeometry();
 }
 
-void BzardTopDown::remove(IQNotification::id_t id) {
-	static auto recalculateDispositions = [this](const auto &to_remove_it)
-		  -> std::map<IQNotification::id_t, QPoint> {
+void BzardTopDown::remove(BzardNotification::id_t id) {
+	static auto recalculateDispositions = [this](const auto &TO_REMOVE_IT)
+		  -> std::map<BzardNotification::id_t, QPoint> {
 		auto end = dispositions.end();
-		const QRect &to_remove = to_remove_it->second;
-		auto move_up_for = spacing + to_remove.height();
+		const QRect &TO_REMOVE = TO_REMOVE_IT->second;
+		auto move_up_for = spacing + TO_REMOVE.height();
 
-		auto it = std::next(to_remove_it);
+		auto it = std::next(TO_REMOVE_IT);
 		if (it == end) {
 			return {}; // Nothing to move up
 		}
-		std::map<IQNotification::id_t, QPoint> posToMove;
+		std::map<BzardNotification::id_t, QPoint> posToMove;
 		for (; it != end; ++it) {
 			auto d_id = it->first;
 			auto &d_pos = it->second;
@@ -109,7 +109,7 @@ void BzardTopDown::remove(IQNotification::id_t id) {
 void BzardTopDown::removeAll() { dispositions.clear(); }
 
 void BzardTopDown::recalculateAvailableScreenGeometry() {
-	IQDisposition::recalculateAvailableScreenGeometry();
+	BzardDisposition::recalculateAvailableScreenGeometry();
 	auto extra_bottom_margin = extraWindowSize.height() + spacing;
 	availableScreenGeometry -= QMargins{0, 0, 0, extra_bottom_margin};
 }
@@ -121,10 +121,10 @@ QRect BzardTopDown::availableGeometry() const {
 	if (dispositions.empty())
 		return ret;
 
-	const auto &last_object = *std::crbegin(dispositions);
+	const auto &LAST_OBJECT = *std::crbegin(dispositions);
 
 	// Top margin already included in availableScreenGeometry
-	auto bot_margin = last_object.second.bottom() - margins.top();
+	auto bot_margin = LAST_OBJECT.second.bottom() - margins.top();
 	ret.adjust(0, bot_margin, 0, 0);
 	return ret;
 }

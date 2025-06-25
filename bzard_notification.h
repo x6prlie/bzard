@@ -23,7 +23,7 @@
 #include <QStringList>
 #include <QVariantMap>
 
-struct IQNotification {
+struct BzardNotification {
 	using id_t = uint32_t;
 
 	enum ClosingReason : uint32_t {
@@ -49,9 +49,9 @@ struct IQNotification {
 	operator QString() const;
 };
 
-struct IQNotificationModifier {
-	using ptr_t = std::unique_ptr<IQNotificationModifier>;
+struct BzardNotificationModifier {
+	using ptr_t = std::unique_ptr<BzardNotificationModifier>;
 
-	virtual ~IQNotificationModifier();
-	virtual void modify(IQNotification &notification) = 0;
+	virtual ~BzardNotificationModifier();
+	virtual void modify(BzardNotification &notification) = 0;
 };

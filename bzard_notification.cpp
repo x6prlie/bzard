@@ -15,9 +15,9 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzardnotification.h"
+#include "bzard_notification.h"
 
-IQNotification::operator QString() const {
+BzardNotification::operator QString() const {
 	QString ret;
 	ret += "#" + QString::number(id);
 	if (replaces_id)
@@ -30,4 +30,4 @@ IQNotification::operator QString() const {
 	return ret;
 }
 
-IQNotificationModifier::~IQNotificationModifier() {}
+BzardNotificationModifier::~BzardNotificationModifier() {}

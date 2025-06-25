@@ -15,24 +15,26 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzardhistory.h"
+#include "bzard_history.h"
 
 #include <QtQml/QtQml>
 
 BzardHistory::BzardHistory()
-	  : IQConfigurable{"history"},
+	  : BzardConfigurable{"history"},
 		model_{std::make_unique<BzardHistoryModel>(this)} {
 	qmlRegisterType<BzardHistoryNotification>("bzard", 1, 0,
 	                                          "HistoryNotification");
 }
 
-void BzardHistory::onCreateNotification(const IQNotification &notification) {
+void BzardHistory::onCreateNotification(const BzardNotification &NOTIFICATION) {
 	historyList.push_front(
-		  std::make_unique<BzardHistoryNotification>(notification));
+		  std::make_unique<BzardHistoryNotification>(NOTIFICATION));
 	emit rowInserted();
 }
 
-void BzardHistory::onDropNotification(IQNotification::id_t id) { Q_UNUSED(id) }
+void BzardHistory::onDropNotification(BzardNotification::id_t id) {
+	Q_UNUSED(id)
+}
 
 void BzardHistory::remove(uint index) { model_->removeRow(index); }
 
@@ -44,10 +46,11 @@ void BzardHistory::removeHistoryNotification(uint index) {
 	historyList.erase(it);
 }
 
-BzardHistoryNotification::BzardHistoryNotification(const IQNotification &n,
-                                                   QObject *parent)
-	  : QObject(parent), id__{n.id}, application_{n.application},
-		title_{n.title}, body_{n.body}, iconUrl_{n.icon_url} {}
+BzardHistoryNotification::BzardHistoryNotification(
+	  const BzardNotification &NOTIFICATION, QObject *parent)
+	  : QObject(parent), id__{NOTIFICATION.id},
+		application_{NOTIFICATION.application}, title_{NOTIFICATION.title},
+		body_{NOTIFICATION.body}, iconUrl_{NOTIFICATION.icon_url} {}
 
 uint BzardHistoryNotification::id_() const { return id__; }
 
@@ -60,27 +63,27 @@ QString BzardHistoryNotification::body() const { return body_; }
 QString BzardHistoryNotification::iconUrl() const { return iconUrl_; }
 
 BzardHistoryModel::BzardHistoryModel(BzardHistory::ptr_t history_)
-	  : iqHistory{history_} {
-	connect(iqHistory, &BzardHistory::rowInserted, this,
+	  : bzardHistory{history_} {
+	connect(bzardHistory, &BzardHistory::rowInserted, this,
 	        &BzardHistoryModel::onHistoryRowInserted);
 }
 
-int BzardHistoryModel::rowCount(const QModelIndex &parent) const {
-	if (!iqHistory)
+int BzardHistoryModel::rowCount(const QModelIndex &PARENT) const {
+	if (!bzardHistory)
 		return 0;
 
-	Q_UNUSED(parent);
-	return iqHistory->historyList.size();
+	Q_UNUSED(PARENT);
+	return bzardHistory->historyList.size();
 }
 
-QVariant BzardHistoryModel::data(const QModelIndex &index, int role) const {
-	if (!iqHistory)
+QVariant BzardHistoryModel::data(const QModelIndex &INDEX, int role) const {
+	if (!bzardHistory)
 		return {};
 
-	if (!index.isValid())
+	if (!INDEX.isValid())
 		return QVariant();
 
-	auto &n = iqHistory->historyList[index.row()];
+	auto &n = bzardHistory->historyList[INDEX.row()];
 	switch (role) {
 	case Id_Role:
 		return n->id_();
@@ -104,31 +107,31 @@ QVariant BzardHistoryModel::data(const QModelIndex &index, int role) const {
 }
 
 bool BzardHistoryModel::insertRows(int row, int count,
-                                   const QModelIndex &parent) {
+                                   const QModelIndex &PARENT) {
 	if (row || count > 1)
 		return false;
 
-	beginInsertRows(parent, 0, 0);
+	beginInsertRows(PARENT, 0, 0);
 	endInsertRows();
 	return true;
 }
 
 bool BzardHistoryModel::removeRows(int row, int count,
-                                   const QModelIndex &parent) {
-	if (!iqHistory)
+                                   const QModelIndex &PARENT) {
+	if (!bzardHistory)
 		return false;
 
-	auto &list = iqHistory->historyList;
+	auto &list = bzardHistory->historyList;
 	if (static_cast<size_t>(row) >= list.size() || row + count <= 0)
 		return false;
 
 	auto beginRow = qMax(0, row);
 	auto endRow = qMin(row + count - 1, static_cast<int>(list.size() - 1));
 
-	beginRemoveRows(parent, beginRow, endRow);
+	beginRemoveRows(PARENT, beginRow, endRow);
 
 	while (beginRow <= endRow) {
-		iqHistory->removeHistoryNotification(beginRow);
+		bzardHistory->removeHistoryNotification(beginRow);
 		++beginRow;
 	}
 

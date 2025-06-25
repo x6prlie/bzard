@@ -23,8 +23,8 @@
 #include <QAbstractListModel>
 #include <QObject>
 
-#include "bzardconfig.h"
-#include "bzardnotificationreceiver.h"
+#include "bzard_config.h"
+#include "bzard_notification_receiver.h"
 class BzardHistoryModel;
 
 class BzardHistoryNotification : public QObject {
@@ -36,7 +36,7 @@ class BzardHistoryNotification : public QObject {
 	Q_PROPERTY(QString iconUrl READ iconUrl CONSTANT)
   public:
 	BzardHistoryNotification() = default;
-	BzardHistoryNotification(const IQNotification &n,
+	BzardHistoryNotification(const BzardNotification &n,
 	                         QObject *parent = nullptr);
 
 	uint id_() const;
@@ -53,7 +53,8 @@ class BzardHistoryNotification : public QObject {
 	const QString iconUrl_;
 };
 
-class BzardHistory : public IQNotificationReceiver, public IQConfigurable {
+class BzardHistory : public BzardNotificationReceiver,
+					 public BzardConfigurable {
 	friend class BzardHistoryModel;
 
 	Q_OBJECT
@@ -67,8 +68,8 @@ class BzardHistory : public IQNotificationReceiver, public IQConfigurable {
 	/*
 	 * External slots
 	 */
-	void onCreateNotification(const IQNotification &notification) final;
-	void onDropNotification(IQNotification::id_t id) final;
+	void onCreateNotification(const BzardNotification &notification) final;
+	void onDropNotification(BzardNotification::id_t id) final;
 
 	/*
 	 * QML slots
@@ -107,5 +108,5 @@ class BzardHistoryModel : public QAbstractListModel {
 	void onHistoryRowInserted();
 
   private:
-	BzardHistory *iqHistory;
+	BzardHistory *bzardHistory;
 };

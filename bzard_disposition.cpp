@@ -15,30 +15,30 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzarddisposition.h"
+#include "bzard_disposition.h"
 
 #include <QApplication>
 
-IQDisposition::IQDisposition(QObject *parent)
-	  : QObject{parent}, screen_{QApplication::screens().at(0)} {
-	connect(screen_, &QScreen::availableGeometryChanged, this,
-	        &IQDisposition::recalculateAvailableScreenGeometry);
+BzardDisposition::BzardDisposition(QObject *parent)
+	  : QObject{parent}, SCREEN_{QApplication::screens().at(0)} {
+	connect(SCREEN_, &QScreen::availableGeometryChanged, this,
+	        &BzardDisposition::recalculateAvailableScreenGeometry);
 }
 
-const QScreen *IQDisposition::screen() const { return screen_; }
+const QScreen *BzardDisposition::SCREEN() const { return SCREEN_; }
 
-void IQDisposition::setExtraWindowSize(const QSize &value) {
-	extraWindowSize = value;
+void BzardDisposition::setExtraWindowSize(const QSize &VALUE) {
+	extraWindowSize = VALUE;
 }
 
-void IQDisposition::setMargins(const QMargins &value) {
-	margins = value;
+void BzardDisposition::setMargins(const QMargins &VALUE) {
+	margins = VALUE;
 	recalculateAvailableScreenGeometry();
 }
 
-void IQDisposition::setSpacing(int value) { spacing = value; }
+void BzardDisposition::setSpacing(int value) { spacing = value; }
 
-void IQDisposition::recalculateAvailableScreenGeometry() {
-	auto screenGeometry = screen()->availableGeometry();
+void BzardDisposition::recalculateAvailableScreenGeometry() {
+	auto screenGeometry = SCREEN()->availableGeometry();
 	availableScreenGeometry = screenGeometry - margins;
 }

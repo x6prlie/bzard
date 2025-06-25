@@ -25,69 +25,70 @@
 
 namespace {
 // TODO: refactor; taken from here: https://gist.github.com/ssendeavour/7324701
-static bool copyRecursively(const QString &srcFilePath,
-                            const QString &tgtFilePath) {
-	QFileInfo srcFileInfo(srcFilePath);
+static bool copyRecursively(const QString &SRC_FILE_PATH,
+                            const QString &TGT_FILE_PATH) {
+	QFileInfo srcFileInfo(SRC_FILE_PATH);
 	if (srcFileInfo.isDir()) {
-		QDir targetDir(tgtFilePath);
+		QDir targetDir(TGT_FILE_PATH);
 		targetDir.cdUp();
-		if (!targetDir.mkdir(QFileInfo(tgtFilePath).fileName()))
+		if (!targetDir.mkdir(QFileInfo(TGT_FILE_PATH).fileName()))
 			return false;
-		QDir sourceDir(srcFilePath);
+		QDir sourceDir(SRC_FILE_PATH);
 		QStringList fileNames = sourceDir.entryList(
 			  QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden |
 			  QDir::System);
 		for (const QString &fileName : fileNames) {
-			const QString newSrcFilePath =
-				  srcFilePath + QLatin1Char('/') + fileName;
-			const QString newTgtFilePath =
-				  tgtFilePath + QLatin1Char('/') + fileName;
-			if (!copyRecursively(newSrcFilePath, newTgtFilePath))
+			const QString NEW_SRC_FILE_PATH =
+				  SRC_FILE_PATH + QLatin1Char('/') + fileName;
+			const QString NEW_TGT_FILE_PATH =
+				  TGT_FILE_PATH + QLatin1Char('/') + fileName;
+			if (!copyRecursively(NEW_SRC_FILE_PATH, TGT_FILE_PATH))
 				return false;
 		}
 	} else {
-		if (!QFile::copy(srcFilePath, tgtFilePath)) // NOLINT
+		if (!QFile::copy(SRC_FILE_PATH, TGT_FILE_PATH)) // NOLINT
 			return false;
 	}
 	return true;
 }
 } // namespace
 
-IQConfig::IQConfig(const QString &category_, const QString &fileName_)
-	  : category{category_.isEmpty() ? "" : category_ + '/'},
-		fileName{fileName_}, settings{std::make_unique<QSettings>(
-								   getConfigFileName(), QSettings::IniFormat)} {
+BzardConfig::BzardConfig(const QString &CATEGORY_, const QString &FILE_NAME_)
+	  : CATEGORY{CATEGORY_.isEmpty() ? "" : CATEGORY_ + '/'},
+		FILE_NAME{FILE_NAME_},
+		settings{std::make_unique<QSettings>(getConfigFileName(),
+                                             QSettings::IniFormat)} {
 	qDebug() << getConfigFileName();
 }
 
-QVariant IQConfig::value(const QString &key,
-                         const QVariant &defaultValue) const {
-	return settings->value(category + key, defaultValue);
+QVariant BzardConfig::value(const QString &KEY,
+                            const QVariant &DEFAULT_VALUE) const {
+	return settings->value(CATEGORY + KEY, DEFAULT_VALUE);
 }
 
-void IQConfig::setValue(const QString &key, const QVariant &value) {
-	settings->setValue(category + key, value);
+void BzardConfig::setValue(const QString &KEY, const QVariant &VALUE) {
+	settings->setValue(CATEGORY + KEY, VALUE);
 }
 
 #define IQ_MACRO_STRING(S) IQ_MACRO_STRING__(S)
 #define IQ_MACRO_STRING__(S) #S
-QString IQConfig::applicationName() {
+QString BzardConfig::applicationName() {
 	return QStringLiteral(IQ_MACRO_STRING(IQ_APP_NAME));
 }
 
-QString IQConfig::configDir() {
+QString BzardConfig::configDir() {
 	static auto configDir = XdgDirs::configHome() + '/' + applicationName();
 	return configDir;
 }
 
-QString IQConfig::applicationVersion() {
+QString BzardConfig::applicationVersion() {
 	return QStringLiteral(IQ_MACRO_STRING(IQ_VERSION));
 }
 #undef IQ_MACRO_STRING__
 #undef IQ_MACRO_STRING
 
-QString IQConfig::getConfigFileName() const {
-	auto config = configDir() + '/' + fileName;
+QString BzardConfig::getConfigFileName() const {
+	auto config = configDir() + '/' + FILE_NAME;
 	QFileInfo config_file{config};
 
 	if (config_file.exists()) {
@@ -105,25 +106,25 @@ QString IQConfig::getConfigFileName() const {
 	return config;
 }
 
-bool IQConfig::copyConfigFileFromExample(const QString &destination) const {
+bool BzardConfig::copyConfigFileFromExample(const QString &destination) const {
 	auto config_example_path =
-		  "/usr/share/" + applicationName() + '/' + fileName + ".example";
+		  "/usr/share/" + applicationName() + '/' + FILE_NAME + ".example";
 	QFile config_example_file{config_example_path};
 	if (!config_example_file.exists())
 		return false;
 	return config_example_file.copy(destination);
 }
 
-bool IQConfig::copyThemesFromShare(const QString &destination) const {
+bool BzardConfig::copyThemesFromShare(const QString &destination) const {
 	auto shareThemesPath = "/usr/share/" + applicationName() + "/themes";
 	return copyRecursively(shareThemesPath, destination);
 }
 
-IQConfigurable::IQConfigurable(const QString &name)
-	  : name_{name}, config{name_} {}
+BzardConfigurable::BzardConfigurable(const QString &NAME)
+	  : NAME_{NAME}, config{NAME_} {}
 
-const QString &IQConfigurable::name() const { return name_; }
+const QString &BzardConfigurable::NAME() const { return NAME_; }
 
-bool IQConfigurable::isEnabled() const {
+bool BzardConfigurable::isEnabled() const {
 	return config.value("enabled", false).toBool();
 }

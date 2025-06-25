@@ -1,4 +1,4 @@
-#include "bzardbrightnessmonitor.h"
+#include "bzard_brightness_monitor.h"
 #include <QDebug>
 #include <QDir>
 #include <QFile>
@@ -45,10 +45,10 @@ BzardBrightnessMonitor::findDevicePaths(
 	                           QStringLiteral("brightness");
 	paths.maxBrightnessFilePath = baseInfo.filePath() + QDir::separator() +
 	                              QStringLiteral("max_brightness");
-	paths.canonicalSyspath = baseInfo.canonicalFilePath();
+	paths.canonicalSysPath = baseInfo.canonicalFilePath();
 	bool files_ok = QFile::exists(paths.brightnessFilePath) &&
 	                QFile::exists(paths.maxBrightnessFilePath) &&
-	                !paths.canonicalSyspath.isEmpty();
+	                !paths.canonicalSysPath.isEmpty();
 	if (!files_ok) {
 		qWarning() << Q_FUNC_INFO
 				   << "Required files or syspath not found/valid for device"
@@ -64,16 +64,16 @@ BzardBrightnessMonitor::BzardBrightnessMonitor(
 	  : QObject(parent), basePath(paths.basePath),
 		brightnessFilePath(paths.brightnessFilePath),
 		maxBrightnessFilePath(paths.maxBrightnessFilePath),
-		canonicalSyspath(paths.canonicalSyspath) {
+		canonicalSysPath(paths.canonicalSysPath) {
 	if (basePath.isEmpty() || brightnessFilePath.isEmpty() ||
-	    maxBrightnessFilePath.isEmpty() || canonicalSyspath.isEmpty()) {
+	    maxBrightnessFilePath.isEmpty() || canonicalSysPath.isEmpty()) {
 		qCritical() << Q_FUNC_INFO << "FATAL: Constructed with invalid paths!";
 	}
 	checkForUpdate();
 }
 
 QString BzardBrightnessMonitor::syspath() const { /* без изменений */
-	return canonicalSyspath;
+	return canonicalSysPath;
 }
 
 int64_t BzardBrightnessMonitor::readLongFromFile(const QString &filePath) {

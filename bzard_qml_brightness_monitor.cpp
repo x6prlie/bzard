@@ -1,4 +1,4 @@
-#include "bzardqmlbrightnessmonitor.h"
+#include "bzard_qml_brightness_monitor.h"
 #include <QDebug>
 
 QMLBrightnessMonitor::QMLBrightnessMonitor(QObject *parent) : QObject(parent) {
@@ -48,11 +48,11 @@ void QMLBrightnessMonitor::setupBrightnessMonitors() {
 	qInfo() << "Found devices:" << internalAvailableDevices;
 
 	bool ok = false;
-	for (const QString &deviceName : internalAvailableDevices) {
+	for (const QString &DEVICE_NAME : internalAvailableDevices) {
 		std::optional<BzardBrightnessMonitor::DevicePaths> pathsOpt =
-			  BzardBrightnessMonitor::findDevicePaths(deviceName);
+			  BzardBrightnessMonitor::findDevicePaths(DEVICE_NAME);
 		if (!pathsOpt) {
-			emit errorOccurred(deviceName, "Could not find/validate paths.");
+			emit errorOccurred(DEVICE_NAME, "Could not find/validate paths.");
 			continue;
 		}
 
@@ -68,7 +68,7 @@ void QMLBrightnessMonitor::setupBrightnessMonitors() {
 			        this, &QMLBrightnessMonitor::onDeviceBrightnessChanged);
 
 			QString syspath = monitor->syspath();
-			syspathToDeviceName[syspath] = deviceName;
+			syspathToDeviceName[syspath] = DEVICE_NAME;
 
 			// --- Вставляем raw pointer в QMap ---
 			activeMonitors.insert(syspath, monitor);
@@ -76,10 +76,10 @@ void QMLBrightnessMonitor::setupBrightnessMonitors() {
 
 			ok = true;
 
-		} catch (const std::exception &e) {
-			emit errorOccurred(
-				  deviceName,
-				  QString("Exception during creation: %1").arg(e.what()));
+		} catch (const std::exception &EXCEPTION) {
+			emit errorOccurred(DEVICE_NAME,
+			                   QString("Exception during creation: %1")
+			                         .arg(EXCEPTION.what()));
 		}
 	}
 
@@ -99,9 +99,9 @@ QVariantMap QMLBrightnessMonitor::brightnessLevels() const {
 }
 
 // Слоты без изменений в логике, но используют BrightnessMonitor*
-void QMLBrightnessMonitor::handleUdevEvent(const QString &action,
-                                           const QString &eventSyspath) {
-	if (action != QLatin1String("change") || eventSyspath.isEmpty()) {
+void QMLBrightnessMonitor::handleUdevEvent(const QString &ACTION,
+                                           const QString &EVENT_SYS_PATH) {
+	if (ACTION != QLatin1String("change") || EVENT_SYS_PATH.isEmpty()) {
 		return;
 	}
 	// Итерация по QMap<QString, BrightnessMonitor*>
@@ -109,7 +109,7 @@ void QMLBrightnessMonitor::handleUdevEvent(const QString &action,
 	     ++it) {
 		const QString &monitorSyspath = it.key();
 		BzardBrightnessMonitor *monitorPtr = it.value(); // Получаем raw pointer
-		if (eventSyspath.startsWith(monitorSyspath) && monitorPtr) {
+		if (EVENT_SYS_PATH.startsWith(monitorSyspath) && monitorPtr) {
 			monitorPtr->checkForUpdate();
 			break;
 		}
@@ -137,9 +137,9 @@ void QMLBrightnessMonitor::onDeviceBrightnessChanged(int brightnessPercent) {
 	}
 }
 
-void QMLBrightnessMonitor::onUdevError(const QString &errorString) {
-	qWarning() << "[UdevMonitor Error]" << errorString;
-	emit errorOccurred(QStringLiteral("UdevMonitor"), errorString);
+void QMLBrightnessMonitor::onUdevError(const QString &ERROR_STRING) {
+	qWarning() << "[UdevMonitor Error]" << ERROR_STRING;
+	emit errorOccurred(QStringLiteral("UdevMonitor"), ERROR_STRING);
 }
 
 // --- Синглтон-провайдер (без изменений) ---

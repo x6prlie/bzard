@@ -17,9 +17,9 @@
 
 #pragma once
 
-struct IQFullscreenDetector {
-	IQFullscreenDetector() = default;
-	virtual ~IQFullscreenDetector() = default;
+struct BzardFullscreenDetector {
+	BzardFullscreenDetector() = default;
+	virtual ~BzardFullscreenDetector() = default;
 
 	virtual bool fullscreenWindowsOnCurrentDesktop() const = 0;
 	virtual bool fullscreenWindows() const = 0;

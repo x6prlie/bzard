@@ -15,7 +15,7 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzardthemes.h"
+#include "bzard_themes.h"
 
 #include <QApplication>
 #include <QScreen>
@@ -30,11 +30,11 @@ static QRect availableGeometry() {
 
 BzardThemes::BzardThemes()
 	  : config{"theme"},
-		themeName{config.value(CONFIG_THEME_NAME, CONFIG_THEME_NAME_DEFAULT)
-                        .toString()} {
+		THEME_NAME{config.value(CONFIG_THEME_NAME, CONFIG_THEME_NAME_DEFAULT)
+                         .toString()} {
 	registerThemeTypes();
 	loadTheme(themeConfigFile());
-	auto themeDir = IQConfig::configDir() + '/' + themeConfigDir();
+	auto themeDir = BzardConfig::configDir() + '/' + themeConfigDir();
 	notificationsTheme_ =
 		  std::make_unique<NotificationsTheme>(themeConfig, themeDir);
 	trayIconTheme_ = std::make_unique<TrayIconTheme>(themeConfig, themeDir);
@@ -54,14 +54,14 @@ HistoryWindowTheme *BzardThemes::historyWindowTheme() const {
 	return historyWindowTheme_.get();
 }
 
-QString BzardThemes::themeConfigDir() const { return "themes/" + themeName; }
+QString BzardThemes::themeConfigDir() const { return "themes/" + THEME_NAME; }
 
 QString BzardThemes::themeConfigFile() const {
 	return themeConfigDir() + "/theme";
 }
 
 void BzardThemes::loadTheme(const QString &fileName) {
-	themeConfig = std::make_shared<IQConfig>(QString{}, fileName);
+	themeConfig = std::make_shared<BzardConfig>(QString{}, fileName);
 }
 
 void BzardThemes::registerThemeTypes() const {
@@ -70,12 +70,12 @@ void BzardThemes::registerThemeTypes() const {
 	qmlRegisterType<HistoryWindowTheme>("bzard", 1, 0, "HistoryWindowTheme");
 }
 
-IQTheme::IQTheme(const std::shared_ptr<IQConfig> &config_,
-                 const QString &themeDir_, QObject *parent)
-	  : QObject(parent), themeConfig{config_}, themeDir{themeDir_} {}
+BzardTheme::BzardTheme(const std::shared_ptr<BzardConfig> &CONFIG_,
+                       const QString &THEME_DIR_, QObject *parent)
+	  : QObject(parent), themeConfig{CONFIG_}, THEME_DIR{THEME_DIR_} {}
 
-QUrl IQTheme::toRelativeUrl(const QString &str) const {
-	return "file:///" + themeDir + '/' + str;
+QUrl BzardTheme::toRelativeUrl(const QString &STR) const {
+	return "file:///" + THEME_DIR + '/' + STR;
 }
 
 /*
@@ -84,18 +84,19 @@ QUrl IQTheme::toRelativeUrl(const QString &str) const {
  *
  */
 
-#define IQ_THEME_UINT(KEY__) themeConfig->value(KEY__, KEY__##_DEFAULT).toUInt()
+#define BZARD_THEME_UINT(KEY__)                                                \
+	themeConfig->value(KEY__, KEY__##_DEFAULT).toUInt()
 
-#define IQ_THEME_DOUBLE(KEY__)                                                 \
+#define BZARD_THEME_DOUBLE(KEY__)                                              \
 	themeConfig->value(KEY__, KEY__##_DEFAULT).toDouble()
 
-#define IQ_THEME_STRING(KEY__)                                                 \
+#define BZARD_THEME_STRING(KEY__)                                              \
 	themeConfig->value(KEY__, KEY__##_DEFAULT).toString()
 
-#define IQ_THEME_COLOR(KEY__) IQ_THEME_STRING(KEY__)
+#define BZARD_THEME_COLOR(KEY__) BZARD_THEME_STRING(KEY__)
 
-#define IQ_THEME_IMAGE(KEY__)                                                  \
-	auto str = IQ_THEME_STRING(KEY__);                                         \
+#define BZARD_THEME_IMAGE(KEY__)                                               \
+	auto str = BZARD_THEME_STRING(KEY__);                                      \
 	if (str == KEY__##_DEFAULT)                                                \
 		return str;                                                            \
 	auto url = toRelativeUrl(str);                                             \
@@ -112,107 +113,108 @@ bool NotificationsTheme::iconPosition() const {
 }
 
 uint NotificationsTheme::fontSize() const {
-	return IQ_THEME_UINT(CONFIG_FONT_SIZE);
+	return BZARD_THEME_UINT(CONFIG_FONT_SIZE);
 }
 
 uint NotificationsTheme::barFontSize() const {
-	return IQ_THEME_UINT(CONFIG_BAR_FONT_SIZE);
+	return BZARD_THEME_UINT(CONFIG_BAR_FONT_SIZE);
 }
 
 uint NotificationsTheme::iconSize() const {
-	return IQ_THEME_UINT(CONFIG_ICON_SIZE);
+	return BZARD_THEME_UINT(CONFIG_ICON_SIZE);
 }
 
 uint NotificationsTheme::barHeight() const {
-	return IQ_THEME_UINT(CONFIG_BAR_HEIGHT);
+	return BZARD_THEME_UINT(CONFIG_BAR_HEIGHT);
 }
 
 uint NotificationsTheme::expirationBarHeight() const {
-	return IQ_THEME_UINT(CONFIG_EXPIRATION_BAR_HEIGHT);
+	return BZARD_THEME_UINT(CONFIG_EXPIRATION_BAR_HEIGHT);
 }
 
 uint NotificationsTheme::showAnimationDuration() const {
-	return IQ_THEME_UINT(CONFIG_SHOW_DURATION);
+	return BZARD_THEME_UINT(CONFIG_SHOW_DURATION);
 }
 
 uint NotificationsTheme::dropAnimationDuration() const {
-	return IQ_THEME_UINT(CONFIG_DROP_DURATION);
+	return BZARD_THEME_UINT(CONFIG_DROP_DURATION);
 }
 
 double NotificationsTheme::closeButtonImageScale() const {
-	return IQ_THEME_DOUBLE(CONFIG_CLOSE_BUTTON_IMAGE_SCALE);
+	return BZARD_THEME_DOUBLE(CONFIG_CLOSE_BUTTON_IMAGE_SCALE);
 }
 
 double NotificationsTheme::extraButtonImageScale() const {
-	return IQ_THEME_DOUBLE(CONFIG_EXTRA_BUTTON_IMAGE_SCALE);
+	return BZARD_THEME_DOUBLE(CONFIG_EXTRA_BUTTON_IMAGE_SCALE);
 }
 
 QColor NotificationsTheme::bgColor() const {
-	return IQ_THEME_COLOR(CONFIG_BG_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_BG_COLOR);
 }
 
 QColor NotificationsTheme::barBgColor() const {
-	return IQ_THEME_COLOR(CONFIG_BAR_BG_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_BAR_BG_COLOR);
 }
 
 QColor NotificationsTheme::barTextColor() const {
-	return IQ_THEME_COLOR(CONFIG_BAR_TEXT_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_BAR_TEXT_COLOR);
 }
 
 QColor NotificationsTheme::expirationBarColor() const {
-	return IQ_THEME_COLOR(CONFIG_EXPIRATION_BAR_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_EXPIRATION_BAR_COLOR);
 }
 
 QColor NotificationsTheme::titleTextColor() const {
-	return IQ_THEME_COLOR(CONFIG_TITLE_TEXT_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_TITLE_TEXT_COLOR);
 }
 
 QColor NotificationsTheme::bodyTextColor() const {
-	return IQ_THEME_COLOR(CONFIG_BODY_TEXT_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_BODY_TEXT_COLOR);
 }
 
 QColor NotificationsTheme::buttonBgColor() const {
-	return IQ_THEME_COLOR(CONFIG_BUTTON_BG_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_BUTTON_BG_COLOR);
 }
 
 QColor NotificationsTheme::buttonTextColor() const {
-	return IQ_THEME_COLOR(CONFIG_BUTTON_TEXT_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_BUTTON_TEXT_COLOR);
 }
 
 QColor NotificationsTheme::extraBgColor() const {
-	return IQ_THEME_COLOR(CONFIG_EXTRA_BG_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_EXTRA_BG_COLOR);
 }
 
 QColor NotificationsTheme::extraUreadCircleColor() const {
-	return IQ_THEME_COLOR(CONFIG_EXTRA_UNREAD_CIRCLE_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_EXTRA_UNREAD_CIRCLE_COLOR);
 }
 
 QColor NotificationsTheme::extraUreadTextColor() const {
-	return IQ_THEME_COLOR(CONFIG_EXTRA_UNREAD_TEXT_COLOR);
+	return BZARD_THEME_COLOR(CONFIG_EXTRA_UNREAD_TEXT_COLOR);
 }
 
-QUrl NotificationsTheme::bgImage() const {IQ_THEME_IMAGE(CONFIG_BG_IMAGE)}
+QUrl NotificationsTheme::bgImage() const {BZARD_THEME_IMAGE(CONFIG_BG_IMAGE)}
 
 QUrl NotificationsTheme::closeButtonImage() const {
-	  IQ_THEME_IMAGE(CONFIG_CLOSE_BUTTON_IMAGE)}
+	  BZARD_THEME_IMAGE(CONFIG_CLOSE_BUTTON_IMAGE)}
 
 QUrl NotificationsTheme::extraCloseButtonImage() const {
-	  IQ_THEME_IMAGE(CONFIG_EXTRA_CLOSE_BUTTON_IMAGE)}
+	  BZARD_THEME_IMAGE(CONFIG_EXTRA_CLOSE_BUTTON_IMAGE)}
 
 QUrl NotificationsTheme::extraCloseAllButtonImage() const {
-	  IQ_THEME_IMAGE(CONFIG_EXTRA_CLOSE_ALL_BUTTON_IMAGE)}
+	  BZARD_THEME_IMAGE(CONFIG_EXTRA_CLOSE_ALL_BUTTON_IMAGE)}
 
 QUrl NotificationsTheme::extraCloseVisibleButtonImage() const {
-	  IQ_THEME_IMAGE(CONFIG_EXTRA_CLOSE_VISIBLE_BUTTON_IMAGE)}
+	  BZARD_THEME_IMAGE(CONFIG_EXTRA_CLOSE_VISIBLE_BUTTON_IMAGE)}
 
-QUrl TrayIconTheme::icon() const {IQ_THEME_IMAGE(CONFIG_ICON)}
+QUrl TrayIconTheme::icon() const {BZARD_THEME_IMAGE(CONFIG_ICON)}
 
-QUrl HistoryWindowTheme::closeIcon() const {IQ_THEME_IMAGE(CONFIG_CLOSE_ICON)}
+QUrl HistoryWindowTheme::closeIcon() const {
+	  BZARD_THEME_IMAGE(CONFIG_CLOSE_ICON)}
 
-QUrl HistoryWindowTheme::bgImage() const {IQ_THEME_IMAGE(CONFIG_BG_IMAGE)}
+QUrl HistoryWindowTheme::bgImage() const {BZARD_THEME_IMAGE(CONFIG_BG_IMAGE)}
 
 QString HistoryWindowTheme::windowTitle() const {
-	return IQ_THEME_STRING(CONFIG_WINDOW_TITLE);
+	return BZARD_THEME_STRING(CONFIG_WINDOW_TITLE);
 }
 
 uint HistoryWindowTheme::x() const {
@@ -228,7 +230,7 @@ uint HistoryWindowTheme::x() const {
 	default:
 		break;
 	}
-	return IQ_THEME_UINT(CONFIG_X);
+	return BZARD_THEME_UINT(CONFIG_X);
 }
 
 uint HistoryWindowTheme::y() const {
@@ -245,72 +247,76 @@ uint HistoryWindowTheme::y() const {
 	default:
 		break;
 	}
-	return IQ_THEME_UINT(CONFIG_Y);
+	return BZARD_THEME_UINT(CONFIG_Y);
 }
 
-uint HistoryWindowTheme::height() const { return IQ_THEME_UINT(CONFIG_HEIGHT); }
+uint HistoryWindowTheme::height() const {
+	return BZARD_THEME_UINT(CONFIG_HEIGHT);
+}
 
-uint HistoryWindowTheme::width() const { return IQ_THEME_UINT(CONFIG_WIDTH); }
+uint HistoryWindowTheme::width() const {
+	return BZARD_THEME_UINT(CONFIG_WIDTH);
+}
 
 uint HistoryWindowTheme::barHeight() const {
-	return IQ_THEME_UINT(CONFIG_BAR_HEIGHT);
+	return BZARD_THEME_UINT(CONFIG_BAR_HEIGHT);
 }
 
 uint HistoryWindowTheme::notificationHeight() const {
-	return IQ_THEME_UINT(CONFIG_NOTIFICATION_HEIGHT);
+	return BZARD_THEME_UINT(CONFIG_NOTIFICATION_HEIGHT);
 }
 
 uint HistoryWindowTheme::barFontSize() const {
-	return IQ_THEME_UINT(CONFIG_BAR_FONT_SIZE);
+	return BZARD_THEME_UINT(CONFIG_BAR_FONT_SIZE);
 }
 
 uint HistoryWindowTheme::nappFontSize() const {
-	return IQ_THEME_UINT(CONFIG_NAPP_FONT_SIZE);
+	return BZARD_THEME_UINT(CONFIG_NAPP_FONT_SIZE);
 }
 
 uint HistoryWindowTheme::ntitleFontSize() const {
-	return IQ_THEME_UINT(CONFIG_NTITLE_FONT_SIZE);
+	return BZARD_THEME_UINT(CONFIG_NTITLE_FONT_SIZE);
 }
 
 uint HistoryWindowTheme::nbodyFontSize() const {
-	return IQ_THEME_UINT(CONFIG_NBODY_FONT_SIZE);
+	return BZARD_THEME_UINT(CONFIG_NBODY_FONT_SIZE);
 }
 
 QString HistoryWindowTheme::bgColor() const {
-	return IQ_THEME_STRING(CONFIG_BG_COLOR);
+	return BZARD_THEME_STRING(CONFIG_BG_COLOR);
 }
 
 QString HistoryWindowTheme::barBgColor() const {
-	return IQ_THEME_STRING(CONFIG_BAR_BG_COLOR);
+	return BZARD_THEME_STRING(CONFIG_BAR_BG_COLOR);
 }
 
 QString HistoryWindowTheme::barTextColor() const {
-	return IQ_THEME_STRING(CONFIG_BAR_TEXT_COLOR);
+	return BZARD_THEME_STRING(CONFIG_BAR_TEXT_COLOR);
 }
 
 QString HistoryWindowTheme::nbgColor() const {
-	return IQ_THEME_STRING(CONFIG_NBG_COLOR);
+	return BZARD_THEME_STRING(CONFIG_NBG_COLOR);
 }
 
 QString HistoryWindowTheme::nappTextColor() const {
-	return IQ_THEME_STRING(CONFIG_NAPP_TEXT_COLOR);
+	return BZARD_THEME_STRING(CONFIG_NAPP_TEXT_COLOR);
 }
 
 QString HistoryWindowTheme::ntitleTextColor() const {
-	return IQ_THEME_STRING(CONFIG_NTITLE_TEXT_COLOR);
+	return BZARD_THEME_STRING(CONFIG_NTITLE_TEXT_COLOR);
 }
 
 QString HistoryWindowTheme::nbodyTextColor() const {
-	return IQ_THEME_STRING(CONFIG_NBODY_TEXT_COLOR);
+	return BZARD_THEME_STRING(CONFIG_NBODY_TEXT_COLOR);
 }
 
 HistoryWindowTheme::pos_t HistoryWindowTheme::windowPosition() const {
 	return static_cast<HistoryWindowTheme::pos_t>(
-		  IQ_THEME_UINT(CONFIG_WINDOW_POSITION));
+		  BZARD_THEME_UINT(CONFIG_WINDOW_POSITION));
 }
 
-#undef IQ_THEME_IMAGE
-#undef IQ_THEME_STRING
-#undef IQ_THEME_COLOR
-#undef IQ_THEME_DOUBLE
-#undef IQ_THEME_UINT
+#undef BZARD_THEME_IMAGE
+#undef BZARD_THEME_STRING
+#undef BZARD_THEME_COLOR
+#undef BZARD_THEME_DOUBLE
+#undef BZARD_THEME_UINT

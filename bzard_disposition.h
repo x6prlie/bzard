@@ -26,35 +26,35 @@
 #include <QScreen>
 #include <QSize>
 
-#include <bzardnotification.h>
+#include <bzard_notification.h>
 
-class IQDisposition : public QObject {
+class BzardDisposition : public QObject {
 	Q_OBJECT
   public:
-	using ptr_t = std::unique_ptr<IQDisposition>;
+	using ptr_t = std::unique_ptr<BzardDisposition>;
 	template <class T> using optional = std::experimental::optional<T>;
 
-	explicit IQDisposition(QObject *parent = nullptr);
-	virtual ~IQDisposition() = default;
+	explicit BzardDisposition(QObject *parent = nullptr);
+	virtual ~BzardDisposition() = default;
 
-	virtual optional<QPoint> poses(IQNotification::id_t id, QSize size) = 0;
+	virtual optional<QPoint> poses(BzardNotification::id_t id, QSize size) = 0;
 
 	virtual QPoint externalWindowPos() const = 0;
 
-	const QScreen *screen() const;
+	const QScreen *SCREEN() const;
 
-	virtual void setExtraWindowSize(const QSize &value);
+	virtual void setExtraWindowSize(const QSize &VALUE);
 
-	virtual void setMargins(const QMargins &value);
+	virtual void setMargins(const QMargins &VALUE);
 
 	virtual void setSpacing(int value);
 
   public slots:
-	virtual void remove(IQNotification::id_t id) = 0;
+	virtual void remove(BzardNotification::id_t id) = 0;
 	virtual void removeAll() = 0;
 
   signals:
-	void moveNotification(IQNotification::id_t id, QPoint pos);
+	void moveNotification(BzardNotification::id_t id, QPoint pos);
 
   protected:
 	int spacing;
@@ -65,5 +65,5 @@ class IQDisposition : public QObject {
 	virtual void recalculateAvailableScreenGeometry();
 
   private:
-	const QScreen *screen_;
+	const QScreen *SCREEN_;
 };

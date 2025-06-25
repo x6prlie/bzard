@@ -7,8 +7,8 @@
 #include <QStringList>
 // #include <memory> // Больше не нужен для QMap
 
-#include "bzardbrightnessmonitor.h"
-#include "bzardudevmonitor.h"
+#include "bzard_brightness_monitor.h"
+#include "bzard_udev_monitor.h"
 
 class QMLBrightnessMonitor : public QObject {
 	Q_OBJECT
@@ -27,12 +27,13 @@ class QMLBrightnessMonitor : public QObject {
 
   signals:
 	void brightnessLevelsChanged();
-	void errorOccurred(const QString &errorSource, const QString &errorMessage);
+	void errorOccurred(const QString &ERROR_SOURCE,
+	                   const QString &ERROR_MESSAGE);
 
   private slots:
-	void handleUdevEvent(const QString &action, const QString &eventSyspath);
+	void handleUdevEvent(const QString &ACTION, const QString &EVENT_SYS_PATH);
 	void onDeviceBrightnessChanged(int brightnessPercent);
-	void onUdevError(const QString &errorString);
+	void onUdevError(const QString &ERROR_STRING);
 
   private:
 	// --- Тип карты изменен на raw pointer ---

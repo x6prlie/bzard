@@ -15,7 +15,7 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzardexpirationcontroller.h"
+#include "bzard_expiration_controller.h"
 
 bool BzardExpirationController::expiration() const {
 	return t ? t->isActive() : false;

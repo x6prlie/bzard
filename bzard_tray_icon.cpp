@@ -15,11 +15,11 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzardtrayicon.h"
+#include "bzard_tray_icon.h"
 
 namespace {
-QIcon urlToIcon(const QUrl &url) {
-	auto iconFileName = url.toString();
+QIcon urlToIcon(const QUrl &URL) {
+	auto iconFileName = URL.toString();
 	iconFileName.replace("file:///", "");
 	return QIcon{iconFileName};
 }
@@ -36,7 +36,7 @@ BzardTrayIcon::BzardTrayIcon(QObject *parent) : QSystemTrayIcon(parent) {
 
 QUrl BzardTrayIcon::iconUrl() const { return iconUrl_; }
 
-void BzardTrayIcon::setIconUrl(const QUrl &iconUrl) {
-	iconUrl_ = iconUrl;
+void BzardTrayIcon::setIconUrl(const QUrl &ICON_URL) {
+	iconUrl_ = ICON_URL;
 	emit iconUrlChanged();
 }

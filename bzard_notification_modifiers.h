@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "bzardconfig.h"
-#include "bzardnotification.h"
+#include "bzard_config.h"
+#include "bzard_notification.h"
 
 namespace BzardNotificationModifiers {
 
@@ -26,50 +26,50 @@ template <class T, class... A> std::unique_ptr<T> make(A &&...args) {
 	return std::make_unique<T>(std::forward<A>(args)...);
 }
 
-struct IDGenerator final : public IQNotificationModifier {
-	IQNotification::id_t last_id{0};
+struct BzardGenerator final : public BzardNotificationModifier {
+	BzardNotification::id_t last_id{0};
 
-	void modify(IQNotification &notification) final;
+	void modify(BzardNotification &notification) final;
 };
 
-struct IconHandler final : public IQNotificationModifier {
-	void modify(IQNotification &notification) final;
+struct IconHandler final : public BzardNotificationModifier {
+	void modify(BzardNotification &notification) final;
 };
 
-struct DefaultTimeout final : public IQNotificationModifier,
-							  public IQConfigurable {
+struct DefaultTimeout final : public BzardNotificationModifier,
+							  public BzardConfigurable {
 	DefaultTimeout();
-	void modify(IQNotification &notification) final;
+	void modify(BzardNotification &notification) final;
 
   private:
 	uint16_t defaultTimeout;
 };
 
-struct TitleToIcon final : public IQNotificationModifier,
-						   public IQConfigurable {
+struct TitleToIcon final : public BzardNotificationModifier,
+						   public BzardConfigurable {
 	TitleToIcon();
-	void modify(IQNotification &notification) final;
+	void modify(BzardNotification &notification) final;
 };
 
-struct BodyToTitleWhenTitleIsAppName final : public IQNotificationModifier,
-											 public IQConfigurable {
+struct BodyToTitleWhenTitleIsAppName final : public BzardNotificationModifier,
+											 public BzardConfigurable {
 	BodyToTitleWhenTitleIsAppName();
-	void modify(IQNotification &notification) final;
+	void modify(BzardNotification &notification) final;
 };
 
-struct ReplaceMinusToDash final : public IQNotificationModifier,
-								  public IQConfigurable {
+struct ReplaceMinusToDash final : public BzardNotificationModifier,
+								  public BzardConfigurable {
 	ReplaceMinusToDash();
 
-	void modify(IQNotification &notification) final;
+	void modify(BzardNotification &notification) final;
 
   private:
 	bool fixTitle, fixBody;
 
 	static void replaceMinusToDash(QString &str);
 
-	static constexpr auto minusPattern{" - "};
-	static constexpr auto replaceTo{" — "};
+	static constexpr auto MINUS_PATTERN{" - "};
+	static constexpr auto REPLACE_TO{" — "};
 };
 
 } // namespace BzardNotificationModifiers

@@ -32,7 +32,7 @@ class BzardBrightnessMonitor : public QObject {
 		QString basePath;
 		QString brightnessFilePath;
 		QString maxBrightnessFilePath;
-		QString canonicalSyspath;
+		QString canonicalSysPath;
 	};
 
 	static std::optional<DevicePaths>
@@ -54,7 +54,7 @@ class BzardBrightnessMonitor : public QObject {
 	const QString basePath;
 	const QString brightnessFilePath;
 	const QString maxBrightnessFilePath;
-	const QString canonicalSyspath;
+	const QString canonicalSysPath;
 
 	int lastBrightnessPercent = -1;
 };

@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QUrl>
 
-#include "bzardconfig.h"
+#include "bzard_config.h"
 
 class NotificationsTheme;
 class TrayIconTheme;
@@ -45,36 +45,36 @@ class BzardThemes : public QObject {
 	HistoryWindowTheme *historyWindowTheme() const;
 
   private:
-	IQ_CONF_VAR(THEME_NAME, "theme_name", "default")
+	BZARD_CONF_VAR(THEME_NAME, "theme_name", "default")
 
-	IQConfig config;
-	const QString themeName;
-	std::shared_ptr<IQConfig> themeConfig;
+	BzardConfig config;
+	const QString THEME_NAME;
+	std::shared_ptr<BzardConfig> themeConfig;
 	std::unique_ptr<NotificationsTheme> notificationsTheme_;
 	std::unique_ptr<TrayIconTheme> trayIconTheme_;
 	std::unique_ptr<HistoryWindowTheme> historyWindowTheme_;
 
 	QString themeConfigDir() const;
 	QString themeConfigFile() const;
-	void loadTheme(const QString &fileName);
+	void loadTheme(const QString &FILE_NAME);
 	void registerThemeTypes() const;
 };
 
-class IQTheme : public QObject {
+class BzardTheme : public QObject {
 	Q_OBJECT
   public:
-	IQTheme() = default;
-	IQTheme(const std::shared_ptr<IQConfig> &config_, const QString &themeDir_,
-	        QObject *parent = nullptr);
+	BzardTheme() = default;
+	BzardTheme(const std::shared_ptr<BzardConfig> &CONFIG_,
+	           const QString &THEME_DIR_, QObject *parent = nullptr);
 
   protected:
-	std::shared_ptr<IQConfig> themeConfig;
-	const QString themeDir;
+	std::shared_ptr<BzardConfig> themeConfig;
+	const QString THEME_DIR;
 
-	QUrl toRelativeUrl(const QString &str) const;
+	QUrl toRelativeUrl(const QString &STR) const;
 };
 
-class NotificationsTheme : public IQTheme {
+class NotificationsTheme : public BzardTheme {
 	Q_OBJECT
 
 	Q_PROPERTY(bool iconPosition READ iconPosition CONSTANT)
@@ -107,7 +107,7 @@ class NotificationsTheme : public IQTheme {
 	                 extraCloseVisibleButtonImage CONSTANT)
 
   public:
-	using IQTheme::IQTheme;
+	using BzardTheme::BzardTheme;
 
 	// True to move to left side, false for top
 	bool iconPosition() const;
@@ -138,68 +138,71 @@ class NotificationsTheme : public IQTheme {
 	QUrl extraCloseVisibleButtonImage() const;
 
   private:
-	IQ_CONF_VAR(ICON_POSITION, "popup_notifications/icon_position", "top")
+	BZARD_CONF_VAR(ICON_POSITION, "popup_notifications/icon_position", "top")
 
-	IQ_CONF_VAR(FONT_SIZE, "popup_notifications/font_size", 0)
-	IQ_CONF_VAR(BAR_FONT_SIZE, "popup_notifications/bar_font_size", 0)
-	IQ_CONF_VAR(ICON_SIZE, "popup_notifications/icon_size", 0)
-	IQ_CONF_VAR(BAR_HEIGHT, "popup_notifications/bar_height", 0)
-	IQ_CONF_VAR(EXPIRATION_BAR_HEIGHT,
-	            "popup_notifications/expiration_bar_height", 0)
-	IQ_CONF_VAR(SHOW_DURATION, "popup_notifications/show_animation_duration",
-	            120)
-	IQ_CONF_VAR(DROP_DURATION, "popup_notifications/drop_animation_duration",
-	            120)
-	IQ_CONF_VAR(CLOSE_BUTTON_IMAGE_SCALE,
-	            "popup_notifications/close_button_image_scale", 0.4)
-	IQ_CONF_VAR(EXTRA_BUTTON_IMAGE_SCALE,
-	            "popup_notifications/extra_button_image_scale", 0.6)
+	BZARD_CONF_VAR(FONT_SIZE, "popup_notifications/font_size", 0)
+	BZARD_CONF_VAR(BAR_FONT_SIZE, "popup_notifications/bar_font_size", 0)
+	BZARD_CONF_VAR(ICON_SIZE, "popup_notifications/icon_size", 0)
+	BZARD_CONF_VAR(BAR_HEIGHT, "popup_notifications/bar_height", 0)
+	BZARD_CONF_VAR(EXPIRATION_BAR_HEIGHT,
+	               "popup_notifications/expiration_bar_height", 0)
+	BZARD_CONF_VAR(SHOW_DURATION, "popup_notifications/show_animation_duration",
+	               120)
+	BZARD_CONF_VAR(DROP_DURATION, "popup_notifications/drop_animation_duration",
+	               120)
+	BZARD_CONF_VAR(CLOSE_BUTTON_IMAGE_SCALE,
+	               "popup_notifications/close_button_image_scale", 0.4)
+	BZARD_CONF_VAR(EXTRA_BUTTON_IMAGE_SCALE,
+	               "popup_notifications/extra_button_image_scale", 0.6)
 
-	IQ_CONF_VAR(BG_COLOR, "popup_notifications/bg_color", "#19202d")
-	IQ_CONF_VAR(BAR_BG_COLOR, "popup_notifications/bar_bg_color", "#262d3a")
-	IQ_CONF_VAR(BAR_TEXT_COLOR, "popup_notifications/bar_text_color", "#92969c")
-	IQ_CONF_VAR(EXPIRATION_BAR_COLOR,
-	            "popup_notifications/expiration_bar_color", "#30394a")
-	IQ_CONF_VAR(TITLE_TEXT_COLOR, "popup_notifications/title_text_color",
-	            "#ffffff")
-	IQ_CONF_VAR(BODY_TEXT_COLOR, "popup_notifications/body_text_color",
-	            "#92969c")
-	IQ_CONF_VAR(BUTTON_BG_COLOR, "popup_notifications/button_bg_color",
-	            "#343b4d")
-	IQ_CONF_VAR(BUTTON_TEXT_COLOR, "popup_notifications/button_text_color",
-	            "#ffffff")
-	IQ_CONF_VAR(EXTRA_BG_COLOR, "popup_notifications/extra_bg_color", "#262d3a")
-	IQ_CONF_VAR(EXTRA_UNREAD_CIRCLE_COLOR,
-	            "popup_notifications/extra_unread_circle_color", "#d74a37")
-	IQ_CONF_VAR(EXTRA_UNREAD_TEXT_COLOR,
-	            "popup_notifications/extra_unread_text_color", "#ffffff")
+	BZARD_CONF_VAR(BG_COLOR, "popup_notifications/bg_color", "#19202d")
+	BZARD_CONF_VAR(BAR_BG_COLOR, "popup_notifications/bar_bg_color", "#262d3a")
+	BZARD_CONF_VAR(BAR_TEXT_COLOR, "popup_notifications/bar_text_color",
+	               "#92969c")
+	BZARD_CONF_VAR(EXPIRATION_BAR_COLOR,
+	               "popup_notifications/expiration_bar_color", "#30394a")
+	BZARD_CONF_VAR(TITLE_TEXT_COLOR, "popup_notifications/title_text_color",
+	               "#ffffff")
+	BZARD_CONF_VAR(BODY_TEXT_COLOR, "popup_notifications/body_text_color",
+	               "#92969c")
+	BZARD_CONF_VAR(BUTTON_BG_COLOR, "popup_notifications/button_bg_color",
+	               "#343b4d")
+	BZARD_CONF_VAR(BUTTON_TEXT_COLOR, "popup_notifications/button_text_color",
+	               "#ffffff")
+	BZARD_CONF_VAR(EXTRA_BG_COLOR, "popup_notifications/extra_bg_color",
+	               "#262d3a")
+	BZARD_CONF_VAR(EXTRA_UNREAD_CIRCLE_COLOR,
+	               "popup_notifications/extra_unread_circle_color", "#d74a37")
+	BZARD_CONF_VAR(EXTRA_UNREAD_TEXT_COLOR,
+	               "popup_notifications/extra_unread_text_color", "#ffffff")
 
-	IQ_CONF_VAR(BG_IMAGE, "popup_notifications/bg_image", "")
-	IQ_CONF_VAR(CLOSE_BUTTON_IMAGE, "popup_notifications/close_button_image",
-	            "img/close.png")
-	IQ_CONF_VAR(EXTRA_CLOSE_BUTTON_IMAGE,
-	            "popup_notifications/extra_close_button_image", "img/close.png")
-	IQ_CONF_VAR(EXTRA_CLOSE_ALL_BUTTON_IMAGE,
-	            "popup_notifications/extra_close_all_button_image",
-	            "img/closeAll.png")
-	IQ_CONF_VAR(EXTRA_CLOSE_VISIBLE_BUTTON_IMAGE,
-	            "popup_notifications/extra_close_visible_button_image",
-	            "img/closeVisible.png")
+	BZARD_CONF_VAR(BG_IMAGE, "popup_notifications/bg_image", "")
+	BZARD_CONF_VAR(CLOSE_BUTTON_IMAGE, "popup_notifications/close_button_image",
+	               "img/close.png")
+	BZARD_CONF_VAR(EXTRA_CLOSE_BUTTON_IMAGE,
+	               "popup_notifications/extra_close_button_image",
+	               "img/close.png")
+	BZARD_CONF_VAR(EXTRA_CLOSE_ALL_BUTTON_IMAGE,
+	               "popup_notifications/extra_close_all_button_image",
+	               "img/closeAll.png")
+	BZARD_CONF_VAR(EXTRA_CLOSE_VISIBLE_BUTTON_IMAGE,
+	               "popup_notifications/extra_close_visible_button_image",
+	               "img/closeVisible.png")
 };
 
-class TrayIconTheme : public IQTheme {
+class TrayIconTheme : public BzardTheme {
 	Q_OBJECT
 	Q_PROPERTY(QUrl icon READ icon CONSTANT)
   public:
-	using IQTheme::IQTheme;
+	using BzardTheme::BzardTheme;
 
 	QUrl icon() const;
 
   private:
-	IQ_CONF_VAR(ICON, "tray/icon", "img/warning.png")
+	BZARD_CONF_VAR(ICON, "tray/icon", "img/warning.png")
 };
 
-class HistoryWindowTheme : public IQTheme {
+class HistoryWindowTheme : public BzardTheme {
 	Q_OBJECT
 	Q_PROPERTY(QUrl closeIcon READ closeIcon CONSTANT)
 	Q_PROPERTY(QUrl bgImage READ bgImage CONSTANT)
@@ -223,7 +226,7 @@ class HistoryWindowTheme : public IQTheme {
 	Q_PROPERTY(QString nbodyTextColor READ nbodyTextColor CONSTANT)
 
   public:
-	using IQTheme::IQTheme;
+	using BzardTheme::BzardTheme;
 	QUrl closeIcon() const;
 	QUrl bgImage() const;
 	QString windowTitle() const;
@@ -251,27 +254,29 @@ class HistoryWindowTheme : public IQTheme {
 	enum pos_t { UNDEFINED = 0, LEFT_TOP, LEFT_BOT, RIGHT_BOT, RIGHT_TOP };
 	pos_t windowPosition() const;
 
-	IQ_CONF_VAR(CLOSE_ICON, "history_window/close_icon", "img/close.png")
-	IQ_CONF_VAR(BG_IMAGE, "history_window/bg_image", "")
-	IQ_CONF_VAR(WINDOW_TITLE, "history_window/window_title", "bzard")
-	IQ_CONF_VAR(WINDOW_POSITION, "history_window/window_position", UNDEFINED)
+	BZARD_CONF_VAR(CLOSE_ICON, "history_window/close_icon", "img/close.png")
+	BZARD_CONF_VAR(BG_IMAGE, "history_window/bg_image", "")
+	BZARD_CONF_VAR(WINDOW_TITLE, "history_window/window_title", "bzard")
+	BZARD_CONF_VAR(WINDOW_POSITION, "history_window/window_position", UNDEFINED)
 
-	IQ_CONF_VAR(X, "history_window/x", 0)
-	IQ_CONF_VAR(Y, "history_window/y", 0)
-	IQ_CONF_VAR(HEIGHT, "history_window/height", 0)
-	IQ_CONF_VAR(WIDTH, "history_window/width", 0)
-	IQ_CONF_VAR(BAR_HEIGHT, "history_window/bar_height", 32)
-	IQ_CONF_VAR(NOTIFICATION_HEIGHT, "history_window/notification_height", 0)
-	IQ_CONF_VAR(BAR_FONT_SIZE, "history_window/bar_font_size", 0)
-	IQ_CONF_VAR(NAPP_FONT_SIZE, "history_window/napp_font_size", 0)
-	IQ_CONF_VAR(NTITLE_FONT_SIZE, "history_window/ntitle_font_size", 0)
-	IQ_CONF_VAR(NBODY_FONT_SIZE, "history_window/nbody_font_size", 0)
+	BZARD_CONF_VAR(X, "history_window/x", 0)
+	BZARD_CONF_VAR(Y, "history_window/y", 0)
+	BZARD_CONF_VAR(HEIGHT, "history_window/height", 0)
+	BZARD_CONF_VAR(WIDTH, "history_window/width", 0)
+	BZARD_CONF_VAR(BAR_HEIGHT, "history_window/bar_height", 32)
+	BZARD_CONF_VAR(NOTIFICATION_HEIGHT, "history_window/notification_height", 0)
+	BZARD_CONF_VAR(BAR_FONT_SIZE, "history_window/bar_font_size", 0)
+	BZARD_CONF_VAR(NAPP_FONT_SIZE, "history_window/napp_font_size", 0)
+	BZARD_CONF_VAR(NTITLE_FONT_SIZE, "history_window/ntitle_font_size", 0)
+	BZARD_CONF_VAR(NBODY_FONT_SIZE, "history_window/nbody_font_size", 0)
 
-	IQ_CONF_VAR(BG_COLOR, "history_window/bg_color", "#262d3a")
-	IQ_CONF_VAR(BAR_BG_COLOR, "history_window/bar_bg_color", "#262d3a")
-	IQ_CONF_VAR(BAR_TEXT_COLOR, "history_window/bar_text_color", "#92969c")
-	IQ_CONF_VAR(NBG_COLOR, "history_window/nbg_color", "#19202d")
-	IQ_CONF_VAR(NAPP_TEXT_COLOR, "history_window/napp_text_color", "#92969c")
-	IQ_CONF_VAR(NTITLE_TEXT_COLOR, "history_window/ntitle_text_color", "white")
-	IQ_CONF_VAR(NBODY_TEXT_COLOR, "history_window/nbody_text_color", "#92969c")
+	BZARD_CONF_VAR(BG_COLOR, "history_window/bg_color", "#262d3a")
+	BZARD_CONF_VAR(BAR_BG_COLOR, "history_window/bar_bg_color", "#262d3a")
+	BZARD_CONF_VAR(BAR_TEXT_COLOR, "history_window/bar_text_color", "#92969c")
+	BZARD_CONF_VAR(NBG_COLOR, "history_window/nbg_color", "#19202d")
+	BZARD_CONF_VAR(NAPP_TEXT_COLOR, "history_window/napp_text_color", "#92969c")
+	BZARD_CONF_VAR(NTITLE_TEXT_COLOR, "history_window/ntitle_text_color",
+	               "white")
+	BZARD_CONF_VAR(NBODY_TEXT_COLOR, "history_window/nbody_text_color",
+	               "#92969c")
 };

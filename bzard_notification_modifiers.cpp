@@ -15,7 +15,7 @@
  * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "bzardnotificationmodifiers.h"
+#include "bzard_notification_modifiers.h"
 
 #include <map>
 
@@ -47,7 +47,7 @@
 	Q_UNUSED(actions);                                                         \
 	QVariantMap &hints = N__.hints;                                            \
 	Q_UNUSED(hints);                                                           \
-	IQNotification::ExpireTimeout &expire_timeout = N__.expire_timeout;        \
+	BzardNotification::ExpireTimeout &expire_timeout = N__.expire_timeout;     \
 	Q_UNUSED(expire_timeout);                                                  \
 	id_t &replaces_id = N__.replaces_id;                                       \
 	Q_UNUSED(replaces_id);
@@ -77,30 +77,30 @@ void toQmlAbsolutePath(QString &path) {
 		path.insert(0, "file://");
 }
 
-template <class T> bool cacheImage(const T &img, uintmax_t hash) {
+template <class T> bool cacheImage(const T &IMG, uintmax_t hash) {
 	auto fname = imageFilenameFromHash(hash);
-	if (img.save(fname))
+	if (IMG.save(fname))
 		cached_images[hash] = std::move(fname);
 	else
 		return false;
 	return true;
 }
 
-QString getImageUrlFromHint(const QVariant &argument) {
+QString getImageUrlFromHint(const QVariant &ARGUMENT) {
 	int width, height, rowstride, bitsPerSample, channels;
 	bool hasAlpha;
 	QByteArray data;
 
-	const QDBusArgument arg = argument.value<QDBusArgument>();
-	arg.beginStructure();
-	arg >> width;
-	arg >> height;
-	arg >> rowstride;
-	arg >> hasAlpha;
-	arg >> bitsPerSample;
-	arg >> channels;
-	arg >> data;
-	arg.endStructure();
+	const QDBusArgument ARG = ARGUMENT.value<QDBusArgument>();
+	ARG.beginStructure();
+	ARG >> width;
+	ARG >> height;
+	ARG >> rowstride;
+	ARG >> hasAlpha;
+	ARG >> bitsPerSample;
+	ARG >> channels;
+	ARG >> data;
+	ARG.endStructure();
 
 	auto hash = qHash(data);
 
@@ -122,15 +122,15 @@ QString getImageUrlFromHint(const QVariant &argument) {
 	return cached_images[hash];
 }
 
-QString getImageUrlFromString(const QString &str) {
+QString getImageUrlFromString(const QString &STR) {
 	static constexpr auto PIXMAP_SIZE = 256;
 
-	QUrl url(str);
+	QUrl url(STR);
 	if (url.isValid() && QFile::exists(url.toLocalFile())) {
 		return url.toLocalFile();
 	} else {
 		// TODO: OMFG????????
-		auto icon = XdgIcon::fromTheme(str);
+		auto icon = XdgIcon::fromTheme(STR);
 		auto hash = static_cast<uintmax_t>(icon.cacheKey());
 
 		if (!isCached(hash)) {
@@ -145,8 +145,8 @@ QString getImageUrlFromString(const QString &str) {
 
 } // namespace
 
-void BzardNotificationModifiers::IDGenerator::modify(
-	  IQNotification &notification) {
+void BzardNotificationModifiers::BzardGenerator::modify(
+	  BzardNotification &notification) {
 	N_TO_REFS(notification);
 	if (replaces_id == 0)
 		id = ++last_id;
@@ -156,7 +156,7 @@ void BzardNotificationModifiers::IDGenerator::modify(
  * Based on lxqt notification daemon
  */
 void BzardNotificationModifiers::IconHandler::modify(
-	  IQNotification &notification) {
+	  BzardNotification &notification) {
 	N_TO_REFS(notification);
 	if (!hints["image_data"].isNull()) {
 		icon_url = getImageUrlFromHint(hints["image_data"]);
@@ -167,10 +167,10 @@ void BzardNotificationModifiers::IconHandler::modify(
 		 *  Check, is it web URL
 		 */
 		{
-			static const QString http{"http://"};
-			static const QString https{"https://"};
-			if (icon_url.startsWith(http, Qt::CaseInsensitive) ||
-			    icon_url.startsWith(https, Qt::CaseInsensitive))
+			static const QString HTTP{"http://"};
+			static const QString HTTPS{"https://"};
+			if (icon_url.startsWith(HTTP, Qt::CaseInsensitive) ||
+			    icon_url.startsWith(HTTPS, Qt::CaseInsensitive))
 				return;
 		}
 		icon_url = getImageUrlFromString(icon_url);
@@ -182,7 +182,7 @@ void BzardNotificationModifiers::IconHandler::modify(
 }
 
 BzardNotificationModifiers::DefaultTimeout::DefaultTimeout()
-	  : IQConfigurable{"default_timeout"} {
+	  : BzardConfigurable{"default_timeout"} {
 	static constexpr auto real_default{3500};
 	defaultTimeout = static_cast<uint16_t>(
 		  config.value("default_timeout", real_default).toUInt());
@@ -191,7 +191,7 @@ BzardNotificationModifiers::DefaultTimeout::DefaultTimeout()
 }
 
 void BzardNotificationModifiers::DefaultTimeout::modify(
-	  IQNotification &notification) {
+	  BzardNotification &notification) {
 	N_TO_REFS(notification);
 	if (expire_timeout < 0)
 		expire_timeout =
@@ -200,10 +200,10 @@ void BzardNotificationModifiers::DefaultTimeout::modify(
 }
 
 BzardNotificationModifiers::TitleToIcon::TitleToIcon()
-	  : IQConfigurable{"title_to_icon"} {}
+	  : BzardConfigurable{"title_to_icon"} {}
 
 void BzardNotificationModifiers::TitleToIcon::modify(
-	  IQNotification &notification) {
+	  BzardNotification &notification) {
 	N_TO_REFS(notification);
 	// Do nothing if icon presented
 	if (!icon_url.isEmpty())
@@ -215,13 +215,13 @@ void BzardNotificationModifiers::TitleToIcon::modify(
 }
 
 BzardNotificationModifiers::ReplaceMinusToDash::ReplaceMinusToDash()
-	  : IQConfigurable{"replace_minus_to_dash"} {
+	  : BzardConfigurable{"replace_minus_to_dash"} {
 	fixTitle = config.value("title", true).toBool();
 	fixBody = config.value("body", true).toBool();
 }
 
 void BzardNotificationModifiers::ReplaceMinusToDash::modify(
-	  IQNotification &notification) {
+	  BzardNotification &notification) {
 	N_TO_REFS(notification);
 	if (fixTitle)
 		replaceMinusToDash(title);
@@ -231,16 +231,16 @@ void BzardNotificationModifiers::ReplaceMinusToDash::modify(
 
 void BzardNotificationModifiers::ReplaceMinusToDash::replaceMinusToDash(
 	  QString &str) {
-	static QString minus{minusPattern}, dash{replaceTo};
+	static QString minus{MINUS_PATTERN}, dash{REPLACE_TO};
 	str.replace(minus, dash);
 }
 
 BzardNotificationModifiers::BodyToTitleWhenTitleIsAppName::
 	  BodyToTitleWhenTitleIsAppName()
-	  : IQConfigurable{"body_to_title_when_title_is_app_name"} {}
+	  : BzardConfigurable{"body_to_title_when_title_is_app_name"} {}
 
 void BzardNotificationModifiers::BodyToTitleWhenTitleIsAppName::modify(
-	  IQNotification &notification) {
+	  BzardNotification &notification) {
 	N_TO_REFS(notification);
 	if (application.compare(title, Qt::CaseInsensitive) == 0) {
 		title = body;
