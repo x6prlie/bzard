@@ -17,12 +17,12 @@ struct DBusNotification {
 	enum ExpireTimeout : int { ET_SERVER_DECIDES = -1, ET_FOREVER = 0 };
 
 	id_t id;
-	QString app_name;
+	QString appName;
 	id_t replaces_id;
-	QString app_icon;
+	QString appIcon;
 	QString summary;
 	QString body;
 	QStringList actions;
 	QVariantMap hints;
-	ExpireTimeout expire_timeout;
+	ExpireTimeout expireTimeout;
 };

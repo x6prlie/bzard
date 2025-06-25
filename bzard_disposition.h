@@ -39,7 +39,7 @@ class BzardDisposition : public QObject {
 
 	virtual optional<QPoint> poses(BzardNotification::id_t id, QSize size) = 0;
 
-	virtual QPoint externalWindowPos() const = 0;
+	virtual QPoint externalWindowPosition() const = 0;
 
 	const QScreen *SCREEN() const;
 
@@ -54,7 +54,7 @@ class BzardDisposition : public QObject {
 	virtual void removeAll() = 0;
 
   signals:
-	void moveNotification(BzardNotification::id_t id, QPoint pos);
+	void moveNotification(BzardNotification::id_t id, QPoint position);
 
   protected:
 	int spacing;

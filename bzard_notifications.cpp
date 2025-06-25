@@ -41,8 +41,8 @@ BzardNotifications::BzardNotifications(BzardDisposition::ptr_t disposition_,
 	connect(this, &BzardNotifications::dropNotification, disposition.get(),
 	        &BzardDisposition::remove);
 	connect(disposition.get(), &BzardDisposition::moveNotification,
-	        [this](BzardNotification::id_t id, QPoint pos) {
-				emit moveNotification(static_cast<int>(id), pos);
+	        [this](BzardNotification::id_t id, QPoint position) {
+				emit moveNotification(static_cast<int>(id), position);
 				checkExtraNotifications();
 			});
 }
@@ -109,11 +109,12 @@ void BzardNotifications::setDontShowWhenFullscreenCurrentDesktop(bool value) {
 	emit dontShowWhenFullscreenCurrentDesktopChanged();
 }
 
-void BzardNotifications::onCreateNotification(const BzardNotification &n) {
+void BzardNotifications::onCreateNotification(
+	  const BzardNotification &notification) {
 	if (!shouldShowPopup())
 		return;
-	if (!createNotificationIfSpaceAvailable(n)) {
-		extraNotifications.push(n);
+	if (!createNotificationIfSpaceAvailable(notification)) {
+		extraNotifications.push(notification);
 		emit extraNotificationsCountChanged();
 	}
 }
@@ -200,7 +201,7 @@ QMargins BzardNotifications::margins() const {
 	} else {
 		auto screen = disposition->SCREEN()->availableSize();
 		auto margin = GLOBAL_MARGINS_DEFAULT_FACTOR * screen.height();
-		auto m = static_cast<int>(margin);
+		auto m = static_cast<int>(margin); /*!!!!!*/
 		return {m, m, m, m};
 	}
 }
@@ -228,7 +229,7 @@ QSize BzardNotifications::windowSize(const QString &WIDTH_KEY,
 			return value;
 		};
 
-		auto w = get(WIDTH_KEY);
+		auto w = get(WIDTH_KEY); /*!!!!!*/
 		auto h = get(HEIGTH_KEY);
 
 		if (!w || !h)
@@ -254,8 +255,8 @@ QSize BzardNotifications::extraWindowSize() const {
 	                  EXTRA_WINDOW_HEIGHT_DEFAULT_FACTOR);
 }
 
-QPoint BzardNotifications::extraWindowPos() const {
-	return disposition->externalWindowPos();
+QPoint BzardNotifications::extraWindowPosision() const {
+	return disposition->externalWindowPosition();
 }
 
 bool BzardNotifications::createNotificationIfSpaceAvailable(

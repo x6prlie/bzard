@@ -42,7 +42,7 @@ class BzardBrightnessMonitor : public QObject {
 	explicit BzardBrightnessMonitor(const DevicePaths &PATHS,
 	                                QObject *parent = nullptr);
 
-	QString syspath() const;
+	QString sysPath() const;
 	void checkForUpdate();
 
   signals:

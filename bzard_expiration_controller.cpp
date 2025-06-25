@@ -18,7 +18,7 @@
 #include "bzard_expiration_controller.h"
 
 bool BzardExpirationController::expiration() const {
-	return t ? t->isActive() : false;
+	return t /*!!!*/ ? t->isActive() : false;
 }
 
 void BzardExpirationController::setExpiration(bool expiration) {

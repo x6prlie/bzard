@@ -61,7 +61,7 @@ class BzardDBusService : public QObject {
 	QStringList getCapabilities();
 
 	QString getServerInformation(QString &vendor, QString &version,
-	                             QString &spec_version);
+	                             QString &specVersion);
 
 	uint32_t notify(const QString &APP_NAME, uint32_t replaces_id,
 	                const QString &APP_ICON, const QString &SUMMARY,

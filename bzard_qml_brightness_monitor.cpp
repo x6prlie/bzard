@@ -41,7 +41,7 @@ void QMLBrightnessMonitor::setupBrightnessMonitors() {
 	qDeleteAll(
 		  activeMonitors); // Удаляем старые мониторы, если это реинициализация
 	activeMonitors.clear();
-	syspathToDeviceName.clear();
+	sysPathToDeviceName.clear();
 	internalBrightnessLevels.clear();
 
 	internalAvailableDevices = BzardBrightnessMonitor::availableDevices();
@@ -67,11 +67,11 @@ void QMLBrightnessMonitor::setupBrightnessMonitors() {
 			                                                    // raw pointer
 			        this, &QMLBrightnessMonitor::onDeviceBrightnessChanged);
 
-			QString syspath = monitor->syspath();
-			syspathToDeviceName[syspath] = DEVICE_NAME;
+			QString sysPath = monitor->sysPath();
+			sysPathToDeviceName[sysPath] = DEVICE_NAME;
 
 			// --- Вставляем raw pointer в QMap ---
-			activeMonitors.insert(syspath, monitor);
+			activeMonitors.insert(sysPath, monitor);
 			// -----------------------------------
 
 			ok = true;
@@ -122,9 +122,9 @@ void QMLBrightnessMonitor::onDeviceBrightnessChanged(int brightnessPercent) {
 	if (!senderMonitor) {
 		return;
 	}
-	QString senderSyspath = senderMonitor->syspath();
-	QString deviceName = syspathToDeviceName.value(
-		  senderSyspath, QStringLiteral("UnknownDevice"));
+	QString senderSysPath = senderMonitor->sysPath();
+	QString deviceName = sysPathToDeviceName.value(
+		  senderSysPath, QStringLiteral("UnknownDevice"));
 	bool changed = false;
 	if (!internalBrightnessLevels.contains(deviceName) ||
 	    internalBrightnessLevels.value(deviceName).toInt() !=
@@ -143,17 +143,17 @@ void QMLBrightnessMonitor::onUdevError(const QString &ERROR_STRING) {
 }
 
 // --- Синглтон-провайдер (без изменений) ---
-static QPointer<QMLBrightnessMonitor> g_brightnessMonitorInstance = nullptr;
+static QPointer<QMLBrightnessMonitor> gBrightnessMonitorInstance = nullptr;
 QObject *qml_brightness_monitor_provider(QQmlEngine *engine,
                                          QJSEngine *scriptEngine) {
 	Q_UNUSED(engine);
 	Q_UNUSED(scriptEngine);
-	if (!g_brightnessMonitorInstance) {
-		g_brightnessMonitorInstance = new QMLBrightnessMonitor();
-		if (!g_brightnessMonitorInstance->initialize()) {
+	if (!gBrightnessMonitorInstance) {
+		gBrightnessMonitorInstance = new QMLBrightnessMonitor();
+		if (!gBrightnessMonitorInstance->initialize()) {
 			qCritical("QMLBrightnessMonitor failed to initialize!");
 			return nullptr;
 		}
 	}
-	return g_brightnessMonitorInstance;
+	return gBrightnessMonitorInstance;
 }

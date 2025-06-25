@@ -55,8 +55,8 @@ QStringList BzardDBusService::getCapabilities() {
 
 QString BzardDBusService::getServerInformation(QString &vendor,
                                                QString &version,
-                                               QString &spec_version) {
-	spec_version = QString("1.2");
+                                               QString &specVersion) {
+	specVersion = QString("1.2");
 	version = versionString();
 	vendor = QString("bzard.project");
 	return QString("bzard");
@@ -81,7 +81,8 @@ void BzardDBusService::closeNotification(uint32_t id) {
 }
 
 void BzardDBusService::onNotificationDropped(
-	  BzardNotification::id_t id, BzardNotification::ClosingReason reason) {
+	  BzardNotification::id_t id,
+	  BzardNotification::ClosingReason /*!!!enum!!!*/ reason) {
 	emit notificationClosed(id, reason);
 }
 
@@ -93,7 +94,7 @@ void BzardDBusService::onActionInvoked(BzardNotification::id_t id,
 BzardNotification BzardDBusService::modify(BzardNotification notification) {
 	qDebug() << "========*****========";
 	qDebug() << notification;
-	for (auto &m : modifers)
+	for (auto & /*!!!*/ m : modifers)
 		m->modify(notification);
 	qDebug() << notification;
 	return notification;

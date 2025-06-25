@@ -89,7 +89,7 @@ class BzardHistory : public BzardNotificationReceiver,
 
 class BzardHistoryModel : public QAbstractListModel {
 	Q_OBJECT
-  public:
+  public: /*!!!*/
 	enum HistoryRoles {
 		Id_Role = Qt::UserRole + 1,
 		ApplicationRole,

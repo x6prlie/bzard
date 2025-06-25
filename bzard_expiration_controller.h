@@ -45,5 +45,5 @@ class BzardExpirationController : public QObject {
   public slots:
 
   private:
-	std::unique_ptr<QTimer> t;
+	std::unique_ptr<QTimer> t /*!!!*/;
 };

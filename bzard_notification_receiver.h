@@ -32,7 +32,7 @@ class BzardNotificationReceiver : public QObject {
 	void notificationDroppedSignal(BzardNotification::id_t id,
 	                               BzardNotification::ClosingReason reason);
 	void actionInvokedSignal(BzardNotification::id_t id,
-	                         const QString &action_key);
+	                         const QString &ACTION_KEY);
 
   public slots:
 	virtual void

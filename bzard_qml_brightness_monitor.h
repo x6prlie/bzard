@@ -46,12 +46,12 @@ class QMLBrightnessMonitor : public QObject {
 	QStringList internalAvailableDevices;
 	QVariantMap internalBrightnessLevels;
 	MonitorMap activeMonitors; // Теперь хранит raw pointers
-	QMap<QString, QString> syspathToDeviceName;
+	QMap<QString, QString> sysPathToDeviceName;
 
 	// unique_ptr все еще подходит для UdevMonitor, так как он один
 	std::unique_ptr<UdevMonitor> udevMonitorInstance;
 	bool isInitialized = false;
 };
 
-QObject *qml_brightness_monitor_provider(QQmlEngine *engine,
-                                         QJSEngine *scriptEngine);
+QObject *qmlBrightnessMonitorProvider(QQmlEngine *engine,
+                                      QJSEngine *scriptEngine);

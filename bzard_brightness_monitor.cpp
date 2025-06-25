@@ -7,7 +7,7 @@
 #include <cmath>
 #include <expected>
 #include <optional>
-#include <stdexcept>
+// #include <stdexcept>
 #include <string> // Оставляем для std::string
 
 // --- Static Methods ---
@@ -72,7 +72,7 @@ BzardBrightnessMonitor::BzardBrightnessMonitor(
 	checkForUpdate();
 }
 
-QString BzardBrightnessMonitor::syspath() const { /* без изменений */
+QString BzardBrightnessMonitor::sysPath() const { /* без изменений */
 	return CANONICAL_SYS_PATH;
 }
 

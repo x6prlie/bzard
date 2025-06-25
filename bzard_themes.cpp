@@ -106,7 +106,7 @@ QUrl BzardTheme::toRelativeUrl(const QString &STR) const {
 		return QString{KEY__##_DEFAULT};
 
 bool NotificationsTheme::iconPosition() const {
-	auto pos =
+	auto pos = /*!!!!!*/
 		  themeConfig->value(CONFIG_ICON_POSITION, CONFIG_ICON_POSITION_DEFAULT)
 				.toString();
 	return pos.compare("left", Qt::CaseInsensitive) == 0;
@@ -270,15 +270,15 @@ uint HistoryWindowTheme::barFontSize() const {
 	return BZARD_THEME_UINT(CONFIG_BAR_FONT_SIZE);
 }
 
-uint HistoryWindowTheme::nappFontSize() const {
+uint HistoryWindowTheme::nAppFontSize() const {
 	return BZARD_THEME_UINT(CONFIG_NAPP_FONT_SIZE);
 }
 
-uint HistoryWindowTheme::ntitleFontSize() const {
+uint HistoryWindowTheme::nTitleFontSize() const {
 	return BZARD_THEME_UINT(CONFIG_NTITLE_FONT_SIZE);
 }
 
-uint HistoryWindowTheme::nbodyFontSize() const {
+uint HistoryWindowTheme::nBodyFontSize() const {
 	return BZARD_THEME_UINT(CONFIG_NBODY_FONT_SIZE);
 }
 
@@ -294,19 +294,19 @@ QString HistoryWindowTheme::barTextColor() const {
 	return BZARD_THEME_STRING(CONFIG_BAR_TEXT_COLOR);
 }
 
-QString HistoryWindowTheme::nbgColor() const {
+QString HistoryWindowTheme::nBgColor() const {
 	return BZARD_THEME_STRING(CONFIG_NBG_COLOR);
 }
 
-QString HistoryWindowTheme::nappTextColor() const {
+QString HistoryWindowTheme::nAppTextColor() const {
 	return BZARD_THEME_STRING(CONFIG_NAPP_TEXT_COLOR);
 }
 
-QString HistoryWindowTheme::ntitleTextColor() const {
+QString HistoryWindowTheme::nTitleTextColor() const {
 	return BZARD_THEME_STRING(CONFIG_NTITLE_TEXT_COLOR);
 }
 
-QString HistoryWindowTheme::nbodyTextColor() const {
+QString HistoryWindowTheme::nBodyTextColor() const {
 	return BZARD_THEME_STRING(CONFIG_NBODY_TEXT_COLOR);
 }
 

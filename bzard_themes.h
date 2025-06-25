@@ -214,16 +214,16 @@ class HistoryWindowTheme : public BzardTheme {
 	Q_PROPERTY(uint barHeight READ barHeight CONSTANT)
 	Q_PROPERTY(uint notificationHeight READ notificationHeight CONSTANT)
 	Q_PROPERTY(uint barFontSize READ barFontSize CONSTANT)
-	Q_PROPERTY(uint nappFontSize READ nappFontSize CONSTANT)
+	Q_PROPERTY(uint nappFontSize READ nappFontSize CONSTANT) /*!!!*/
 	Q_PROPERTY(uint ntitleFontSize READ ntitleFontSize CONSTANT)
 	Q_PROPERTY(uint nbodyFontSize READ nbodyFontSize CONSTANT)
 	Q_PROPERTY(QString bgColor READ bgColor CONSTANT)
 	Q_PROPERTY(QString barBgColor READ barBgColor CONSTANT)
 	Q_PROPERTY(QString barTextColor READ barTextColor CONSTANT)
-	Q_PROPERTY(QString nbgColor READ nbgColor CONSTANT)
-	Q_PROPERTY(QString nappTextColor READ nappTextColor CONSTANT)
-	Q_PROPERTY(QString ntitleTextColor READ ntitleTextColor CONSTANT)
-	Q_PROPERTY(QString nbodyTextColor READ nbodyTextColor CONSTANT)
+	Q_PROPERTY(QString nBgColor READ nBgColor CONSTANT)
+	Q_PROPERTY(QString nAppTextColor READ nAppTextColor CONSTANT)
+	Q_PROPERTY(QString nTitleTextColor READ nTitleTextColor CONSTANT)
+	Q_PROPERTY(QString nBodyTextColor READ nBodyTextColor CONSTANT)
 
   public:
 	using BzardTheme::BzardTheme;
@@ -238,17 +238,17 @@ class HistoryWindowTheme : public BzardTheme {
 	uint barHeight() const;
 	uint notificationHeight() const;
 	uint barFontSize() const;
-	uint nappFontSize() const;
-	uint ntitleFontSize() const;
-	uint nbodyFontSize() const;
+	uint nAppFontSize() const;
+	uint nTitleFontSize() const;
+	uint nBodyFontSize() const;
 
 	QString bgColor() const;
 	QString barBgColor() const;
 	QString barTextColor() const;
-	QString nbgColor() const;
-	QString nappTextColor() const;
-	QString ntitleTextColor() const;
-	QString nbodyTextColor() const;
+	QString nBgColor() const;
+	QString nAppTextColor() const;
+	QString nTitleTextColor() const;
+	QString nBodyTextColor() const;
 
   private:
 	enum pos_t { UNDEFINED = 0, LEFT_TOP, LEFT_BOT, RIGHT_BOT, RIGHT_TOP };

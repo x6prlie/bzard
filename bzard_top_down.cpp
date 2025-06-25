@@ -38,16 +38,16 @@ BzardTopDown::optional<QPoint> BzardTopDown::poses(BzardNotification::id_t id,
 	                                // Look at Qt's docs for more
 	                                ,
 	                                0};
-	QRect pos{pos_point, size};
-	if (avail.contains(pos)) {
-		dispositions[id] = pos;
+	QRect position{pos_point, size};
+	if (avail.contains(position)) {
+		dispositions[id] = position;
 		return {pos_point};
 	} else {
 		return {};
 	}
 }
 
-QPoint BzardTopDown::externalWindowPos() const {
+QPoint BzardTopDown::externalWindowPosition() const {
 	auto pos_point = availableScreenGeometry.bottomRight() -
 	                 QPoint{extraWindowSize.width() - 1
 	                        // topRigth returns not correct coordinates
@@ -79,14 +79,14 @@ void BzardTopDown::remove(BzardNotification::id_t id) {
 		if (it == end) {
 			return {}; // Nothing to move up
 		}
-		std::map<BzardNotification::id_t, QPoint> posToMove;
+		std::map<BzardNotification::id_t, QPoint> positionToMove;
 		for (; it != end; ++it) {
-			auto d_id = it->first;
+			auto d_id = it->first; /*!!!!!*/
 			auto &d_pos = it->second;
 			d_pos.moveTop(d_pos.top() - move_up_for);
-			posToMove.emplace(d_id, d_pos.topLeft());
+			positionToMove.emplace(d_id, d_pos.topLeft());
 		}
-		return posToMove;
+		return positionToMove;
 	};
 
 	auto pos_it = dispositions.find(id);
@@ -94,7 +94,7 @@ void BzardTopDown::remove(BzardNotification::id_t id) {
 		// Just calculate all
 		auto posToMove = recalculateDispositions(pos_it);
 		// Now move
-		for (auto &p : posToMove)
+		for (auto &p : posToMove) /*!!!!!*/
 			emit moveNotification(p.first, p.second);
 
 		// pos_it will not be invalidated even

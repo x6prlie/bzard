@@ -62,8 +62,8 @@ bool isCached(uintmax_t hash) {
 }
 
 QString imageFilenameFromHash(uintmax_t hash) {
-	auto ret =
-		  XdgDirs::cacheHome() + "/iq-cached_" + QString::number(hash) + ".png";
+	auto ret = XdgDirs::cacheHome() + "/bzard-cached_" + QString::number(hash) +
+	           ".png";
 	return ret;
 }
 

@@ -34,7 +34,7 @@ class BzardTopDown final : public BzardDisposition {
 
 	optional<QPoint> poses(BzardNotification::id_t id, QSize size) final;
 
-	QPoint externalWindowPos() const final;
+	QPoint externalWindowPosition() const final;
 
 	void setExtraWindowSize(const QSize &VALUE) final;
 

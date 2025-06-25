@@ -38,7 +38,7 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	Q_PROPERTY(int extraNotifications READ extraNotificationsCount NOTIFY
 	                 extraNotificationsCountChanged)
 	Q_PROPERTY(QSize extraWindowSize READ extraWindowSize CONSTANT)
-	Q_PROPERTY(QPoint extraWindowPos READ extraWindowPos CONSTANT)
+	Q_PROPERTY(QPoint extraWindowPosition READ extraWindowPosition CONSTANT)
 	Q_PROPERTY(bool closeAllByRightClick READ closeAllByRightClick CONSTANT)
 	Q_PROPERTY(
 		  bool closeVisibleByLeftClick READ closeVisibleByLeftClick CONSTANT)
@@ -65,7 +65,7 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	setFullscreenDetector(std::unique_ptr<BzardFullscreenDetector> detector_);
 
 	QSize extraWindowSize() const;
-	QPoint extraWindowPos() const;
+	QPoint extraWindowPosision() const;
 	int extraNotificationsCount() const;
 	bool closeAllByRightClick() const;
 	bool closeVisibleByLeftClick() const;
@@ -79,11 +79,11 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	// Signals to QML
 	void extraNotificationsCountChanged();
 	void createNotification(int notification_id, QSize size, QPoint pos,
-	                        int expire_timeout, const QString &appName,
-	                        const QString &body,
-	                        const QString &title = QString{},
-	                        const QString &iconUrl = QString{},
-	                        const QStringList &actions = {});
+	                        int expire_timeout, const QString &APP_NAME,
+	                        const QString &BODY,
+	                        const QString &TITLE = QString{},
+	                        const QString &ICON_URL = QString{},
+	                        const QStringList &ACTIONS = {});
 	void dropNotification(int notification_id);
 	void dropAllVisible();
 	void moveNotification(int notification_id, QPoint pos);
