@@ -36,10 +36,10 @@ class BzardBrightnessMonitor : public QObject {
 	};
 
 	static std::optional<DevicePaths>
-	findDevicePaths(const QString &deviceName);
+	findDevicePaths(const QString &DEVICE_NAME);
 	static QStringList availableDevices();
 
-	explicit BzardBrightnessMonitor(const DevicePaths &paths,
+	explicit BzardBrightnessMonitor(const DevicePaths &PATHS,
 	                                QObject *parent = nullptr);
 
 	QString syspath() const;
@@ -49,12 +49,12 @@ class BzardBrightnessMonitor : public QObject {
 	void brightnessChanged(int brightnessPercent);
 
   private:
-	static int64_t readLongFromFile(const QString &filePath);
+	static int64_t readLongFromFile(const QString &FILE_PATH);
 
-	const QString basePath;
-	const QString brightnessFilePath;
-	const QString maxBrightnessFilePath;
-	const QString canonicalSysPath;
+	const QString BASE_PATH;
+	const QString BRIGHTNESS_FILE_PATH;
+	const QString MAX_BRIGHTNESS_FILE_PATH;
+	const QString CANONICAL_SYS_PATH;
 
 	int lastBrightnessPercent = -1;
 };
