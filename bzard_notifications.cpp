@@ -110,11 +110,11 @@ void BzardNotifications::setDontShowWhenFullscreenCurrentDesktop(bool value) {
 }
 
 void BzardNotifications::onCreateNotification(
-	  const BzardNotification &notification) {
+	  const BzardNotification &NOTIFICATION) {
 	if (!shouldShowPopup())
 		return;
-	if (!createNotificationIfSpaceAvailable(notification)) {
-		extraNotifications.push(notification);
+	if (!createNotificationIfSpaceAvailable(NOTIFICATION)) {
+		extraNotifications.push(NOTIFICATION);
 		emit extraNotificationsCountChanged();
 	}
 }
@@ -199,7 +199,7 @@ QMargins BzardNotifications::margins() const {
 	if (config_margin) {
 		return *config_margin;
 	} else {
-		auto screen = disposition->SCREEN()->availableSize();
+		auto screen = disposition->screen()->availableSize();
 		auto margin = GLOBAL_MARGINS_DEFAULT_FACTOR * screen.height();
 		auto m = static_cast<int>(margin); /*!!!!!*/
 		return {m, m, m, m};
@@ -242,7 +242,7 @@ QSize BzardNotifications::windowSize(const QString &WIDTH_KEY,
 	if (config_size) {
 		return *config_size;
 	} else {
-		auto screen = disposition->SCREEN()->availableSize();
+		auto screen = disposition->screen()->availableSize();
 		auto w = width_factor * screen.width();
 		auto h = height_factor * screen.height();
 		return QSize{static_cast<int>(w), static_cast<int>(h)};
@@ -255,7 +255,7 @@ QSize BzardNotifications::extraWindowSize() const {
 	                  EXTRA_WINDOW_HEIGHT_DEFAULT_FACTOR);
 }
 
-QPoint BzardNotifications::extraWindowPosision() const {
+QPoint BzardNotifications::extraWindowPosition() const {
 	return disposition->externalWindowPosition();
 }
 

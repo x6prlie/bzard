@@ -60,8 +60,8 @@ QString BzardThemes::themeConfigFile() const {
 	return themeConfigDir() + "/theme";
 }
 
-void BzardThemes::loadTheme(const QString &fileName) {
-	themeConfig = std::make_shared<BzardConfig>(QString{}, fileName);
+void BzardThemes::loadTheme(const QString &FILE_MANE) {
+	themeConfig = std::make_shared<BzardConfig>(QString{}, FILE_MANE);
 }
 
 void BzardThemes::registerThemeTypes() const {

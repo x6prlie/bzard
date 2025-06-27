@@ -34,18 +34,18 @@ BzardBrightnessMonitor::findDevicePaths(
 	const QDir BACKLIGHT_DIR(QStringLiteral("/sys/class/backlight"));
 	DevicePaths paths;
 	paths.basePath = BACKLIGHT_DIR.filePath(DEVICE_NAME);
-	const QFileInfo baseInfo(paths.basePath);
-	if (!baseInfo.exists() || !baseInfo.isDir()) {
+	const QFileInfo BASE_INFO(paths.basePath);
+	if (!BASE_INFO.exists() || !BASE_INFO.isDir()) {
 		qWarning() << Q_FUNC_INFO
 				   << "Device directory not found or is not a directory:"
 				   << paths.basePath;
 		return std::nullopt;
 	}
-	paths.brightnessFilePath = baseInfo.filePath() + QDir::separator() +
+	paths.brightnessFilePath = BASE_INFO.filePath() + QDir::separator() +
 	                           QStringLiteral("brightness");
-	paths.maxBrightnessFilePath = baseInfo.filePath() + QDir::separator() +
+	paths.maxBrightnessFilePath = BASE_INFO.filePath() + QDir::separator() +
 	                              QStringLiteral("max_brightness");
-	paths.canonicalSysPath = baseInfo.canonicalFilePath();
+	paths.canonicalSysPath = BASE_INFO.canonicalFilePath();
 	bool files_ok = QFile::exists(paths.brightnessFilePath) &&
 	                QFile::exists(paths.maxBrightnessFilePath) &&
 	                !paths.canonicalSysPath.isEmpty();
@@ -76,19 +76,19 @@ QString BzardBrightnessMonitor::sysPath() const { /* без изменений *
 	return CANONICAL_SYS_PATH;
 }
 
-int64_t BzardBrightnessMonitor::readLongFromFile(const QString &filePath) {
-	QFile file(filePath);
+int64_t BzardBrightnessMonitor::readLongFromFile(const QString &FILE_PATH) {
+	QFile file(FILE_PATH);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		throw QString("Could not open file %1: %2")
-			  .arg(filePath, file.errorString())
+			  .arg(FILE_PATH, file.errorString())
 			  .toStdString();
 	}
 	bool ok = false;
-	const QString content = file.readAll().trimmed();
-	qlonglong value = content.toLongLong(&ok);
+	const QString CONTENT = file.readAll().trimmed();
+	qlonglong value = CONTENT.toLongLong(&ok);
 	if (!ok) {
 		throw QString("Failed to parse value '%1' from file: %2")
-			  .arg(content, filePath)
+			  .arg(CONTENT, FILE_PATH)
 			  .toStdString();
 	}
 	return value;
@@ -109,21 +109,21 @@ void BzardBrightnessMonitor::checkForUpdate() { /* без изменений */
 		return;
 	}
 
-	const qlonglong current = currentRes.value();
-	const qlonglong max = maxRes.value();
+	const qlonglong CURRENT = currentRes.value();
+	const qlonglong MAX = maxRes.value();
 
-	if (max <= 0) {
-		qWarning() << Q_FUNC_INFO << "Invalid max_brightness value (" << max
+	if (MAX <= 0) {
+		qWarning() << Q_FUNC_INFO << "Invalid max_brightness value (" << MAX
 				   << ") for" << BASE_PATH;
 		return;
 	}
 
-	const int currentPercent = std::max(
+	const int CURRENT_PERCENT = std::max(
 		  0, std::min(100, static_cast<int>(std::round(
-								 static_cast<double>(current) * 100.0 / max))));
+								 static_cast<double>(CURRENT) * 100.0 / MAX))));
 
-	if (currentPercent != lastBrightnessPercent) {
-		lastBrightnessPercent = currentPercent;
+	if (CURRENT_PERCENT != lastBrightnessPercent) {
+		lastBrightnessPercent = CURRENT_PERCENT;
 		emit brightnessChanged(lastBrightnessPercent);
 	}
 }

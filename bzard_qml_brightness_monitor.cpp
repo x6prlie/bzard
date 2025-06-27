@@ -105,11 +105,11 @@ void QMLBrightnessMonitor::handleUdevEvent(const QString &ACTION,
 		return;
 	}
 	// Итерация по QMap<QString, BrightnessMonitor*>
-	for (auto it = activeMonitors.constBegin(); it != activeMonitors.constEnd();
-	     ++it) {
-		const QString &monitorSyspath = it.key();
+	for (auto it /*!!!*/ = activeMonitors.constBegin();
+	     it != activeMonitors.constEnd(); ++it) {
+		const QString &MONITOR_SYS_PATH = it.key();
 		BzardBrightnessMonitor *monitorPtr = it.value(); // Получаем raw pointer
-		if (EVENT_SYS_PATH.startsWith(monitorSyspath) && monitorPtr) {
+		if (EVENT_SYS_PATH.startsWith(MONITOR_SYS_PATH) && monitorPtr) {
 			monitorPtr->checkForUpdate();
 			break;
 		}

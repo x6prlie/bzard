@@ -183,11 +183,11 @@ void BzardNotificationModifiers::IconHandler::modify(
 
 BzardNotificationModifiers::DefaultTimeout::DefaultTimeout()
 	  : BzardConfigurable{"default_timeout"} {
-	static constexpr auto real_default{3500};
+	static constexpr auto REAL_DEFAULT{3500};
 	defaultTimeout = static_cast<uint16_t>(
-		  config.value("default_timeout", real_default).toUInt());
+		  config.value("default_timeout", REAL_DEFAULT).toUInt());
 	if (defaultTimeout == 0)
-		defaultTimeout = real_default;
+		defaultTimeout = REAL_DEFAULT;
 }
 
 void BzardNotificationModifiers::DefaultTimeout::modify(

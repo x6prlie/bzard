@@ -65,7 +65,7 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	setFullscreenDetector(std::unique_ptr<BzardFullscreenDetector> detector_);
 
 	QSize extraWindowSize() const;
-	QPoint extraWindowPosision() const;
+	QPoint extraWindowPosition() const;
 	int extraNotificationsCount() const;
 	bool closeAllByRightClick() const;
 	bool closeVisibleByLeftClick() const;
