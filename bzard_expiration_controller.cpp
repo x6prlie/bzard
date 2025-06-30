@@ -18,34 +18,36 @@
 #include "bzard_expiration_controller.h"
 
 bool BzardExpirationController::expiration() const {
-	return t /*!!!*/ ? t->isActive() : false;
+	return timer ? timer->isActive() : false;
 }
 
 void BzardExpirationController::setExpiration(bool expiration) {
-	if (t) {
+	if (timer) {
 		if (expiration) {
-			t->start();
+			timer->start();
 		} else {
-			t->stop();
+			timer->stop();
 		}
 	}
 
 	emit expirationChanged();
 }
 
-int BzardExpirationController::timeout() const { return t ? t->interval() : 0; }
+int BzardExpirationController::timeout() const {
+	return timer ? timer->interval() : 0;
+}
 
 void BzardExpirationController::setTimeout(int timeout) {
 	if (timeout) {
-		if (!t) {
-			t = std::make_unique<QTimer>();
-			t->setSingleShot(true);
-			connect(t.get(), &QTimer::timeout, [this] { emit expired(); });
+		if (!timer) {
+			timer = std::make_unique<QTimer>(/*timer?*/);
+			timer->setSingleShot(true);
+			connect(timer.get(), &QTimer::timeout, [this] { emit expired(); });
 		}
 
-		t->setInterval(timeout);
+		timer->setInterval(timeout);
 	} else {
-		t.reset(nullptr);
+		timer.reset(nullptr);
 	}
 
 	emit timeoutChanged();

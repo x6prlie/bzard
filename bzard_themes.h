@@ -251,7 +251,13 @@ class HistoryWindowTheme : public BzardTheme {
 	QString nBodyTextColor() const;
 
   private:
-	enum pos_t { UNDEFINED = 0, LEFT_TOP, LEFT_BOT, RIGHT_BOT, RIGHT_TOP };
+	/*Enums (types)*/ enum pos_t {
+		UNDEFINED = 0,
+		LEFT_TOP,
+		LEFT_BOT,
+		RIGHT_BOT,
+		RIGHT_TOP
+	};
 	pos_t windowPosition() const;
 
 	BZARD_CONF_VAR(CLOSE_ICON, "history_window/close_icon", "img/close.png")

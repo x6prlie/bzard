@@ -169,7 +169,7 @@ int BzardNotifications::spacing() const {
 }
 
 QMargins BzardNotifications::margins() const {
-	static auto string_list_to_margins =
+	static auto stringListToMargins =
 		  [](QStringList list) -> optional<QMargins> {
 		enum Sides { LEFT = 0, TOP, RIGHT, BOTTOM, SIZE };
 
@@ -186,23 +186,23 @@ QMargins BzardNotifications::margins() const {
 			return value;
 		};
 
-		QMargins ret;
-		ret.setLeft(get(LEFT));
-		ret.setTop(get(TOP));
-		ret.setRight(get(RIGHT));
-		ret.setBottom(get(BOTTOM));
-		return {ret};
+		QMargins result;
+		result.setLeft(get(LEFT));
+		result.setTop(get(TOP));
+		result.setRight(get(RIGHT));
+		result.setBottom(get(BOTTOM));
+		return {result};
 	};
 
-	auto config_field = config.value(CONFIG_GLOBAL_MARGINS);
-	auto config_margin = string_list_to_margins(config_field.toStringList());
-	if (config_margin) {
-		return *config_margin;
+	auto configField = config.value(CONFIG_GLOBAL_MARGINS);
+	auto configMargin = stringListToMargins(configField.toStringList());
+	if (configMargin) {
+		return *configMargin;
 	} else {
-		auto screen = disposition->screen()->availableSize();
+		auto screen = disposition->SCREEN()->availableSize();
 		auto margin = GLOBAL_MARGINS_DEFAULT_FACTOR * screen.height();
-		auto m = static_cast<int>(margin); /*!!!!!*/
-		return {m, m, m, m};
+		auto margin_ = static_cast<int>(margin);
+		return {margin_, margin_, margin_, margin_};
 	}
 }
 
@@ -213,11 +213,11 @@ QSize BzardNotifications::windowSize() const {
 
 QSize BzardNotifications::windowSize(const QString &WIDTH_KEY,
                                      const QString &HEIGTH_KEY,
-                                     double width_factor,
-                                     double height_factor) const {
+                                     double widthFactor,
+                                     double heightFactor) const {
 	// TODO: cache values
 
-	auto get_window_size_from_config =
+	auto getWindowSizeFromConfig =
 		  [WIDTH_KEY, HEIGTH_KEY](const auto &CONFIG) -> optional<QSize> {
 		auto get = [&CONFIG](auto key) {
 			bool ok{true};
@@ -229,23 +229,23 @@ QSize BzardNotifications::windowSize(const QString &WIDTH_KEY,
 			return value;
 		};
 
-		auto w = get(WIDTH_KEY); /*!!!!!*/
-		auto h = get(HEIGTH_KEY);
+		auto width = get(WIDTH_KEY); /*!!!!!*/
+		auto height = get(HEIGTH_KEY);
 
-		if (!w || !h)
+		if (!width || !height)
 			return {};
 		else
-			return {QSize{w, h}};
+			return {QSize{width, height}};
 	};
 
-	auto config_size = get_window_size_from_config(config);
-	if (config_size) {
-		return *config_size;
+	auto configSize = getWindowSizeFromConfig(config);
+	if (configSize) {
+		return *configSize;
 	} else {
-		auto screen = disposition->screen()->availableSize();
-		auto w = width_factor * screen.width();
-		auto h = height_factor * screen.height();
-		return QSize{static_cast<int>(w), static_cast<int>(h)};
+		auto screen = disposition->SCREEN()->availableSize();
+		auto width = widthFactor * screen.width();
+		auto height = heightFactor * screen.height();
+		return QSize{static_cast<int>(width), static_cast<int>(height)};
 	}
 }
 
@@ -262,14 +262,14 @@ QPoint BzardNotifications::extraWindowPosition() const {
 bool BzardNotifications::createNotificationIfSpaceAvailable(
 	  const BzardNotification &NOTIFICATION) {
 	auto size = windowSize();
-	auto pos = disposition->poses(NOTIFICATION.id, size);
-	if (pos) {
-		auto id = NOTIFICATION.replaces_id ? NOTIFICATION.replaces_id
-		                                   : NOTIFICATION.id;
+	auto position = disposition->poses(NOTIFICATION.id, size);
+	if (position) {
+		auto id = NOTIFICATION.replacesId ? NOTIFICATION.replacesId
+		                                  : NOTIFICATION.id;
 		emit createNotification(
-			  static_cast<int>(id), size, *pos, NOTIFICATION.expire_timeout,
+			  static_cast<int>(id), size, *position, NOTIFICATION.expireTimeout,
 			  NOTIFICATION.application, NOTIFICATION.body, NOTIFICATION.title,
-			  NOTIFICATION.icon_url, NOTIFICATION.actions);
+			  NOTIFICATION.iconUrl, NOTIFICATION.actions);
 		return true;
 	} else {
 		return false;
@@ -287,8 +287,9 @@ void BzardNotifications::checkExtraNotifications() {
 bool BzardNotifications::shouldShowPopup() const {
 	if (fullscreenDetector) {
 		if (dontShowWhenFullscreenCurrentDesktop()) {
-			auto cd = fullscreenDetector->fullscreenWindowsOnCurrentDesktop();
-			if (cd)
+			auto currenDesktop =
+				  fullscreenDetector->fullscreenWindowsOnCurrentDesktop();
+			if (currenDesktop)
 				return false;
 		}
 		if (dontShowWhenFullscreenAny()) {

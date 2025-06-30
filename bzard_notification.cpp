@@ -18,16 +18,16 @@
 #include "bzard_notification.h"
 
 BzardNotification::operator QString() const {
-	QString ret;
-	ret += "#" + QString::number(id);
-	if (replaces_id)
-		ret += "→" + QString::number(replaces_id);
-	ret += '|' + application;
-	ret += '|' + body;
-	ret += '|' + title;
-	ret += '|' + icon_url;
-	ret += "|t" + QString::number(expire_timeout);
-	return ret;
+	QString result;
+	result += "#" + QString::number(id);
+	if (replacesId)
+		result += "→" + QString::number(replacesId);
+	result += '|' + application;
+	result += '|' + body;
+	result += '|' + title;
+	result += '|' + iconUrl;
+	result += "|t" + QString::number(expireTimeout);
+	return result;
 }
 
 BzardNotificationModifier::~BzardNotificationModifier() {}

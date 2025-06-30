@@ -24,38 +24,38 @@ BzardTopDown::BzardTopDown(QObject *parent) : BzardDisposition(parent) {
 BzardTopDown::optional<QPoint> BzardTopDown::poses(BzardNotification::id_t id,
                                                    QSize size) {
 	// Already here, must be replaced
-	auto current_pos_it = dispositions.find(id);
-	if (current_pos_it != dispositions.end())
-		return current_pos_it->second.topLeft();
+	auto currentPosition = dispositions.find(id);
+	if (currentPosition != dispositions.end())
+		return currentPosition->second.topLeft();
 
 	// Okay, lets calc new position
 	auto avail = availableGeometry();
 
-	auto pos_point =
+	auto positionPoint =
 		  avail.topRight() - QPoint{size.width() - 1
 	                                // topRigth returns not correct coordinates
 	                                // So we add 1 to result (-(-1))
 	                                // Look at Qt's docs for more
 	                                ,
 	                                0};
-	QRect position{pos_point, size};
+	QRect position{positionPoint, size};
 	if (avail.contains(position)) {
 		dispositions[id] = position;
-		return {pos_point};
+		return {positionPoint};
 	} else {
 		return {};
 	}
 }
 
 QPoint BzardTopDown::externalWindowPosition() const {
-	auto pos_point = availableScreenGeometry.bottomRight() -
-	                 QPoint{extraWindowSize.width() - 1
-	                        // topRigth returns not correct coordinates
-	                        // So we add 1 to result (-(-1))
-	                        // Look at Qt's docs for more
-	                        ,
-	                        0};
-	return pos_point;
+	auto positionPoint = availableScreenGeometry.bottomRight() -
+	                     QPoint{extraWindowSize.width() - 1
+	                            // topRigth returns not correct coordinates
+	                            // So we add 1 to result (-(-1))
+	                            // Look at Qt's docs for more
+	                            ,
+	                            0};
+	return positionPoint;
 }
 
 void BzardTopDown::setExtraWindowSize(const QSize &VALUE) {
@@ -73,33 +73,33 @@ void BzardTopDown::remove(BzardNotification::id_t id) {
 		  -> std::map<BzardNotification::id_t, QPoint> {
 		auto end = dispositions.end();
 		const QRect &TO_REMOVE = TO_REMOVE_IT->second;
-		auto move_up_for = spacing + TO_REMOVE.height();
+		auto moveUpFor = spacing + TO_REMOVE.height();
 
-		auto it = std::next(TO_REMOVE_IT);
-		if (it == end) {
+		auto remove /*what can mean it here?*/ = std::next(TO_REMOVE_IT);
+		if (remove == end) {
 			return {}; // Nothing to move up
 		}
 		std::map<BzardNotification::id_t, QPoint> positionToMove;
-		for (; it != end; ++it) {
-			auto d_id = it->first; /*!!!!!*/
-			auto &d_pos = it->second;
-			d_pos.moveTop(d_pos.top() - move_up_for);
-			positionToMove.emplace(d_id, d_pos.topLeft());
+		for (; remove != end; ++remove) {
+			auto dId = remove->first;
+			auto &dPosition = remove->second;
+			dPosition.moveTop(dPosition.top() - moveUpFor);
+			positionToMove.emplace(dId, dPosition.topLeft());
 		}
 		return positionToMove;
 	};
 
-	auto pos_it = dispositions.find(id);
-	if (pos_it != dispositions.end()) {
+	auto position = dispositions.find(id);
+	if (position != dispositions.end()) {
 		// Just calculate all
-		auto posToMove = recalculateDispositions(pos_it);
+		auto positionToMove = recalculateDispositions(position);
 		// Now move
-		for (auto &p : posToMove) /*!!!!!*/
-			emit moveNotification(p.first, p.second);
+		for (auto &move : positionToMove)
+			emit moveNotification(move.first, move.second);
 
 		// pos_it will not be invalidated even
 		// if posess will be called before next line
-		dispositions.erase(pos_it);
+		dispositions.erase(position);
 	} else {
 		//		throw std::runtime_error{
 		//		    "BzardTopDown: can't find old disposition"};
@@ -110,21 +110,21 @@ void BzardTopDown::removeAll() { dispositions.clear(); }
 
 void BzardTopDown::recalculateAvailableScreenGeometry() {
 	BzardDisposition::recalculateAvailableScreenGeometry();
-	auto extra_bottom_margin = extraWindowSize.height() + spacing;
-	availableScreenGeometry -= QMargins{0, 0, 0, extra_bottom_margin};
+	auto extraBottomMargin = extraWindowSize.height() + spacing;
+	availableScreenGeometry -= QMargins{0, 0, 0, extraBottomMargin};
 }
 
 QRect BzardTopDown::availableGeometry() const {
-	auto ret = availableScreenGeometry;
-	ret.adjust(0, dispositions.empty() ? 0 : spacing, 0, 0);
+	auto result = availableScreenGeometry;
+	result.adjust(0, dispositions.empty() ? 0 : spacing, 0, 0);
 
 	if (dispositions.empty())
-		return ret;
+		return result;
 
 	const auto &LAST_OBJECT = *std::crbegin(dispositions);
 
 	// Top margin already included in availableScreenGeometry
-	auto bot_margin = LAST_OBJECT.second.bottom() - margins.top();
-	ret.adjust(0, bot_margin, 0, 0);
-	return ret;
+	auto bottomMargin = LAST_OBJECT.second.bottom() - margins.top();
+	result.adjust(0, bottomMargin, 0, 0);
+	return result;
 }

@@ -40,7 +40,7 @@ class BzardConfig {
 	                     const QString &FILE_NAME_ = "config");
 
 	QVariant value(const QString &KEY,
-	               const QVariant &DEAFAULT_VALUE = QVariant()) const;
+	               const QVariant &DEAFAULT_VALUE = QVariant(/*???*/)) const;
 	void setValue(const QString &KEY, const QVariant &VALUE);
 
   private:

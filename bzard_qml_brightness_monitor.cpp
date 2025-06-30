@@ -11,7 +11,8 @@ bool QMLBrightnessMonitor::initialize() {
 	}
 	qInfo() << Q_FUNC_INFO << "Initializing...";
 
-	udevMonitorInstance = std::make_unique<UdevMonitor>();
+	udevMonitorInstance =
+		  std::/*?not enough parametrs? -->*/ make_unique<UdevMonitor>();
 	if (!udevMonitorInstance->initialize()) {
 		emit errorOccurred("UdevMonitor", "Initialization failed.");
 		udevMonitorInstance.reset();
@@ -105,10 +106,11 @@ void QMLBrightnessMonitor::handleUdevEvent(const QString &ACTION,
 		return;
 	}
 	// Итерация по QMap<QString, BrightnessMonitor*>
-	for (auto it /*!!!*/ = activeMonitors.constBegin();
-	     it != activeMonitors.constEnd(); ++it) {
-		const QString &MONITOR_SYS_PATH = it.key();
-		BzardBrightnessMonitor *monitorPtr = it.value(); // Получаем raw pointer
+	for (auto iteration = activeMonitors.constBegin();
+	     iteration != activeMonitors.constEnd(); ++iteration) {
+		const QString &MONITOR_SYS_PATH = iteration.key();
+		BzardBrightnessMonitor *monitorPtr =
+			  iteration.value(); // Получаем raw pointer
 		if (EVENT_SYS_PATH.startsWith(MONITOR_SYS_PATH) && monitorPtr) {
 			monitorPtr->checkForUpdate();
 			break;
@@ -144,8 +146,8 @@ void QMLBrightnessMonitor::onUdevError(const QString &ERROR_STRING) {
 
 // --- Синглтон-провайдер (без изменений) ---
 static QPointer<QMLBrightnessMonitor> gBrightnessMonitorInstance = nullptr;
-QObject *qml_brightness_monitor_provider(QQmlEngine *engine,
-                                         QJSEngine *scriptEngine) {
+QObject *qmlBrightnessMonitorProvider(QQmlEngine *engine,
+                                      QJSEngine *scriptEngine) {
 	Q_UNUSED(engine);
 	Q_UNUSED(scriptEngine);
 	if (!gBrightnessMonitorInstance) {

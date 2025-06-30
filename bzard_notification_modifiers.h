@@ -27,7 +27,7 @@ template <class T, class... A> std::unique_ptr<T> make(A &&...args) {
 }
 
 struct BzardGenerator final : public BzardNotificationModifier {
-	BzardNotification::id_t last_id{0};
+	BzardNotification::id_t lastId{0};
 
 	void modify(BzardNotification &notification) final;
 };

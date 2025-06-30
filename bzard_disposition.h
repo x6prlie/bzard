@@ -41,7 +41,7 @@ class BzardDisposition : public QObject {
 
 	virtual QPoint externalWindowPosition() const = 0;
 
-	const QScreen *screen() const;
+	const QScreen *SCREEN() const;
 
 	virtual void setExtraWindowSize(const QSize &VALUE);
 
@@ -65,5 +65,5 @@ class BzardDisposition : public QObject {
 	virtual void recalculateAvailableScreenGeometry();
 
   private:
-	const QScreen *screen_;
+	const QScreen *SCREEN_;
 };

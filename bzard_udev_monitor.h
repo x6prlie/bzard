@@ -5,7 +5,7 @@
 #include <QString>
 #include <libudev.h>
 
-struct udev_device;
+// struct udevDevice;
 
 /**
  * @brief Monitors udev events using a socket notifier.

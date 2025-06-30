@@ -37,11 +37,11 @@ static bool copyRecursively(const QString &SRC_FILE_PATH,
 		QStringList fileNames = sourceDir.entryList(
 			  QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden |
 			  QDir::System);
-		for (const QString &FILE_NAEM : fileNames) {
+		for (const QString &FILE_NAME : fileNames) {
 			const QString NEW_SRC_FILE_PATH =
-				  SRC_FILE_PATH + QLatin1Char('/') + FILE_NAEM;
+				  SRC_FILE_PATH + QLatin1Char('/') + FILE_NAME;
 			const QString NEW_TGT_FILE_PATH =
-				  TGT_FILE_PATH + QLatin1Char('/') + FILE_NAEM;
+				  TGT_FILE_PATH + QLatin1Char('/') + FILE_NAME;
 			if (!copyRecursively(NEW_SRC_FILE_PATH, TGT_FILE_PATH))
 				return false;
 		}
@@ -70,10 +70,10 @@ void BzardConfig::setValue(const QString &KEY, const QVariant &VALUE) {
 	settings->setValue(CATEGORY + KEY, VALUE);
 }
 
-#define IQ_MACRO_STRING(S) IQ_MACRO_STRING__(S)
-#define IQ_MACRO_STRING__(S) #S
+#define BZARD_MACRO_STRING(S) BZARD_MACRO_STRING__(S)
+#define BZARD_MACRO_STRING__(S) #S
 QString BzardConfig::applicationName() {
-	return QStringLiteral(IQ_MACRO_STRING(IQ_APP_NAME));
+	return QStringLiteral(BZARD_MACRO_STRING(GBZARD_APP_NAME));
 }
 
 QString BzardConfig::configDir() {
@@ -82,17 +82,17 @@ QString BzardConfig::configDir() {
 }
 
 QString BzardConfig::applicationVersion() {
-	return QStringLiteral(IQ_MACRO_STRING(IQ_VERSION));
+	return QStringLiteral(BZARD_MACRO_STRING(BZARD_VERSION));
 }
-#undef IQ_MACRO_STRING__
-#undef IQ_MACRO_STRING
+#undef BZARD_MACRO_STRING__
+#undef BZARD_MACRO_STRING
 
 QString BzardConfig::getConfigFileName() const {
 	auto config = configDir() + '/' + FILE_NAME;
-	QFileInfo config_file{config};
+	QFileInfo configFile{config};
 
-	if (config_file.exists()) {
-		if (!config_file.isFile())
+	if (configFile.exists()) {
+		if (!configFile.isFile())
 			throw std::runtime_error{config.toStdString() +
 			                         " is not a valid config file"};
 	} else {
@@ -107,12 +107,12 @@ QString BzardConfig::getConfigFileName() const {
 }
 
 bool BzardConfig::copyConfigFileFromExample(const QString &DESTINATION) const {
-	auto config_example_path =
+	auto configExamplePath =
 		  "/usr/share/" + applicationName() + '/' + FILE_NAME + ".example";
-	QFile config_example_file{config_example_path};
-	if (!config_example_file.exists())
+	QFile configExampleFile{configExamplePath};
+	if (!configExampleFile.exists())
 		return false;
-	return config_example_file.copy(DESTINATION);
+	return configExampleFile.copy(DESTINATION);
 }
 
 bool BzardConfig::copyThemesFromShare(const QString &DESTINATION) const {

@@ -41,30 +41,30 @@
 	Q_UNUSED(body);                                                            \
 	QString &title = N__.title;                                                \
 	Q_UNUSED(title);                                                           \
-	QString &icon_url = N__.icon_url;                                          \
-	Q_UNUSED(icon_url);                                                        \
+	QString &iconUrl = N__.iconUrl;                                            \
+	Q_UNUSED(iconUrl);                                                         \
 	QStringList &actions = N__.actions;                                        \
 	Q_UNUSED(actions);                                                         \
 	QVariantMap &hints = N__.hints;                                            \
 	Q_UNUSED(hints);                                                           \
-	BzardNotification::ExpireTimeout &expire_timeout = N__.expire_timeout;     \
-	Q_UNUSED(expire_timeout);                                                  \
-	id_t &replaces_id = N__.replaces_id;                                       \
-	Q_UNUSED(replaces_id);
+	BzardNotification::ExpireTimeout &expireTimeout = N__.expireTimeout;       \
+	Q_UNUSED(expireTimeout);                                                   \
+	id_t &replacesId = N__.replacesId;                                         \
+	Q_UNUSED(replacesId);
 
 namespace {
 
 template <class K, class V> using map_t = std::map<K, V>;
-static map_t<uintmax_t, QString> cached_images;
+static map_t<uintmax_t, QString> cachedImages;
 
 bool isCached(uintmax_t hash) {
-	return cached_images.find(hash) != cached_images.end();
+	return cachedImages.find(hash) != cachedImages.end();
 }
 
 QString imageFilenameFromHash(uintmax_t hash) {
-	auto ret = XdgDirs::cacheHome() + "/bzard-cached_" + QString::number(hash) +
-	           ".png";
-	return ret;
+	auto result = XdgDirs::cacheHome() + "/bzard-cached_" +
+	              QString::number(hash) + ".png";
+	return result;
 }
 
 /*
@@ -78,16 +78,16 @@ void toQmlAbsolutePath(QString &path) {
 }
 
 template <class T> bool cacheImage(const T &IMG, uintmax_t hash) {
-	auto fname = imageFilenameFromHash(hash);
-	if (IMG.save(fname))
-		cached_images[hash] = std::move(fname);
+	auto fileName = imageFilenameFromHash(hash);
+	if (IMG.save(fileName))
+		cachedImages[hash] = std::move(fileName);
 	else
 		return false;
 	return true;
 }
 
 QString getImageUrlFromHint(const QVariant &ARGUMENT) {
-	int width, height, rowstride, bitsPerSample, channels;
+	int width, height, rowStride, bitsPerSample, channels;
 	bool hasAlpha;
 	QByteArray data;
 
@@ -95,7 +95,7 @@ QString getImageUrlFromHint(const QVariant &ARGUMENT) {
 	ARG.beginStructure();
 	ARG >> width;
 	ARG >> height;
-	ARG >> rowstride;
+	ARG >> rowStride;
 	ARG >> hasAlpha;
 	ARG >> bitsPerSample;
 	ARG >> channels;
@@ -119,11 +119,11 @@ QString getImageUrlFromHint(const QVariant &ARGUMENT) {
 			return {};
 		}
 	}
-	return cached_images[hash];
+	return cachedImages[hash];
 }
 
 QString getImageUrlFromString(const QString &STR) {
-	static constexpr auto PIXMAP_SIZE = 256;
+	static constexpr auto PIXEL_MAP_SIZE = 256;
 
 	QUrl url(STR);
 	if (url.isValid() && QFile::exists(url.toLocalFile())) {
@@ -134,12 +134,12 @@ QString getImageUrlFromString(const QString &STR) {
 		auto hash = static_cast<uintmax_t>(icon.cacheKey());
 
 		if (!isCached(hash)) {
-			auto pixmap = icon.pixmap({PIXMAP_SIZE, PIXMAP_SIZE});
-			if (!cacheImage(pixmap, hash)) {
+			auto pixelMap = icon.pixmap({PIXEL_MAP_SIZE, PIXEL_MAP_SIZE});
+			if (!cacheImage(pixelMap, hash)) {
 				return {};
 			}
 		}
-		return cached_images[hash];
+		return cachedImages[hash];
 	}
 }
 
@@ -148,8 +148,8 @@ QString getImageUrlFromString(const QString &STR) {
 void BzardNotificationModifiers::BzardGenerator::modify(
 	  BzardNotification &notification) {
 	N_TO_REFS(notification);
-	if (replaces_id == 0)
-		id = ++last_id;
+	if (replacesId == 0)
+		id = ++lastId;
 }
 
 /*
@@ -159,26 +159,26 @@ void BzardNotificationModifiers::IconHandler::modify(
 	  BzardNotification &notification) {
 	N_TO_REFS(notification);
 	if (!hints["image_data"].isNull()) {
-		icon_url = getImageUrlFromHint(hints["image_data"]);
+		iconUrl = getImageUrlFromHint(hints["image_data"]);
 	} else if (!hints["image_path"].isNull()) {
-		icon_url = getImageUrlFromString(hints["image_path"].toString());
-	} else if (!icon_url.isEmpty()) {
+		iconUrl = getImageUrlFromString(hints["image_path"].toString());
+	} else if (!iconUrl.isEmpty()) {
 		/*
 		 *  Check, is it web URL
 		 */
 		{
 			static const QString HTTP{"http://"};
 			static const QString HTTPS{"https://"};
-			if (icon_url.startsWith(HTTP, Qt::CaseInsensitive) ||
-			    icon_url.startsWith(HTTPS, Qt::CaseInsensitive))
+			if (iconUrl.startsWith(HTTP, Qt::CaseInsensitive) ||
+			    iconUrl.startsWith(HTTPS, Qt::CaseInsensitive))
 				return;
 		}
-		icon_url = getImageUrlFromString(icon_url);
+		iconUrl = getImageUrlFromString(iconUrl);
 	} else if (!hints["icon_data"].isNull()) {
-		icon_url = getImageUrlFromHint(hints["icon_data"]);
+		iconUrl = getImageUrlFromHint(hints["icon_data"]);
 	}
 
-	toQmlAbsolutePath(icon_url);
+	toQmlAbsolutePath(iconUrl);
 }
 
 BzardNotificationModifiers::DefaultTimeout::DefaultTimeout()
@@ -193,9 +193,9 @@ BzardNotificationModifiers::DefaultTimeout::DefaultTimeout()
 void BzardNotificationModifiers::DefaultTimeout::modify(
 	  BzardNotification &notification) {
 	N_TO_REFS(notification);
-	if (expire_timeout < 0)
-		expire_timeout =
-			  static_cast<std::remove_reference_t<decltype(expire_timeout)>>(
+	if (expireTimeout < 0)
+		expireTimeout =
+			  static_cast<std::remove_reference_t<decltype(expireTimeout)>>(
 					defaultTimeout);
 }
 
@@ -206,11 +206,11 @@ void BzardNotificationModifiers::TitleToIcon::modify(
 	  BzardNotification &notification) {
 	N_TO_REFS(notification);
 	// Do nothing if icon presented
-	if (!icon_url.isEmpty())
+	if (!iconUrl.isEmpty())
 		return;
 
 	if (application.compare(title, Qt::CaseInsensitive) == 0) {
-		icon_url = application.toLower().replace(' ', '-');
+		iconUrl = application.toLower().replace(' ', '-');
 	}
 }
 

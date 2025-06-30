@@ -63,18 +63,18 @@ class BzardDBusService : public QObject {
 	QString getServerInformation(QString &vendor, QString &version,
 	                             QString &specVersion);
 
-	uint32_t notify(const QString &APP_NAME, uint32_t replaces_id,
+	uint32_t notify(const QString &APP_NAME, uint32_t replacesId,
 	                const QString &APP_ICON, const QString &SUMMARY,
 	                const QString &BODY, const QStringList &ACTIONS,
-	                const QVariantMap &HINTS, uint32_t expire_timeout);
+	                const QVariantMap &HINTS, uint32_t expireTimeout);
 
 	void closeNotification(uint32_t id);
 
   signals:
 	// DBus signals
-	void actionInvoked(uint32_t notification_id, const QString &ACTION_KEY);
+	void actionInvoked(uint32_t notificationId, const QString &ACTION_KEY);
 
-	void notificationClosed(uint32_t notification_id, uint32_t reason);
+	void notificationClosed(uint32_t notificationId, uint32_t reason);
 
 	// Internal signals
 	void createNotificationSignal(const BzardNotification &NOTIFICATON);

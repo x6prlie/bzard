@@ -18,7 +18,7 @@ struct DBusNotification {
 
 	id_t id;
 	QString appName;
-	id_t replaces_id;
+	id_t replacesId;
 	QString appIcon;
 	QString summary;
 	QString body;

@@ -39,18 +39,18 @@ BzardDBusService::connectReceiver(BzardNotificationReceiver *receiver) {
 }
 
 QStringList BzardDBusService::getCapabilities() {
-	auto caps = QStringList{} << "actions"
-	                          // << "action-icons"
-	                          << "body"
-	                          // << "body-hyperlinks"
-	                          // << "body-images"
-	                          << "body-markup"
-	                          // << "icon-multi"
-	                          << "icon-static"
-	                          << "persistence"
+	auto capabilities = QStringList{} << "actions"
+	                                  // << "action-icons"
+	                                  << "body"
+	                                  // << "body-hyperlinks"
+	                                  // << "body-images"
+	                                  << "body-markup"
+	                                  // << "icon-multi"
+	                                  << "icon-static"
+	                                  << "persistence"
 		  // << "sound"
 		  ;
-	return caps;
+	return capabilities;
 }
 
 QString BzardDBusService::getServerInformation(QString &vendor,
@@ -62,16 +62,16 @@ QString BzardDBusService::getServerInformation(QString &vendor,
 	return QString("bzard");
 }
 
-uint32_t BzardDBusService::notify(const QString &APP_NAME, uint32_t replaces_id,
+uint32_t BzardDBusService::notify(const QString &APP_NAME, uint32_t replacesId,
                                   const QString &APP_ICON,
                                   const QString &SUMMARY, const QString &BODY,
                                   const QStringList &ACTIONS,
                                   const QVariantMap &HINTS,
-                                  uint32_t expire_timeout) {
-	auto notification = modify(
-		  {replaces_id, APP_NAME, BODY, SUMMARY, APP_ICON, ACTIONS, HINTS,
-	       static_cast<BzardNotification::ExpireTimeout>(expire_timeout),
-	       replaces_id});
+                                  uint32_t expireTimeout) {
+	auto notification =
+		  modify({replacesId, APP_NAME, BODY, SUMMARY, APP_ICON, ACTIONS, HINTS,
+	              static_cast<BzardNotification::ExpireTimeout>(expireTimeout),
+	              replacesId});
 	emit createNotificationSignal(notification);
 	return notification.id;
 }

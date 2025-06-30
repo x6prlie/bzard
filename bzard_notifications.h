@@ -78,15 +78,15 @@ class BzardNotifications final : public BzardNotificationReceiver,
   signals:
 	// Signals to QML
 	void extraNotificationsCountChanged();
-	void createNotification(int notification_id, QSize size, QPoint pos,
-	                        int expire_timeout, const QString &APP_NAME,
+	void createNotification(int notificationId, QSize size, QPoint position,
+	                        int expireTimeout, const QString &APP_NAME,
 	                        const QString &BODY,
 	                        const QString &TITLE = QString{},
 	                        const QString &ICON_URL = QString{},
 	                        const QStringList &ACTIONS = {});
-	void dropNotification(int notification_id);
+	void dropNotification(int notificatioId);
 	void dropAllVisible();
-	void moveNotification(int notification_id, QPoint pos);
+	void moveNotification(int notificationId, QPoint pos);
 
 	/*
 	 * Property changed signals
@@ -135,7 +135,7 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	QMargins margins() const;
 	QSize windowSize() const;
 	QSize windowSize(const QString &WIDTH_KEY, const QString &HEIGHT_KEY,
-	                 double width_factor, double height_factor) const;
+	                 double widthFactor, double heightFactor) const;
 	bool
 	createNotificationIfSpaceAvailable(const BzardNotification &NOTIFICATION);
 	void checkExtraNotifications();

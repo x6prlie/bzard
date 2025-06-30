@@ -50,7 +50,7 @@ BzardHistoryNotification::BzardHistoryNotification(
 	  const BzardNotification &NOTIFICATION, QObject *parent)
 	  : QObject(parent), ID__{NOTIFICATION.id},
 		APPLICATION{NOTIFICATION.application}, TITLE_{NOTIFICATION.title},
-		BODY_{NOTIFICATION.body}, ICON_URL_{NOTIFICATION.icon_url} {}
+		BODY_{NOTIFICATION.body}, ICON_URL_{NOTIFICATION.iconUrl} {}
 
 uint BzardHistoryNotification::id_() const { return ID__; }
 
@@ -62,8 +62,8 @@ QString BzardHistoryNotification::body() const { return BODY_; }
 
 QString BzardHistoryNotification::iconUrl() const { return ICON_URL_; }
 
-BzardHistoryModel::BzardHistoryModel(BzardHistory::ptr_t history_)
-	  : bzardHistory{history_} {
+BzardHistoryModel::BzardHistoryModel(BzardHistory::ptr_t history)
+	  : bzardHistory{history} {
 	connect(bzardHistory, &BzardHistory::rowInserted, this,
 	        &BzardHistoryModel::onHistoryRowInserted);
 }
@@ -81,24 +81,24 @@ QVariant BzardHistoryModel::data(const QModelIndex &INDEX, int role) const {
 		return {};
 
 	if (!INDEX.isValid())
-		return QVariant();
+		return QVariant(/*???*/);
 
-	auto &n = bzardHistory->historyList[INDEX.row()];
+	auto &index /*What mean "n"?*/ = bzardHistory->historyList[INDEX.row()];
 	switch (role) {
 	case Id_Role:
-		return n->id_();
+		return index->id_();
 		break;
 	case ApplicationRole:
-		return n->application();
+		return index->application();
 		break;
 	case TitleRole:
-		return n->title();
+		return index->title();
 		break;
 	case BodyRole:
-		return n->body();
+		return index->body();
 		break;
 	case IconUrlRole:
-		return n->iconUrl();
+		return index->iconUrl();
 		break;
 	default:
 		break;
@@ -141,7 +141,7 @@ bool BzardHistoryModel::removeRows(int row, int count,
 
 QHash<int, QByteArray> BzardHistoryModel::roleNames() const {
 	QHash<int, QByteArray> roles;
-	roles[Id_Role] = "id_";
+	roles[Id_Role /*Enum values*/] = "id_";
 	roles[ApplicationRole] = "application";
 	roles[TitleRole] = "title";
 	roles[BodyRole] = "body";
