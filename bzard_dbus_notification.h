@@ -5,7 +5,7 @@
 #include <QVariantMap>
 
 struct DBusNotification {
-	using id_t = uint;
+	using IdTemplate = uint;
 
 	enum ClosingReason : uint {
 		CR_NOTIFICATION_EXPIRED = 1,
@@ -16,9 +16,9 @@ struct DBusNotification {
 
 	enum ExpireTimeout : int { ET_SERVER_DECIDES = -1, ET_FOREVER = 0 };
 
-	id_t id;
+	IdTemplate id;
 	QString appName;
-	id_t replacesId;
+	IdTemplate replacesId;
 	QString appIcon;
 	QString summary;
 	QString body;

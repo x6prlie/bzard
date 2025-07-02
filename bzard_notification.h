@@ -24,7 +24,7 @@
 #include <QVariantMap>
 
 struct BzardNotification {
-	using /*Type aliases idT*/ id_t = uint32_t;
+	using IdTemplate = uint32_t;
 
 	enum ClosingReason : uint32_t {
 		CR_NOTIFICATION_EXPIRED = 1,
@@ -35,7 +35,7 @@ struct BzardNotification {
 
 	enum ExpireTimeout : int { ET_SERVER_DECIDES = -1, ET_FOREVER = 0 };
 
-	id_t id;
+	IdTemplate id;
 	QString application;
 	QString body;
 	QString title;
@@ -44,14 +44,13 @@ struct BzardNotification {
 	QVariantMap hints;
 	ExpireTimeout expireTimeout;
 
-	id_t replacesId;
+	IdTemplate replacesId;
 
 	operator QString() const;
 };
 
 struct BzardNotificationModifier {
-	using /*Type aliases ptrT*/ ptr_t =
-		  std::unique_ptr<BzardNotificationModifier>;
+	using PtrTemplate = std::unique_ptr<BzardNotificationModifier>;
 
 	virtual ~BzardNotificationModifier();
 	virtual void modify(BzardNotification &notification) = 0;

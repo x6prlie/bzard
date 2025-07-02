@@ -69,7 +69,7 @@ class BzardHistory : public BzardNotificationReceiver,
 	 * External slots
 	 */
 	void onCreateNotification(const BzardNotification &NOTIFICATION) final;
-	void onDropNotification(BzardNotification::id_t id) final;
+	void onDropNotification(BzardNotification::IdTemplate id) final;
 
 	/*
 	 * QML slots
@@ -80,7 +80,7 @@ class BzardHistory : public BzardNotificationReceiver,
 	void rowInserted();
 
   private:
-	using ptr_t = BzardHistory *;
+	using PtrTemplate = BzardHistory *;
 	std::deque<std::unique_ptr<BzardHistoryNotification>> historyList;
 	std::unique_ptr<BzardHistoryModel> model_;
 
@@ -97,7 +97,7 @@ class BzardHistoryModel : public QAbstractListModel {
 		BodyRole,
 		IconUrlRole
 	};
-	explicit BzardHistoryModel(BzardHistory::ptr_t history_);
+	explicit BzardHistoryModel(BzardHistory::PtrTemplate history_);
 	int rowCount(const QModelIndex &PARETN) const final;
 	QVariant data(const QModelIndex &INDEX, int role) const final;
 	bool insertRows(int row, int count, const QModelIndex &PARENT) final;

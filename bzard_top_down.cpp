@@ -21,8 +21,8 @@ BzardTopDown::BzardTopDown(QObject *parent) : BzardDisposition(parent) {
 	recalculateAvailableScreenGeometry();
 }
 
-BzardTopDown::optional<QPoint> BzardTopDown::poses(BzardNotification::id_t id,
-                                                   QSize size) {
+BzardTopDown::Optional<QPoint>
+BzardTopDown::poses(BzardNotification::IdTemplate id, QSize size) {
 	// Already here, must be replaced
 	auto currentPosition = dispositions.find(id);
 	if (currentPosition != dispositions.end())
@@ -68,9 +68,9 @@ void BzardTopDown::setSpacing(int value) {
 	recalculateAvailableScreenGeometry();
 }
 
-void BzardTopDown::remove(BzardNotification::id_t id) {
+void BzardTopDown::remove(BzardNotification::IdTemplate id) {
 	static auto recalculateDispositions = [this](const auto &TO_REMOVE_IT)
-		  -> std::map<BzardNotification::id_t, QPoint> {
+		  -> std::map<BzardNotification::IdTemplate, QPoint> {
 		auto end = dispositions.end();
 		const QRect &TO_REMOVE = TO_REMOVE_IT->second;
 		auto moveUpFor = spacing + TO_REMOVE.height();
@@ -79,7 +79,7 @@ void BzardTopDown::remove(BzardNotification::id_t id) {
 		if (remove == end) {
 			return {}; // Nothing to move up
 		}
-		std::map<BzardNotification::id_t, QPoint> positionToMove;
+		std::map<BzardNotification::IdTemplate, QPoint> positionToMove;
 		for (; remove != end; ++remove) {
 			auto dId = remove->first;
 			auto &dPosition = remove->second;

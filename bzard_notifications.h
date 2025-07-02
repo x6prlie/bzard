@@ -54,12 +54,12 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	                       setDontShowWhenFullscreenCurrentDesktop NOTIFY
 	                             dontShowWhenFullscreenCurrentDesktopChanged)
 
-	BzardNotifications(BzardDisposition::ptr_t disposition_,
+	BzardNotifications(BzardDisposition::PtrTemplate disposition_,
 	                   QObject *parent = nullptr);
 
   public:
 	static BzardNotifications *
-	get(BzardDisposition::ptr_t disposition = nullptr);
+	get(BzardDisposition::PtrTemplate disposition = nullptr);
 
 	void
 	setFullscreenDetector(std::unique_ptr<BzardFullscreenDetector> detector_);
@@ -86,7 +86,7 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	                        const QStringList &ACTIONS = {});
 	void dropNotification(int notificatioId);
 	void dropAllVisible();
-	void moveNotification(int notificationId, QPoint pos);
+	void moveNotification(int notificationId, QPoint position);
 
 	/*
 	 * Property changed signals
@@ -95,7 +95,7 @@ class BzardNotifications final : public BzardNotificationReceiver,
 
   public slots:
 	void onCreateNotification(const BzardNotification &NOTIFICATION) final;
-	void onDropNotification(BzardNotification::id_t id) final;
+	void onDropNotification(BzardNotification::IdTemplate id) final;
 
 	// QML slots
 	void onCloseButtonPressed(int id);
@@ -106,28 +106,29 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	void onDropVisible();
 
   private:
-	BZARD_CONF_VAR(CLOSE_ALL_BY_RIGHT_CLICK, "close_all_by_right_click", true)
-	BZARD_CONF_VAR(CLOSE_VISIBLE_BY_MIDDLE_CLICK,
-	               "close_visible_by_middle_click", true)
-	BZARD_CONF_VAR(CLOSE_BY_LEFT_CLICK, "close_by_left_click", false)
-	BZARD_CONF_VAR(SPACING, "spacing", 0)
-	BZARD_CONF_FACTOR(GLOBAL_MARGINS, "global_margins", 0.02610966057441253264)
-	BZARD_CONF_FACTOR(EXTRA_WINDOW_WIDTH, "extra_window_width",
-	                  0.21961932650073206442)
-	BZARD_CONF_FACTOR(EXTRA_WINDOW_HEIGHT, "extra_window_height",
-	                  0.08355091383812010444 / 2)
-	BZARD_CONF_FACTOR(WIDTH, "width", 0.21961932650073206442)
-	BZARD_CONF_FACTOR(HEIGHT, "height", 0.28198433420365535248)
-	BZARD_CONF_VAR(DONT_SHOW_WHEN_FULLSCREEN_ANY,
-	               "dont_show_when_fullscreen_any", false)
+	BZARD_CONFIG_VAR(CLOSE_ALL_BY_RIGHT_CLICK, "close_all_by_right_click", true)
+	BZARD_CONFIG_VAR(CLOSE_VISIBLE_BY_MIDDLE_CLICK,
+	                 "close_visible_by_middle_click", true)
+	BZARD_CONFIG_VAR(CLOSE_BY_LEFT_CLICK, "close_by_left_click", false)
+	BZARD_CONFIG_VAR(SPACING, "spacing", 0)
+	BZARD_CONFIG_FACTOR(GLOBAL_MARGINS, "global_margins",
+	                    0.02610966057441253264)
+	BZARD_CONFIG_FACTOR(EXTRA_WINDOW_WIDTH, "extra_window_width",
+	                    0.21961932650073206442)
+	BZARD_CONFIG_FACTOR(EXTRA_WINDOW_HEIGHT, "extra_window_height",
+	                    0.08355091383812010444 / 2)
+	BZARD_CONFIG_FACTOR(WIDTH, "width", 0.21961932650073206442)
+	BZARD_CONFIG_FACTOR(HEIGHT, "height", 0.28198433420365535248)
+	BZARD_CONFIG_VAR(DONT_SHOW_WHEN_FULLSCREEN_ANY,
+	                 "dont_show_when_fullscreen_any", false)
 
 	/*
 	 * Changable on-the-fly
 	 */
-	BZARD_CONF_VAR(DONT_SHOW_WHEN_FULLSCREEN_CURRENT_DESKTOP,
-	               "dont_show_when_fullscreen_current_desktop", false)
+	BZARD_CONFIG_VAR(DONT_SHOW_WHEN_FULLSCREEN_CURRENT_DESKTOP,
+	                 "dont_show_when_fullscreen_current_desktop", false)
 
-	BzardDisposition::ptr_t disposition;
+	BzardDisposition::PtrTemplate disposition;
 	std::queue<BzardNotification> extraNotifications;
 	std::unique_ptr<BzardFullscreenDetector> fullscreenDetector;
 

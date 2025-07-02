@@ -32,7 +32,7 @@ void BzardHistory::onCreateNotification(const BzardNotification &NOTIFICATION) {
 	emit rowInserted();
 }
 
-void BzardHistory::onDropNotification(BzardNotification::id_t id) {
+void BzardHistory::onDropNotification(BzardNotification::IdTemplate id) {
 	Q_UNUSED(id)
 }
 
@@ -62,7 +62,7 @@ QString BzardHistoryNotification::body() const { return BODY_; }
 
 QString BzardHistoryNotification::iconUrl() const { return ICON_URL_; }
 
-BzardHistoryModel::BzardHistoryModel(BzardHistory::ptr_t history)
+BzardHistoryModel::BzardHistoryModel(BzardHistory::PtrTemplate history)
 	  : bzardHistory{history} {
 	connect(bzardHistory, &BzardHistory::rowInserted, this,
 	        &BzardHistoryModel::onHistoryRowInserted);

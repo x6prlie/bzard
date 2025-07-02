@@ -32,30 +32,31 @@
  * Using private pointers for notification fields
  * in base class lead to sex with '(*ptr)'
  */
-#define N_TO_REFS(N__)                                                         \
-	id_t &id = N__.id;                                                         \
+#define NOTIFICATION_TO_REFS(NOTIFICATION__)                                   \
+	id_t &id = NOTIFICATION__.id;                                              \
 	Q_UNUSED(id);                                                              \
-	QString &application = N__.application;                                    \
+	QString &application = NOTIFICATION__.application;                         \
 	Q_UNUSED(application);                                                     \
-	QString &body = N__.body;                                                  \
+	QString &body = NOTIFICATION__.body;                                       \
 	Q_UNUSED(body);                                                            \
-	QString &title = N__.title;                                                \
+	QString &title = NOTIFICATION__.title;                                     \
 	Q_UNUSED(title);                                                           \
-	QString &iconUrl = N__.iconUrl;                                            \
+	QString &iconUrl = NOTIFICATION__.iconUrl;                                 \
 	Q_UNUSED(iconUrl);                                                         \
-	QStringList &actions = N__.actions;                                        \
+	QStringList &actions = NOTIFICATION__.actions;                             \
 	Q_UNUSED(actions);                                                         \
-	QVariantMap &hints = N__.hints;                                            \
+	QVariantMap &hints = NOTIFICATION__.hints;                                 \
 	Q_UNUSED(hints);                                                           \
-	BzardNotification::ExpireTimeout &expireTimeout = N__.expireTimeout;       \
+	BzardNotification::ExpireTimeout &expireTimeout =                          \
+		  NOTIFICATION__.expireTimeout;                                        \
 	Q_UNUSED(expireTimeout);                                                   \
-	id_t &replacesId = N__.replacesId;                                         \
+	id_t &replacesId = NOTIFICATION__.replacesId;                              \
 	Q_UNUSED(replacesId);
 
 namespace {
 
-template <class K, class V> using map_t = std::map<K, V>;
-static map_t<uintmax_t, QString> cachedImages;
+template <class K, class V> using MapTemplate = std::map<K, V>;
+static MapTemplate<uintmax_t, QString> cachedImages;
 
 bool isCached(uintmax_t hash) {
 	return cachedImages.find(hash) != cachedImages.end();
@@ -147,7 +148,7 @@ QString getImageUrlFromString(const QString &STR) {
 
 void BzardNotificationModifiers::BzardGenerator::modify(
 	  BzardNotification &notification) {
-	N_TO_REFS(notification);
+	NOTIFICATION_TO_REFS(notification);
 	if (replacesId == 0)
 		id = ++lastId;
 }
@@ -157,7 +158,7 @@ void BzardNotificationModifiers::BzardGenerator::modify(
  */
 void BzardNotificationModifiers::IconHandler::modify(
 	  BzardNotification &notification) {
-	N_TO_REFS(notification);
+	NOTIFICATION_TO_REFS(notification);
 	if (!hints["image_data"].isNull()) {
 		iconUrl = getImageUrlFromHint(hints["image_data"]);
 	} else if (!hints["image_path"].isNull()) {
@@ -192,7 +193,7 @@ BzardNotificationModifiers::DefaultTimeout::DefaultTimeout()
 
 void BzardNotificationModifiers::DefaultTimeout::modify(
 	  BzardNotification &notification) {
-	N_TO_REFS(notification);
+	NOTIFICATION_TO_REFS(notification);
 	if (expireTimeout < 0)
 		expireTimeout =
 			  static_cast<std::remove_reference_t<decltype(expireTimeout)>>(
@@ -204,7 +205,7 @@ BzardNotificationModifiers::TitleToIcon::TitleToIcon()
 
 void BzardNotificationModifiers::TitleToIcon::modify(
 	  BzardNotification &notification) {
-	N_TO_REFS(notification);
+	NOTIFICATION_TO_REFS(notification);
 	// Do nothing if icon presented
 	if (!iconUrl.isEmpty())
 		return;
@@ -222,7 +223,7 @@ BzardNotificationModifiers::ReplaceMinusToDash::ReplaceMinusToDash()
 
 void BzardNotificationModifiers::ReplaceMinusToDash::modify(
 	  BzardNotification &notification) {
-	N_TO_REFS(notification);
+	NOTIFICATION_TO_REFS(notification);
 	if (fixTitle)
 		replaceMinusToDash(title);
 	if (fixBody)
@@ -241,11 +242,11 @@ BzardNotificationModifiers::BodyToTitleWhenTitleIsAppName::
 
 void BzardNotificationModifiers::BodyToTitleWhenTitleIsAppName::modify(
 	  BzardNotification &notification) {
-	N_TO_REFS(notification);
+	NOTIFICATION_TO_REFS(notification);
 	if (application.compare(title, Qt::CaseInsensitive) == 0) {
 		title = body;
 		body = QString{};
 	}
 }
 
-#undef N_TO_REFS
+#undef NOTIFICATION_TO_REFS

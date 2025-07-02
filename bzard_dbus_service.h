@@ -78,15 +78,16 @@ class BzardDBusService : public QObject {
 
 	// Internal signals
 	void createNotificationSignal(const BzardNotification &NOTIFICATON);
-	void dropNotificationSignal(BzardNotification::id_t id);
+	void dropNotificationSignal(BzardNotification::IdTemplate id);
 
   public slots:
-	void onNotificationDropped(BzardNotification::id_t id,
+	void onNotificationDropped(BzardNotification::IdTemplate id,
 	                           BzardNotification::ClosingReason reason);
-	void onActionInvoked(BzardNotification::id_t id, const QString &ACTION_KEY);
+	void onActionInvoked(BzardNotification::IdTemplate id,
+	                     const QString &ACTION_KEY);
 
   private:
-	std::vector<BzardNotificationModifier::ptr_t> modifers;
+	std::vector<BzardNotificationModifier::PtrTemplate> modifers;
 
 	BzardNotification modify(BzardNotification NOTIFICATON);
 };

@@ -27,8 +27,8 @@
 
 template <class T> using optional = std::experimental::optional<T>;
 
-BzardNotifications::BzardNotifications(BzardDisposition::ptr_t disposition_,
-                                       QObject *parent)
+BzardNotifications::BzardNotifications(
+	  BzardDisposition::PtrTemplate disposition_, QObject *parent)
 	  : BzardNotificationReceiver(parent),
 		BzardConfigurable{"popup_notifications"},
 		disposition{std::move(disposition_)} {
@@ -41,14 +41,14 @@ BzardNotifications::BzardNotifications(BzardDisposition::ptr_t disposition_,
 	connect(this, &BzardNotifications::dropNotification, disposition.get(),
 	        &BzardDisposition::remove);
 	connect(disposition.get(), &BzardDisposition::moveNotification,
-	        [this](BzardNotification::id_t id, QPoint position) {
+	        [this](BzardNotification::IdTemplate id, QPoint position) {
 				emit moveNotification(static_cast<int>(id), position);
 				checkExtraNotifications();
 			});
 }
 
 BzardNotifications *
-BzardNotifications::get(BzardDisposition::ptr_t disposition) {
+BzardNotifications::get(BzardDisposition::PtrTemplate disposition) {
 	static BzardNotifications *ptr_{nullptr};
 	if (!ptr_) {
 		if (!disposition)
@@ -119,7 +119,7 @@ void BzardNotifications::onCreateNotification(
 	}
 }
 
-void BzardNotifications::onDropNotification(BzardNotification::id_t id) {
+void BzardNotifications::onDropNotification(BzardNotification::IdTemplate id) {
 	emit dropNotification(static_cast<int>(id));
 	emit notificationDroppedSignal(id,
 	                               BzardNotification::CR_NOTIFICATION_CLOSED);
@@ -128,23 +128,25 @@ void BzardNotifications::onDropNotification(BzardNotification::id_t id) {
 void BzardNotifications::onCloseButtonPressed(int id) {
 	emit dropNotification(id);
 	emit notificationDroppedSignal(
-		  static_cast<BzardNotification::id_t>(id),
+		  static_cast<BzardNotification::IdTemplate>(id),
 		  BzardNotification::CR_NOTIFICATION_DISMISSED);
 	checkExtraNotifications();
 }
 
 void BzardNotifications::onActionButtonPressed(int id, const QString &ACTION) {
 	emit dropNotification(id);
-	emit actionInvokedSignal(static_cast<BzardNotification::id_t>(id), ACTION);
+	emit actionInvokedSignal(static_cast<BzardNotification::IdTemplate>(id),
+	                         ACTION);
 	emit notificationDroppedSignal(
-		  static_cast<BzardNotification::id_t>(id),
+		  static_cast<BzardNotification::IdTemplate>(id),
 		  BzardNotification::CR_NOTIFICATION_DISMISSED);
 }
 
 void BzardNotifications::onExpired(int id) {
 	emit dropNotification(id);
-	emit notificationDroppedSignal(static_cast<BzardNotification::id_t>(id),
-	                               BzardNotification::CR_NOTIFICATION_EXPIRED);
+	emit notificationDroppedSignal(
+		  static_cast<BzardNotification::IdTemplate>(id),
+		  BzardNotification::CR_NOTIFICATION_EXPIRED);
 }
 
 void BzardNotifications::onDropAll() {

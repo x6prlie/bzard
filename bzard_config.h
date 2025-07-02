@@ -22,11 +22,11 @@
 #include <QObject>
 #include <QSettings>
 
-#define BZARD_CONF_VAR(VAR__, NAME__, DEFAULT__)                               \
+#define BZARD_CONFIG_VAR(VAR__, NAME__, DEFAULT__)                             \
 	static constexpr auto CONFIG_##VAR__ = NAME__;                             \
 	static constexpr auto CONFIG_##VAR__##_DEFAULT = DEFAULT__;
 
-#define BZARD_CONF_FACTOR(VAR__, NAME__, DEFAULT__)                            \
+#define BZARD_CONFIG_FACTOR(VAR__, NAME__, DEFAULT__)                          \
 	static constexpr auto CONFIG_##VAR__ = NAME__;                             \
 	static constexpr auto VAR__##_DEFAULT_FACTOR = DEFAULT__;
 
@@ -40,7 +40,7 @@ class BzardConfig {
 	                     const QString &FILE_NAME_ = "config");
 
 	QVariant value(const QString &KEY,
-	               const QVariant &DEAFAULT_VALUE = QVariant(/*???*/)) const;
+	               const QVariant &DEAFAULT_VALUE = QVariant(/*?*/)) const;
 	void setValue(const QString &KEY, const QVariant &VALUE);
 
   private:

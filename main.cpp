@@ -66,9 +66,9 @@ BzardDBusService *get_service() {
 		dbus_service->connectReceiver(get_history());
 
 	std::unique_ptr<BzardFullscreenDetector> fullscreenDetector;
-#ifdef IQ_X11
+#ifdef BZARD_X11
 	fullscreenDetector = std::make_unique<X11FullscreenDetector>();
-#endif // IQ_X11
+#endif // BZARD_X11
 	notifications->setFullscreenDetector(std::move(fullscreenDetector));
 	return dbus_service;
 }

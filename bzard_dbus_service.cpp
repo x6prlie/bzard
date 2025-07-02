@@ -81,12 +81,12 @@ void BzardDBusService::closeNotification(uint32_t id) {
 }
 
 void BzardDBusService::onNotificationDropped(
-	  BzardNotification::id_t id,
+	  BzardNotification::IdTemplate id,
 	  BzardNotification::ClosingReason /*!!!enum!!!*/ reason) {
 	emit notificationClosed(id, reason);
 }
 
-void BzardDBusService::onActionInvoked(BzardNotification::id_t id,
+void BzardDBusService::onActionInvoked(BzardNotification::IdTemplate id,
                                        const QString &ACTION_KEY) {
 	emit actionInvoked(id, ACTION_KEY);
 }

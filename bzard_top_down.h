@@ -28,11 +28,11 @@ class BzardTopDown final : public BzardDisposition {
 	Q_OBJECT
 
   public:
-	using BzardDisposition::optional;
+	using BzardDisposition::Optional;
 
 	explicit BzardTopDown(QObject *parent = nullptr);
 
-	optional<QPoint> poses(BzardNotification::id_t id, QSize size) final;
+	Optional<QPoint> poses(BzardNotification::IdTemplate id, QSize size) final;
 
 	QPoint externalWindowPosition() const final;
 
@@ -41,11 +41,11 @@ class BzardTopDown final : public BzardDisposition {
 	void setSpacing(int value) final;
 
   public slots:
-	void remove(BzardNotification::id_t id) final;
+	void remove(BzardNotification::IdTemplate id) final;
 	void removeAll() final;
 
   private:
-	std::map<BzardNotification::id_t, QRect> dispositions;
+	std::map<BzardNotification::IdTemplate, QRect> dispositions;
 
 	void recalculateAvailableScreenGeometry() final;
 	QRect availableGeometry() const;

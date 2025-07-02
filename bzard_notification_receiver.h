@@ -29,13 +29,13 @@ class BzardNotificationReceiver : public QObject {
 	virtual ~BzardNotificationReceiver() = default;
 
   signals:
-	void notificationDroppedSignal(BzardNotification::id_t id,
+	void notificationDroppedSignal(BzardNotification::IdTemplate id,
 	                               BzardNotification::ClosingReason reason);
-	void actionInvokedSignal(BzardNotification::id_t id,
+	void actionInvokedSignal(BzardNotification::IdTemplate id,
 	                         const QString &ACTION_KEY);
 
   public slots:
 	virtual void
 	onCreateNotification(const BzardNotification &NOTIFICATION) = 0;
-	virtual void onDropNotification(BzardNotification::id_t id) = 0;
+	virtual void onDropNotification(BzardNotification::IdTemplate id) = 0;
 };

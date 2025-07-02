@@ -31,13 +31,14 @@
 class BzardDisposition : public QObject {
 	Q_OBJECT
   public:
-	using ptr_t = std::unique_ptr<BzardDisposition>;
-	template <class T> using optional = std::experimental::optional<T>;
+	using PtrTemplate = std::unique_ptr<BzardDisposition>;
+	template <class T> using Optional = std::experimental::optional<T>;
 
 	explicit BzardDisposition(QObject *parent = nullptr);
 	virtual ~BzardDisposition() = default;
 
-	virtual optional<QPoint> poses(BzardNotification::id_t id, QSize size) = 0;
+	virtual Optional<QPoint> poses(BzardNotification::IdTemplate id,
+	                               QSize size) = 0;
 
 	virtual QPoint externalWindowPosition() const = 0;
 
@@ -50,11 +51,11 @@ class BzardDisposition : public QObject {
 	virtual void setSpacing(int value);
 
   public slots:
-	virtual void remove(BzardNotification::id_t id) = 0;
+	virtual void remove(BzardNotification::IdTemplate id) = 0;
 	virtual void removeAll() = 0;
 
   signals:
-	void moveNotification(BzardNotification::id_t id, QPoint position);
+	void moveNotification(BzardNotification::IdTemplate id, QPoint position);
 
   protected:
 	int spacing;
