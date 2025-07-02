@@ -219,12 +219,12 @@ QString HistoryWindowTheme::windowTitle() const {
 
 uint HistoryWindowTheme::x() const {
 	switch (windowPosition()) {
-	case LEFT_BOT:
-	case LEFT_TOP:
+	case WP_LEFT_BOT:
+	case WP_LEFT_TOP:
 		return availableGeometry().left();
 		break;
-	case RIGHT_BOT:
-	case RIGHT_TOP:
+	case WP_RIGHT_BOT:
+	case WP_RIGHT_TOP:
 		return availableGeometry().x() + availableGeometry().width() - width();
 		break;
 	default:
@@ -235,12 +235,12 @@ uint HistoryWindowTheme::x() const {
 
 uint HistoryWindowTheme::y() const {
 	switch (windowPosition()) {
-	case RIGHT_TOP:
-	case LEFT_TOP:
+	case WP_RIGHT_TOP:
+	case WP_LEFT_TOP:
 		return availableGeometry().top();
 		break;
-	case RIGHT_BOT:
-	case LEFT_BOT:
+	case WP_RIGHT_BOT:
+	case WP_LEFT_BOT:
 		return availableGeometry().y() + availableGeometry().height() -
 		       height();
 		break;
@@ -310,8 +310,8 @@ QString HistoryWindowTheme::nBodyTextColor() const {
 	return BZARD_THEME_STRING(CONFIG_NBODY_TEXT_COLOR);
 }
 
-HistoryWindowTheme::pos_t HistoryWindowTheme::windowPosition() const {
-	return static_cast<HistoryWindowTheme::pos_t>(
+HistoryWindowTheme::WindowPosition HistoryWindowTheme::windowPosition() const {
+	return static_cast<HistoryWindowTheme::WindowPosition>(
 		  BZARD_THEME_UINT(CONFIG_WINDOW_POSITION));
 }
 

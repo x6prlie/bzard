@@ -252,20 +252,20 @@ class HistoryWindowTheme : public BzardTheme {
 	QString nBodyTextColor() const;
 
   private:
-	/*Enums (types)*/ enum pos_t {
-		UNDEFINED = 0,
-		LEFT_TOP,
-		LEFT_BOT,
-		RIGHT_BOT,
-		RIGHT_TOP
+	enum WindowPosition {
+		WP_UNDEFINED = 0,
+		WP_LEFT_TOP,
+		WP_LEFT_BOT,
+		WP_RIGHT_BOT,
+		WP_RIGHT_TOP
 	};
-	pos_t windowPosition() const;
+	WindowPosition windowPosition() const;
 
 	BZARD_CONFIG_VAR(CLOSE_ICON, "history_window/close_icon", "img/close.png")
 	BZARD_CONFIG_VAR(BG_IMAGE, "history_window/bg_image", "")
 	BZARD_CONFIG_VAR(WINDOW_TITLE, "history_window/window_title", "bzard")
 	BZARD_CONFIG_VAR(WINDOW_POSITION, "history_window/window_position",
-	                 UNDEFINED)
+	                 WP_UNDEFINED)
 
 	BZARD_CONFIG_VAR(X, "history_window/x", 0)
 	BZARD_CONFIG_VAR(Y, "history_window/y", 0)

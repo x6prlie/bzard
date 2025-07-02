@@ -85,19 +85,19 @@ QVariant BzardHistoryModel::data(const QModelIndex &INDEX, int role) const {
 
 	auto &index /*What mean "n"?*/ = bzardHistory->historyList[INDEX.row()];
 	switch (role) {
-	case Id_Role:
+	case HR_ID_ROLE:
 		return index->id_();
 		break;
-	case ApplicationRole:
+	case HR_APPLICATION_ROLE:
 		return index->application();
 		break;
-	case TitleRole:
+	case HR_TITLE_ROLE:
 		return index->title();
 		break;
-	case BodyRole:
+	case HR_BODY_ROLE:
 		return index->body();
 		break;
-	case IconUrlRole:
+	case HR_ICON_URL_ROLE:
 		return index->iconUrl();
 		break;
 	default:
@@ -141,11 +141,11 @@ bool BzardHistoryModel::removeRows(int row, int count,
 
 QHash<int, QByteArray> BzardHistoryModel::roleNames() const {
 	QHash<int, QByteArray> roles;
-	roles[Id_Role /*Enum values*/] = "id_";
-	roles[ApplicationRole] = "application";
-	roles[TitleRole] = "title";
-	roles[BodyRole] = "body";
-	roles[IconUrlRole] = "iconUrl";
+	roles[HR_ID_ROLE /*Enum values*/] = "id_";
+	roles[HR_APPLICATION_ROLE] = "application";
+	roles[HR_TITLE_ROLE] = "title";
+	roles[HR_BODY_ROLE] = "body";
+	roles[HR_ICON_URL_ROLE] = "iconUrl";
 	return roles;
 }
 

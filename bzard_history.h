@@ -91,11 +91,11 @@ class BzardHistoryModel : public QAbstractListModel {
 	Q_OBJECT
   public: /*Enum value*/
 	enum HistoryRoles {
-		Id_Role = Qt::UserRole + 1,
-		ApplicationRole,
-		TitleRole,
-		BodyRole,
-		IconUrlRole
+		HR_ID_ROLE = Qt::UserRole + 1,
+		HR_APPLICATION_ROLE,
+		HR_TITLE_ROLE,
+		HR_BODY_ROLE,
+		HR_ICON_URL_ROLE
 	};
 	explicit BzardHistoryModel(BzardHistory::PtrTemplate history_);
 	int rowCount(const QModelIndex &PARETN) const final;
