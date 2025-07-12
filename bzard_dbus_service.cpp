@@ -38,7 +38,7 @@ BzardDBusService::connectReceiver(BzardNotificationReceiver *receiver) {
 	return this;
 }
 
-QStringList BzardDBusService::getCapabilities() {
+QStringList BzardDBusService::GetCapabilities() {
 	auto capabilities = QStringList{} << "actions"
 	                                  // << "action-icons"
 	                                  << "body"
@@ -53,7 +53,7 @@ QStringList BzardDBusService::getCapabilities() {
 	return capabilities;
 }
 
-QString BzardDBusService::getServerInformation(QString &vendor,
+QString BzardDBusService::GetServerInformation(QString &vendor,
                                                QString &version,
                                                QString &specVersion) {
 	specVersion = QString("1.2");
@@ -62,7 +62,7 @@ QString BzardDBusService::getServerInformation(QString &vendor,
 	return QString("bzard");
 }
 
-uint32_t BzardDBusService::notify(const QString &appName, uint32_t replacesId,
+uint32_t BzardDBusService::Notify(const QString &appName, uint32_t replacesId,
                                   const QString &appIcon,
                                   const QString &summary, const QString &body,
                                   const QStringList &actions,
@@ -76,7 +76,7 @@ uint32_t BzardDBusService::notify(const QString &appName, uint32_t replacesId,
 	return notification.id;
 }
 
-void BzardDBusService::closeNotification(uint32_t id) {
+void BzardDBusService::CloseNotification(uint32_t id) {
 	emit dropNotificationSignal(id);
 }
 

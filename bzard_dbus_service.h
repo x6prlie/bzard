@@ -55,17 +55,17 @@ class BzardDBusService : public QObject {
 	}
 
 	// DBus interface
-	QStringList getCapabilities();
+	QStringList GetCapabilities();
 
-	QString getServerInformation(QString &vendor, QString &version,
+	QString GetServerInformation(QString &vendor, QString &version,
 	                             QString &specVersion);
 
-	uint32_t notify(const QString &appName, uint32_t replacesId,
+	uint32_t Notify(const QString &appName, uint32_t replacesId,
 	                const QString &appIcon, const QString &summary,
 	                const QString &body, const QStringList &actions,
 	                const QVariantMap &hints, uint32_t expireTimeout);
 
-	void closeNotification(uint32_t id);
+	void CloseNotification(uint32_t id);
 
   signals:
 	// DBus signals
