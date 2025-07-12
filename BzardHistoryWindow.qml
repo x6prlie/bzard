@@ -85,25 +85,23 @@ BzardPopup {
             delegate: BzardHistoryNotification {
                 height: BzardThemes.historyWindowTheme.notificationHeight ?
                             BzardThemes.historyWindowTheme.notificationHeight : 70
-                color: BzardThemes.historyWindowTheme.nbgColor
-                appColor: BzardThemes.historyWindowTheme.nappTextColor
-                titleColor: BzardThemes.historyWindowTheme.ntitleTextColor
-                bodyColor: BzardThemes.historyWindowTheme.nbodyTextColor
+                color: BzardThemes.historyWindowTheme.nBgColor
+                appColor: BzardThemes.historyWindowTheme.nAppTextColor
+                titleColor: BzardThemes.historyWindowTheme.nTitleTextColor
+                bodyColor: BzardThemes.historyWindowTheme.nBodyTextColor
 
-                appSize: BzardThemes.historyWindowTheme.nappFontSize?
-                             BzardThemes.historyWindowTheme.nappFontSize :
+                appSize: BzardThemes.historyWindowTheme.nAppFontSize?
+                             BzardThemes.historyWindowTheme.nAppFontSize :
                              height * 0.08333333333333333333
-                titleSize: BzardThemes.historyWindowTheme.ntitleFontSize ?
-                               BzardThemes.historyWindowTheme.ntitleFontSize :
+                titleSize: BzardThemes.historyWindowTheme.nTitleFontSize ?
+                               BzardThemes.historyWindowTheme.nTitleFontSize :
                                height * 0.125
-                bodySize: BzardThemes.historyWindowTheme.nbodyFontSize ?
-                              BzardThemes.historyWindowTheme.nbodyFontSize :
+                bodySize: BzardThemes.historyWindowTheme.nBodyFontSize ?
+                              BzardThemes.historyWindowTheme.nBodyFontSize :
                               height * 0.11111111111111111111
-                // TODO: qt.qml.context: qrc:/BzardHistoryWindow.qml:102:17
-                // Parameter "index" is not declared.
-                // Injection of parameters into signal handlers is deprecated.
-                // Use JavaScript functions with formal parameters instead.
-                onRemoveNotification: BzardHistory.remove(index)
+                onRemoveNotification: {
+                    BzardHistory.remove(index)
+                }
             }
         }
     }

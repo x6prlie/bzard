@@ -35,7 +35,7 @@ BzardFancyContainer {
     property alias title: titleText.text
     property alias body: bodyText.text
     property url iconUrl: ""
-    property string buttons: ""
+    property variant buttons: undefined
 
     property alias expireTimeout: expirationBar.expireTimeout
     property bool expiration: false
@@ -168,7 +168,9 @@ BzardFancyContainer {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     text: modelData.text
-                    onClicked: buttonClicked(modelData.action)
+                    onClicked: {
+                        buttonClicked(modelData.action)
+                    }
                 }
             }
         }
