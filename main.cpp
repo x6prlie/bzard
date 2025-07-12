@@ -110,8 +110,8 @@ QDBusConnection connect_to_session_bus(BzardDBusService *service) {
 }
 
 int main(int argc, char *argv[]) {
-	qputenv("QT_QPA_PLATFORM", QByteArray("wayland"));
-	qputenv("QT_WAYLAND_SHELL_INTEGRATION", QByteArray("layer-shell"));
+	if (qgetenv("XDG_SESSION_TYPE") == QByteArray("wayland"))
+		qputenv("QT_WAYLAND_SHELL_INTEGRATION", QByteArray("layer-shell"));
 
 	QApplication app(argc, argv);
 	app.setQuitOnLastWindowClosed(false);
