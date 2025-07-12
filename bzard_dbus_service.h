@@ -37,9 +37,6 @@ class BzardDBusService : public QObject {
 
 	BzardDBusService *connectReceiver(BzardNotificationReceiver *receiver);
 
-	/*
-	 * For configurable modifiers we should check is it enabled in config
-	 */
 	template <class T>
 	typename std::enable_if_t<std::is_base_of<BzardConfigurable, T>::value,
 	                          BzardDBusService *>
@@ -63,31 +60,30 @@ class BzardDBusService : public QObject {
 	QString getServerInformation(QString &vendor, QString &version,
 	                             QString &specVersion);
 
-	uint32_t notify(const QString &APP_NAME, uint32_t replacesId,
-	                const QString &APP_ICON, const QString &SUMMARY,
-	                const QString &BODY, const QStringList &ACTIONS,
-	                const QVariantMap &HINTS, uint32_t expireTimeout);
+	uint32_t notify(const QString &appName, uint32_t replacesId,
+	                const QString &appIcon, const QString &summary,
+	                const QString &body, const QStringList &actions,
+	                const QVariantMap &hints, uint32_t expireTimeout);
 
 	void closeNotification(uint32_t id);
 
   signals:
 	// DBus signals
-	void actionInvoked(uint32_t notificationId, const QString &ACTION_KEY);
+	void actionInvoked(uint32_t notificationId, const QString &actionKey);
 
 	void notificationClosed(uint32_t notificationId, uint32_t reason);
 
 	// Internal signals
-	void createNotificationSignal(const BzardNotification &NOTIFICATON);
-	void dropNotificationSignal(BzardNotification::IdTemplate id);
+	void createNotificationSignal(const BzardNotification &notification);
+	void dropNotificationSignal(BzardNotification::IdT id);
 
   public slots:
-	void onNotificationDropped(BzardNotification::IdTemplate id,
+	void onNotificationDropped(BzardNotification::IdT id,
 	                           BzardNotification::ClosingReason reason);
-	void onActionInvoked(BzardNotification::IdTemplate id,
-	                     const QString &ACTION_KEY);
+	void onActionInvoked(BzardNotification::IdT id, const QString &actionKey);
 
   private:
-	std::vector<BzardNotificationModifier::PtrTemplate> modifers;
+	std::vector<BzardNotificationModifier::PtrT> modifers;
 
-	BzardNotification modify(BzardNotification NOTIFICATON);
+	BzardNotification modify(BzardNotification notification);
 };

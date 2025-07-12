@@ -55,8 +55,8 @@
 
 namespace {
 
-template <class K, class V> using MapTemplate = std::map<K, V>;
-static MapTemplate<uintmax_t, QString> cachedImages;
+template <class K, class V> using MapT = std::map<K, V>;
+static MapT<uintmax_t, QString> cachedImages;
 
 bool isCached(uintmax_t hash) {
 	return cachedImages.find(hash) != cachedImages.end();
@@ -78,21 +78,21 @@ void toQmlAbsolutePath(QString &path) {
 		path.insert(0, "file://");
 }
 
-template <class T> bool cacheImage(const T &IMG, uintmax_t hash) {
+template <class T> bool cacheImage(const T &img, uintmax_t hash) {
 	auto fileName = imageFilenameFromHash(hash);
-	if (IMG.save(fileName))
+	if (img.save(fileName))
 		cachedImages[hash] = std::move(fileName);
 	else
 		return false;
 	return true;
 }
 
-QString getImageUrlFromHint(const QVariant &ARGUMENT) {
+QString getImageUrlFromHint(const QVariant &argument) {
 	int width, height, rowStride, bitsPerSample, channels;
 	bool hasAlpha;
 	QByteArray data;
 
-	const QDBusArgument ARG = ARGUMENT.value<QDBusArgument>();
+	const QDBusArgument ARG = argument.value<QDBusArgument>();
 	ARG.beginStructure();
 	ARG >> width;
 	ARG >> height;
@@ -123,15 +123,14 @@ QString getImageUrlFromHint(const QVariant &ARGUMENT) {
 	return cachedImages[hash];
 }
 
-QString getImageUrlFromString(const QString &STR) {
+QString getImageUrlFromString(const QString &str) {
 	static constexpr auto PIXEL_MAP_SIZE = 256;
 
-	QUrl url(STR);
+	QUrl url(str);
 	if (url.isValid() && QFile::exists(url.toLocalFile())) {
 		return url.toLocalFile();
 	} else {
-		// TODO: OMFG????????
-		auto icon = XdgIcon::fromTheme(STR);
+		auto icon = XdgIcon::fromTheme(str);
 		auto hash = static_cast<uintmax_t>(icon.cacheKey());
 
 		if (!isCached(hash)) {
@@ -146,16 +145,13 @@ QString getImageUrlFromString(const QString &STR) {
 
 } // namespace
 
-void BzardNotificationModifiers::BzardGenerator::modify(
+void BzardNotificationModifiers::IDGenerator::modify(
 	  BzardNotification &notification) {
 	NOTIFICATION_TO_REFS(notification);
 	if (replacesId == 0)
 		id = ++lastId;
 }
 
-/*
- * Based on lxqt notification daemon
- */
 void BzardNotificationModifiers::IconHandler::modify(
 	  BzardNotification &notification) {
 	NOTIFICATION_TO_REFS(notification);
@@ -164,9 +160,6 @@ void BzardNotificationModifiers::IconHandler::modify(
 	} else if (!hints["image_path"].isNull()) {
 		iconUrl = getImageUrlFromString(hints["image_path"].toString());
 	} else if (!iconUrl.isEmpty()) {
-		/*
-		 *  Check, is it web URL
-		 */
 		{
 			static const QString HTTP{"http://"};
 			static const QString HTTPS{"https://"};
@@ -206,7 +199,6 @@ BzardNotificationModifiers::TitleToIcon::TitleToIcon()
 void BzardNotificationModifiers::TitleToIcon::modify(
 	  BzardNotification &notification) {
 	NOTIFICATION_TO_REFS(notification);
-	// Do nothing if icon presented
 	if (!iconUrl.isEmpty())
 		return;
 

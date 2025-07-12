@@ -54,12 +54,12 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	                       setDontShowWhenFullscreenCurrentDesktop NOTIFY
 	                             dontShowWhenFullscreenCurrentDesktopChanged)
 
-	BzardNotifications(BzardDisposition::PtrTemplate disposition_,
+	BzardNotifications(BzardDisposition::PtrT disposition_,
 	                   QObject *parent = nullptr);
 
   public:
 	static BzardNotifications *
-	get(BzardDisposition::PtrTemplate disposition = nullptr);
+	get(BzardDisposition::PtrT disposition = nullptr);
 
 	void
 	setFullscreenDetector(std::unique_ptr<BzardFullscreenDetector> detector_);
@@ -95,7 +95,7 @@ class BzardNotifications final : public BzardNotificationReceiver,
 
   public slots:
 	void onCreateNotification(const BzardNotification &NOTIFICATION) final;
-	void onDropNotification(BzardNotification::IdTemplate id) final;
+	void onDropNotification(BzardNotification::IdT id) final;
 
 	// QML slots
 	void onCloseButtonPressed(int id);
@@ -128,17 +128,17 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	BZARD_CONFIG_VAR(DONT_SHOW_WHEN_FULLSCREEN_CURRENT_DESKTOP,
 	                 "dont_show_when_fullscreen_current_desktop", false)
 
-	BzardDisposition::PtrTemplate disposition;
+	BzardDisposition::PtrT disposition;
 	std::queue<BzardNotification> extraNotifications;
 	std::unique_ptr<BzardFullscreenDetector> fullscreenDetector;
 
 	int spacing() const;
 	QMargins margins() const;
 	QSize windowSize() const;
-	QSize windowSize(const QString &WIDTH_KEY, const QString &HEIGHT_KEY,
+	QSize windowSize(const QString &widthKey, const QString &heightKey,
 	                 double widthFactor, double heightFactor) const;
 	bool
-	createNotificationIfSpaceAvailable(const BzardNotification &NOTIFICATION);
+	createNotificationIfSpaceAvailable(const BzardNotification &notification);
 	void checkExtraNotifications();
 	bool shouldShowPopup() const;
 };

@@ -31,18 +31,17 @@
 class BzardDisposition : public QObject {
 	Q_OBJECT
   public:
-	using PtrTemplate = std::unique_ptr<BzardDisposition>;
+	using PtrT = std::unique_ptr<BzardDisposition>;
 	template <class T> using Optional = std::experimental::optional<T>;
 
 	explicit BzardDisposition(QObject *parent = nullptr);
 	virtual ~BzardDisposition() = default;
 
-	virtual Optional<QPoint> poses(BzardNotification::IdTemplate id,
-	                               QSize size) = 0;
+	virtual Optional<QPoint> poses(BzardNotification::IdT id, QSize size) = 0;
 
 	virtual QPoint externalWindowPosition() const = 0;
 
-	const QScreen *SCREEN() const;
+	const QScreen *screen() const;
 
 	virtual void setExtraWindowSize(const QSize &VALUE);
 
@@ -51,11 +50,11 @@ class BzardDisposition : public QObject {
 	virtual void setSpacing(int value);
 
   public slots:
-	virtual void remove(BzardNotification::IdTemplate id) = 0;
+	virtual void remove(BzardNotification::IdT id) = 0;
 	virtual void removeAll() = 0;
 
   signals:
-	void moveNotification(BzardNotification::IdTemplate id, QPoint position);
+	void moveNotification(BzardNotification::IdT id, QPoint position);
 
   protected:
 	int spacing;
@@ -66,5 +65,5 @@ class BzardDisposition : public QObject {
 	virtual void recalculateAvailableScreenGeometry();
 
   private:
-	const QScreen *SCREEN_;
+	const QScreen *screen_;
 };

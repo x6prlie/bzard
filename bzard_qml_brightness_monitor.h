@@ -1,14 +1,12 @@
 #pragma once
 
+#include "bzard_brightness_monitor.h"
+#include "bzard_udev_monitor.h"
 #include <QJSEngine>
 #include <QMap>
 #include <QObject>
 #include <QQmlEngine>
 #include <QStringList>
-// #include <memory> // Больше не нужен для QMap
-
-#include "bzard_brightness_monitor.h"
-#include "bzard_udev_monitor.h"
 
 class QMLBrightnessMonitor : public QObject {
 	Q_OBJECT
@@ -18,7 +16,6 @@ class QMLBrightnessMonitor : public QObject {
 
   public:
 	explicit QMLBrightnessMonitor(QObject *parent = nullptr);
-	// Деструктор по умолчанию ОК, Qt удалит дочерние объекты
 	~QMLBrightnessMonitor() override = default;
 
 	bool initialize();
@@ -27,28 +24,22 @@ class QMLBrightnessMonitor : public QObject {
 
   signals:
 	void brightnessLevelsChanged();
-	void errorOccurred(const QString &ERROR_SOURCE,
-	                   const QString &ERROR_MESSAGE);
+	void errorOccurred(const QString &errorSource, const QString &errorMessage);
 
   private slots:
-	void handleUdevEvent(const QString &ACTION, const QString &EVENT_SYS_PATH);
+	void handleUdevEvent(const QString &action, const QString &eventSysPath);
 	void onDeviceBrightnessChanged(int brightnessPercent);
-	void onUdevError(const QString &ERROR_STRING);
+	void onUdevError(const QString &errorString);
 
   private:
-	// --- Тип карты изменен на raw pointer ---
-	// Мы делаем BzardBrightnessMonitor дочерними объектами этого класса,
-	// поэтому Qt автоматически удалит их при удалении QMLBrightnessMonitor.
 	using MonitorMap = QMap<QString, BzardBrightnessMonitor *>;
 
 	void setupBrightnessMonitors();
 
 	QStringList internalAvailableDevices;
 	QVariantMap internalBrightnessLevels;
-	MonitorMap activeMonitors; // Теперь хранит raw pointers
+	MonitorMap activeMonitors;
 	QMap<QString, QString> sysPathToDeviceName;
-
-	// unique_ptr все еще подходит для UdevMonitor, так как он один
 	std::unique_ptr<UdevMonitor> udevMonitorInstance;
 	bool isInitialized = false;
 };

@@ -7,13 +7,9 @@
 #include <cmath>
 #include <expected>
 #include <optional>
-// #include <stdexcept>
-#include <string> // Оставляем для std::string
+#include <string>
 
-// --- Static Methods ---
-
-/*static*/ QStringList
-BzardBrightnessMonitor::availableDevices() { /* без изменений */
+QStringList BzardBrightnessMonitor::availableDevices() {
 	const QDir BACKLIGHT_DIR(QStringLiteral("/sys/class/backlight"));
 	if (!BACKLIGHT_DIR.exists()) {
 		qWarning() << Q_FUNC_INFO
@@ -24,16 +20,15 @@ BzardBrightnessMonitor::availableDevices() { /* без изменений */
 	                               QDir::Name);
 }
 
-/*static*/ std::optional<BzardBrightnessMonitor::DevicePaths>
-BzardBrightnessMonitor::findDevicePaths(
-	  const QString &DEVICE_NAME) { /* без изменений */
-	if (DEVICE_NAME.isEmpty()) {
+std::optional<BzardBrightnessMonitor::DevicePaths>
+BzardBrightnessMonitor::findDevicePaths(const QString &deviceName) {
+	if (deviceName.isEmpty()) {
 		qWarning() << Q_FUNC_INFO << "Device name cannot be empty.";
 		return std::nullopt;
 	}
 	const QDir BACKLIGHT_DIR(QStringLiteral("/sys/class/backlight"));
 	DevicePaths paths;
-	paths.basePath = BACKLIGHT_DIR.filePath(DEVICE_NAME);
+	paths.basePath = BACKLIGHT_DIR.filePath(deviceName);
 	const QFileInfo BASE_INFO(paths.basePath);
 	if (!BASE_INFO.exists() || !BASE_INFO.isDir()) {
 		qWarning() << Q_FUNC_INFO
@@ -52,53 +47,50 @@ BzardBrightnessMonitor::findDevicePaths(
 	if (!files_ok) {
 		qWarning() << Q_FUNC_INFO
 				   << "Required files or syspath not found/valid for device"
-				   << DEVICE_NAME << "at" << paths.basePath;
+				   << deviceName << "at" << paths.basePath;
 		return std::nullopt;
 	}
 	return paths;
 }
 
-// --- Constructor ---
-BzardBrightnessMonitor::BzardBrightnessMonitor(
-	  const DevicePaths &PATHS, QObject *parent) /* без изменений */
-	  : QObject(parent), BASE_PATH(PATHS.basePath),
-		BRIGHTNESS_FILE_PATH(PATHS.brightnessFilePath),
-		MAX_BRIGHTNESS_FILE_PATH(PATHS.maxBrightnessFilePath),
-		CANONICAL_SYS_PATH(PATHS.canonicalSysPath) {
-	if (BASE_PATH.isEmpty() || BRIGHTNESS_FILE_PATH.isEmpty() ||
-	    MAX_BRIGHTNESS_FILE_PATH.isEmpty() || CANONICAL_SYS_PATH.isEmpty()) {
+BzardBrightnessMonitor::BzardBrightnessMonitor(const DevicePaths &paths,
+                                               QObject *parent)
+	  : QObject(parent), basePath(paths.basePath),
+		brightnessFilePath(paths.brightnessFilePath),
+		maxBrightnessFilePath(paths.maxBrightnessFilePath),
+		cannonicalSysPath(paths.canonicalSysPath) {
+	if (basePath.isEmpty() || brightnessFilePath.isEmpty() ||
+	    maxBrightnessFilePath.isEmpty() || cannonicalSysPath.isEmpty()) {
 		qCritical() << Q_FUNC_INFO << "FATAL: Constructed with invalid paths!";
 	}
 	checkForUpdate();
 }
 
-QString BzardBrightnessMonitor::sysPath() const { /* без изменений */
-	return CANONICAL_SYS_PATH;
-}
+QString BzardBrightnessMonitor::sysPath() const { return cannonicalSysPath; }
 
-int64_t BzardBrightnessMonitor::readLongFromFile(const QString &FILE_PATH) {
-	QFile file(FILE_PATH);
+int64_t BzardBrightnessMonitor::readLongFromFile(const QString &filePath) {
+	QFile file(filePath);
 	if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
 		throw QString("Could not open file %1: %2")
-			  .arg(FILE_PATH, file.errorString())
+			  .arg(filePath, file.errorString())
 			  .toStdString();
 	}
 	bool ok = false;
-	const QString CONTENT = file.readAll().trimmed();
-	qlonglong value = CONTENT.toLongLong(&ok);
+	const QString content = file.readAll().trimmed();
+	qlonglong value = content.toLongLong(&ok);
 	if (!ok) {
 		throw QString("Failed to parse value '%1' from file: %2")
-			  .arg(CONTENT, FILE_PATH)
+			  .arg(content, filePath)
 			  .toStdString();
 	}
 	return value;
 }
 
-void BzardBrightnessMonitor::checkForUpdate() { /* без изменений */
+void BzardBrightnessMonitor::checkForUpdate() {
 	std::expected<qlonglong, std::string> currentRes =
-		  readLongFromFile(BRIGHTNESS_FILE_PATH);
+		  readLongFromFile(brightnessFilePath);
 	std::expected<qlonglong, std::string> maxRes =
-		  readLongFromFile(MAX_BRIGHTNESS_FILE_PATH);
+		  readLongFromFile(maxBrightnessFilePath);
 
 	if (!currentRes) {
 		qWarning() << Q_FUNC_INFO << QString::fromStdString(currentRes.error());
@@ -109,21 +101,21 @@ void BzardBrightnessMonitor::checkForUpdate() { /* без изменений */
 		return;
 	}
 
-	const qlonglong CURRENT = currentRes.value();
-	const qlonglong MAX = maxRes.value();
+	const auto current = currentRes.value();
+	const auto max = maxRes.value();
 
-	if (MAX <= 0) {
-		qWarning() << Q_FUNC_INFO << "Invalid max_brightness value (" << MAX
-				   << ") for" << BASE_PATH;
+	if (max <= 0) {
+		qWarning() << Q_FUNC_INFO << "Invalid max_brightness value (" << max
+				   << ") for" << basePath;
 		return;
 	}
 
-	const int CURRENT_PERCENT = std::max(
+	const int currentPercent = std::max(
 		  0, std::min(100, static_cast<int>(std::round(
-								 static_cast<double>(CURRENT) * 100.0 / MAX))));
+								 static_cast<double>(current) * 100.0 / max))));
 
-	if (CURRENT_PERCENT != lastBrightnessPercent) {
-		lastBrightnessPercent = CURRENT_PERCENT;
+	if (currentPercent != lastBrightnessPercent) {
+		lastBrightnessPercent = currentPercent;
 		emit brightnessChanged(lastBrightnessPercent);
 	}
 }

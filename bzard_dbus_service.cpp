@@ -62,14 +62,14 @@ QString BzardDBusService::getServerInformation(QString &vendor,
 	return QString("bzard");
 }
 
-uint32_t BzardDBusService::notify(const QString &APP_NAME, uint32_t replacesId,
-                                  const QString &APP_ICON,
-                                  const QString &SUMMARY, const QString &BODY,
-                                  const QStringList &ACTIONS,
-                                  const QVariantMap &HINTS,
+uint32_t BzardDBusService::notify(const QString &appName, uint32_t replacesId,
+                                  const QString &appIcon,
+                                  const QString &summary, const QString &body,
+                                  const QStringList &actions,
+                                  const QVariantMap &hints,
                                   uint32_t expireTimeout) {
 	auto notification =
-		  modify({replacesId, APP_NAME, BODY, SUMMARY, APP_ICON, ACTIONS, HINTS,
+		  modify({replacesId, appName, body, summary, appIcon, actions, hints,
 	              static_cast<BzardNotification::ExpireTimeout>(expireTimeout),
 	              replacesId});
 	emit createNotificationSignal(notification);
@@ -81,20 +81,19 @@ void BzardDBusService::closeNotification(uint32_t id) {
 }
 
 void BzardDBusService::onNotificationDropped(
-	  BzardNotification::IdTemplate id,
-	  BzardNotification::ClosingReason /*!!!enum!!!*/ reason) {
+	  BzardNotification::IdT id, BzardNotification::ClosingReason reason) {
 	emit notificationClosed(id, reason);
 }
 
-void BzardDBusService::onActionInvoked(BzardNotification::IdTemplate id,
-                                       const QString &ACTION_KEY) {
-	emit actionInvoked(id, ACTION_KEY);
+void BzardDBusService::onActionInvoked(BzardNotification::IdT id,
+                                       const QString &actionKey) {
+	emit actionInvoked(id, actionKey);
 }
 
 BzardNotification BzardDBusService::modify(BzardNotification notification) {
 	qDebug() << "========*****========";
 	qDebug() << notification;
-	for (auto & /*!!!*/ m : modifers)
+	for (auto &m : modifers)
 		m->modify(notification);
 	qDebug() << notification;
 	return notification;

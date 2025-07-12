@@ -30,8 +30,8 @@ static QRect availableGeometry() {
 
 BzardThemes::BzardThemes()
 	  : config{"theme"},
-		THEME_NAME{config.value(CONFIG_THEME_NAME, CONFIG_THEME_NAME_DEFAULT)
-                         .toString()} {
+		themeName{config.value(CONFIG_THEME_NAME, CONFIG_THEME_NAME_DEFAULT)
+                        .toString()} {
 	registerThemeTypes();
 	loadTheme(themeConfigFile());
 	auto themeDir = BzardConfig::configDir() + '/' + themeConfigDir();
@@ -54,14 +54,14 @@ HistoryWindowTheme *BzardThemes::historyWindowTheme() const {
 	return historyWindowTheme_.get();
 }
 
-QString BzardThemes::themeConfigDir() const { return "themes/" + THEME_NAME; }
+QString BzardThemes::themeConfigDir() const { return "themes/" + themeName; }
 
 QString BzardThemes::themeConfigFile() const {
 	return themeConfigDir() + "/theme";
 }
 
-void BzardThemes::loadTheme(const QString &FILE_MANE) {
-	themeConfig = std::make_shared<BzardConfig>(QString{}, FILE_MANE);
+void BzardThemes::loadTheme(const QString &fileName) {
+	themeConfig = std::make_shared<BzardConfig>(QString{}, fileName);
 }
 
 void BzardThemes::registerThemeTypes() const {
@@ -70,12 +70,12 @@ void BzardThemes::registerThemeTypes() const {
 	qmlRegisterType<HistoryWindowTheme>("bzard", 1, 0, "HistoryWindowTheme");
 }
 
-BzardTheme::BzardTheme(const std::shared_ptr<BzardConfig> &CONFIG_,
-                       const QString &THEME_DIR_, QObject *parent)
-	  : QObject(parent), themeConfig{CONFIG_}, THEME_DIR{THEME_DIR_} {}
+BzardTheme::BzardTheme(const std::shared_ptr<BzardConfig> &config_,
+                       const QString &themeDir_, QObject *parent)
+	  : QObject(parent), themeConfig{config_}, themeDir{themeDir_} {}
 
-QUrl BzardTheme::toRelativeUrl(const QString &STR) const {
-	return "file:///" + THEME_DIR + '/' + STR;
+QUrl BzardTheme::toRelativeUrl(const QString &str) const {
+	return "file:///" + themeDir + '/' + str;
 }
 
 /*

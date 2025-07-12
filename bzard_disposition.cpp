@@ -20,25 +20,25 @@
 #include <QApplication>
 
 BzardDisposition::BzardDisposition(QObject *parent)
-	  : QObject{parent}, SCREEN_{QApplication::screens().at(0)} {
-	connect(SCREEN_, &QScreen::availableGeometryChanged, this,
+	  : QObject{parent}, screen_{QApplication::screens().at(0)} {
+	connect(screen_, &QScreen::availableGeometryChanged, this,
 	        &BzardDisposition::recalculateAvailableScreenGeometry);
 }
 
-const QScreen *BzardDisposition::SCREEN() const { return SCREEN_; }
+const QScreen *BzardDisposition::screen() const { return screen_; }
 
-void BzardDisposition::setExtraWindowSize(const QSize &VALUE) {
-	extraWindowSize = VALUE;
+void BzardDisposition::setExtraWindowSize(const QSize &value) {
+	extraWindowSize = value;
 }
 
-void BzardDisposition::setMargins(const QMargins &VALUE) {
-	margins = VALUE;
+void BzardDisposition::setMargins(const QMargins &value) {
+	margins = value;
 	recalculateAvailableScreenGeometry();
 }
 
 void BzardDisposition::setSpacing(int value) { spacing = value; }
 
 void BzardDisposition::recalculateAvailableScreenGeometry() {
-	auto screenGeometry = SCREEN()->availableGeometry();
+	auto screenGeometry = screen()->availableGeometry();
 	availableScreenGeometry = screenGeometry - margins;
 }

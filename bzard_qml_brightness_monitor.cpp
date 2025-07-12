@@ -11,8 +11,7 @@ bool QMLBrightnessMonitor::initialize() {
 	}
 	qInfo() << Q_FUNC_INFO << "Initializing...";
 
-	udevMonitorInstance =
-		  std::/*?not enough parametrs? -->*/ make_unique<UdevMonitor>();
+	udevMonitorInstance = std::make_unique<UdevMonitor>();
 	if (!udevMonitorInstance->initialize()) {
 		emit errorOccurred("UdevMonitor", "Initialization failed.");
 		udevMonitorInstance.reset();
@@ -38,9 +37,7 @@ bool QMLBrightnessMonitor::initialize() {
 
 void QMLBrightnessMonitor::setupBrightnessMonitors() {
 	qInfo() << Q_FUNC_INFO << "Setting up brightness monitors...";
-	// Удаляем предыдущие мониторы (если были), Qt позаботится об объектах
-	qDeleteAll(
-		  activeMonitors); // Удаляем старые мониторы, если это реинициализация
+	qDeleteAll(activeMonitors);
 	activeMonitors.clear();
 	sysPathToDeviceName.clear();
 	internalBrightnessLevels.clear();
@@ -49,38 +46,31 @@ void QMLBrightnessMonitor::setupBrightnessMonitors() {
 	qInfo() << "Found devices:" << internalAvailableDevices;
 
 	bool ok = false;
-	for (const QString &DEVICE_NAME : internalAvailableDevices) {
+	for (const QString &deviceName : internalAvailableDevices) {
 		std::optional<BzardBrightnessMonitor::DevicePaths> pathsOpt =
-			  BzardBrightnessMonitor::findDevicePaths(DEVICE_NAME);
+			  BzardBrightnessMonitor::findDevicePaths(deviceName);
 		if (!pathsOpt) {
-			emit errorOccurred(DEVICE_NAME, "Could not find/validate paths.");
+			emit errorOccurred(deviceName, "Could not find/validate paths.");
 			continue;
 		}
 
 		try {
 			BzardBrightnessMonitor::DevicePaths paths = pathsOpt.value();
-			// --- Создаем монитор как дочерний объект QMLBrightnessMonitor ---
-			BzardBrightnessMonitor *monitor = new BzardBrightnessMonitor(
-				  paths, this); // `this` как родитель
-
-			connect(monitor,
-			        &BzardBrightnessMonitor::brightnessChanged, // Используем
-			                                                    // raw pointer
-			        this, &QMLBrightnessMonitor::onDeviceBrightnessChanged);
+			BzardBrightnessMonitor *monitor =
+				  new BzardBrightnessMonitor(paths, this);
+			connect(monitor, &BzardBrightnessMonitor::brightnessChanged, this,
+			        &QMLBrightnessMonitor::onDeviceBrightnessChanged);
 
 			QString sysPath = monitor->sysPath();
-			sysPathToDeviceName[sysPath] = DEVICE_NAME;
-
-			// --- Вставляем raw pointer в QMap ---
+			sysPathToDeviceName[sysPath] = deviceName;
 			activeMonitors.insert(sysPath, monitor);
-			// -----------------------------------
 
 			ok = true;
 
-		} catch (const std::exception &EXCEPTION) {
-			emit errorOccurred(DEVICE_NAME,
-			                   QString("Exception during creation: %1")
-			                         .arg(EXCEPTION.what()));
+		} catch (const std::exception &e) {
+			emit errorOccurred(
+				  deviceName,
+				  QString("Exception during creation: %1").arg(e.what()));
 		}
 	}
 
@@ -91,7 +81,6 @@ void QMLBrightnessMonitor::setupBrightnessMonitors() {
 	emit brightnessLevelsChanged();
 }
 
-// Геттеры без изменений
 QStringList QMLBrightnessMonitor::availableDevices() const {
 	return internalAvailableDevices;
 }
@@ -99,19 +88,16 @@ QVariantMap QMLBrightnessMonitor::brightnessLevels() const {
 	return internalBrightnessLevels;
 }
 
-// Слоты без изменений в логике, но используют BrightnessMonitor*
-void QMLBrightnessMonitor::handleUdevEvent(const QString &ACTION,
-                                           const QString &EVENT_SYS_PATH) {
-	if (ACTION != QLatin1String("change") || EVENT_SYS_PATH.isEmpty()) {
+void QMLBrightnessMonitor::handleUdevEvent(const QString &action,
+                                           const QString &eventSysPath) {
+	if (action != QLatin1String("change") || eventSysPath.isEmpty()) {
 		return;
 	}
-	// Итерация по QMap<QString, BrightnessMonitor*>
 	for (auto iteration = activeMonitors.constBegin();
 	     iteration != activeMonitors.constEnd(); ++iteration) {
-		const QString &MONITOR_SYS_PATH = iteration.key();
-		BzardBrightnessMonitor *monitorPtr =
-			  iteration.value(); // Получаем raw pointer
-		if (EVENT_SYS_PATH.startsWith(MONITOR_SYS_PATH) && monitorPtr) {
+		const QString &monitorSysPath = iteration.key();
+		BzardBrightnessMonitor *monitorPtr = iteration.value();
+		if (eventSysPath.startsWith(monitorSysPath) && monitorPtr) {
 			monitorPtr->checkForUpdate();
 			break;
 		}
@@ -139,12 +125,11 @@ void QMLBrightnessMonitor::onDeviceBrightnessChanged(int brightnessPercent) {
 	}
 }
 
-void QMLBrightnessMonitor::onUdevError(const QString &ERROR_STRING) {
-	qWarning() << "[UdevMonitor Error]" << ERROR_STRING;
-	emit errorOccurred(QStringLiteral("UdevMonitor"), ERROR_STRING);
+void QMLBrightnessMonitor::onUdevError(const QString &errorString) {
+	qWarning() << "[UdevMonitor Error]" << errorString;
+	emit errorOccurred(QStringLiteral("UdevMonitor"), errorString);
 }
 
-// --- Синглтон-провайдер (без изменений) ---
 static QPointer<QMLBrightnessMonitor> gBrightnessMonitorInstance = nullptr;
 QObject *qmlBrightnessMonitorProvider(QQmlEngine *engine,
                                       QJSEngine *scriptEngine) {

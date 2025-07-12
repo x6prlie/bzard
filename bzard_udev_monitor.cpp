@@ -1,7 +1,5 @@
 #include "bzard_udev_monitor.h"
 #include <QDebug>
-// Убираем format, так как используем QString::arg или QDebug
-// #include <format>
 
 UdevMonitor::UdevMonitor(QObject *parent) : QObject(parent) {}
 
@@ -25,29 +23,29 @@ bool UdevMonitor::initialize() {
 
 	udevContext = udev_new();
 	if (!udevContext) {
-		const QString ERROR_MESSAGE =
+		const QString errorMessage =
 			  QStringLiteral("Failed to create udev context");
-		qCritical() << Q_FUNC_INFO << ERROR_MESSAGE;
-		emit errorOccurred(ERROR_MESSAGE);
+		qCritical() << Q_FUNC_INFO << errorMessage;
+		emit errorOccurred(errorMessage);
 		return false;
 	}
 
 	udevMonitor = udev_monitor_new_from_netlink(udevContext, "udev");
 	if (!udevMonitor) {
-		const QString ERROR_MESSAGE =
+		const QString errorMessage =
 			  QStringLiteral("Failed to create udev monitor");
-		qCritical() << Q_FUNC_INFO << ERROR_MESSAGE;
-		emit errorOccurred(ERROR_MESSAGE);
+		qCritical() << Q_FUNC_INFO << errorMessage;
+		emit errorOccurred(errorMessage);
 		udev_unref(udevContext);
 		udevContext = nullptr;
 		return false;
 	}
 
 	if (udev_monitor_enable_receiving(udevMonitor) < 0) {
-		const QString ERROR_MESSAGE =
+		const QString errorMessage =
 			  QStringLiteral("Failed to enable udev receiving");
-		qCritical() << Q_FUNC_INFO << ERROR_MESSAGE;
-		emit errorOccurred(ERROR_MESSAGE);
+		qCritical() << Q_FUNC_INFO << errorMessage;
+		emit errorOccurred(errorMessage);
 		udev_monitor_unref(udevMonitor);
 		udev_unref(udevContext);
 		udevMonitor = nullptr;
@@ -55,12 +53,12 @@ bool UdevMonitor::initialize() {
 		return false;
 	}
 
-	const int UDEV_FEED = udev_monitor_get_fd(udevMonitor);
-	if (UDEV_FEED < 0) {
-		const QString ERROR_MESSAGE =
+	const int udevFeed = udev_monitor_get_fd(udevMonitor);
+	if (udevFeed < 0) {
+		const QString errorMessage =
 			  QStringLiteral("Failed to get udev monitor FD");
-		qCritical() << Q_FUNC_INFO << ERROR_MESSAGE;
-		emit errorOccurred(ERROR_MESSAGE);
+		qCritical() << Q_FUNC_INFO << errorMessage;
+		emit errorOccurred(errorMessage);
 		udev_monitor_unref(udevMonitor);
 		udev_unref(udevContext);
 		udevMonitor = nullptr;
@@ -68,7 +66,7 @@ bool UdevMonitor::initialize() {
 		return false;
 	}
 
-	udevNotifier = new QSocketNotifier(UDEV_FEED, QSocketNotifier::Read, this);
+	udevNotifier = new QSocketNotifier(udevFeed, QSocketNotifier::Read, this);
 	connect(udevNotifier, &QSocketNotifier::activated, this,
 	        &UdevMonitor::onUdevFdReadable);
 	udevNotifier->setEnabled(true);
@@ -76,26 +74,25 @@ bool UdevMonitor::initialize() {
 	return true;
 }
 
-bool UdevMonitor::addSubsystemFilter(const QString &SUBSYSTEM) {
+bool UdevMonitor::addSubsystemFilter(const QString &subsystem) {
 	if (!udevMonitor) {
-		const QString ERROR_MESSAGE =
+		const QString errorMessage =
 			  QStringLiteral("Cannot add filter: udev monitor not initialized");
-		qWarning() << Q_FUNC_INFO << ERROR_MESSAGE;
-		emit errorOccurred(ERROR_MESSAGE);
+		qWarning() << Q_FUNC_INFO << errorMessage;
+		emit errorOccurred(errorMessage);
 		return false;
 	}
 
 	if (udev_monitor_filter_add_match_subsystem_devtype(
-			  udevMonitor, SUBSYSTEM.toUtf8().constData(), nullptr) < 0) {
-		// Используем QString::arg для форматирования
-		const QString ERROR_MESSAGE =
+			  udevMonitor, subsystem.toUtf8().constData(), nullptr) < 0) {
+		const QString errorMessage =
 			  QString("Failed to add udev filter for subsystem %1.")
-					.arg(SUBSYSTEM);
-		qCritical() << Q_FUNC_INFO << ERROR_MESSAGE;
-		emit errorOccurred(ERROR_MESSAGE);
+					.arg(subsystem);
+		qCritical() << Q_FUNC_INFO << errorMessage;
+		emit errorOccurred(errorMessage);
 		return false;
 	}
-	qInfo() << Q_FUNC_INFO << "Added filter for subsystem:" << SUBSYSTEM;
+	qInfo() << Q_FUNC_INFO << "Added filter for subsystem:" << subsystem;
 	return true;
 }
 
@@ -106,10 +103,9 @@ void UdevMonitor::onUdevFdReadable() {
 	if (!dev) {
 		return;
 	}
-	const char *ACTION_C_STR = udev_device_get_action(dev);
-	const char *SYS_PATH_C_STR = udev_device_get_syspath(dev);
-	emit udevEvent(ACTION_C_STR ? QString::fromUtf8(ACTION_C_STR) : QString(),
-	               SYS_PATH_C_STR ? QString::fromUtf8(SYS_PATH_C_STR)
-	                              : QString());
+	const char *actionCStr = udev_device_get_action(dev);
+	const char *sysPathCStr = udev_device_get_syspath(dev);
+	emit udevEvent(actionCStr ? QString::fromUtf8(actionCStr) : QString(),
+	               sysPathCStr ? QString::fromUtf8(sysPathCStr) : QString());
 	udev_device_unref(dev);
 }

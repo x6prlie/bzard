@@ -48,7 +48,7 @@ class BzardThemes : public QObject {
 	BZARD_CONFIG_VAR(THEME_NAME, "theme_name", "default")
 
 	BzardConfig config;
-	const QString THEME_NAME;
+	const QString themeName;
 	std::shared_ptr<BzardConfig> themeConfig;
 	std::unique_ptr<NotificationsTheme> notificationsTheme_;
 	std::unique_ptr<TrayIconTheme> trayIconTheme_;
@@ -56,7 +56,7 @@ class BzardThemes : public QObject {
 
 	QString themeConfigDir() const;
 	QString themeConfigFile() const;
-	void loadTheme(const QString &FILE_NAME);
+	void loadTheme(const QString &fileName);
 	void registerThemeTypes() const;
 };
 
@@ -64,14 +64,14 @@ class BzardTheme : public QObject {
 	Q_OBJECT
   public:
 	BzardTheme() = default;
-	BzardTheme(const std::shared_ptr<BzardConfig> &CONFIG_,
-	           const QString &THEME_DIR_, QObject *parent = nullptr);
+	BzardTheme(const std::shared_ptr<BzardConfig> &config_,
+	           const QString &themeDir_, QObject *parent = nullptr);
 
   protected:
 	std::shared_ptr<BzardConfig> themeConfig;
-	const QString THEME_DIR;
+	const QString themeDir;
 
-	QUrl toRelativeUrl(const QString &STR) const;
+	QUrl toRelativeUrl(const QString &str) const;
 };
 
 class NotificationsTheme : public BzardTheme {

@@ -40,7 +40,7 @@ class BzardConfig {
 	                     const QString &FILE_NAME_ = "config");
 
 	QVariant value(const QString &KEY,
-	               const QVariant &DEAFAULT_VALUE = QVariant(/*?*/)) const;
+	               const QVariant &DEAFAULT_VALUE = QVariant()) const;
 	void setValue(const QString &KEY, const QVariant &VALUE);
 
   private:
@@ -49,17 +49,17 @@ class BzardConfig {
 	std::unique_ptr<QSettings> settings;
 
 	QString getConfigFileName() const;
-	bool copyConfigFileFromExample(const QString &DESTINATION) const;
-	bool copyThemesFromShare(const QString &DESTINATION) const;
+	bool copyConfigFileFromExample(const QString &destination) const;
+	bool copyThemesFromShare(const QString &destination) const;
 };
 
 struct BzardConfigurable {
 	BzardConfigurable() = delete;
-	const QString &NAME() const;
+	const QString &name() const;
 	bool isEnabled() const;
 
   protected:
-	explicit BzardConfigurable(const QString &NAME);
-	const QString NAME_;
+	explicit BzardConfigurable(const QString &name);
+	const QString name_;
 	BzardConfig config;
 };

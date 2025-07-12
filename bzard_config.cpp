@@ -106,24 +106,24 @@ QString BzardConfig::getConfigFileName() const {
 	return config;
 }
 
-bool BzardConfig::copyConfigFileFromExample(const QString &DESTINATION) const {
+bool BzardConfig::copyConfigFileFromExample(const QString &destination) const {
 	auto configExamplePath =
 		  "/usr/share/" + applicationName() + '/' + FILE_NAME + ".example";
 	QFile configExampleFile{configExamplePath};
 	if (!configExampleFile.exists())
 		return false;
-	return configExampleFile.copy(DESTINATION);
+	return configExampleFile.copy(destination);
 }
 
-bool BzardConfig::copyThemesFromShare(const QString &DESTINATION) const {
+bool BzardConfig::copyThemesFromShare(const QString &destination) const {
 	auto shareThemesPath = "/usr/share/" + applicationName() + "/themes";
-	return copyRecursively(shareThemesPath, DESTINATION);
+	return copyRecursively(shareThemesPath, destination);
 }
 
-BzardConfigurable::BzardConfigurable(const QString &NAME)
-	  : NAME_{NAME}, config{NAME_} {}
+BzardConfigurable::BzardConfigurable(const QString &name)
+	  : name_{name}, config{name_} {}
 
-const QString &BzardConfigurable::NAME() const { return NAME_; }
+const QString &BzardConfigurable::name() const { return name_; }
 
 bool BzardConfigurable::isEnabled() const {
 	return config.value("enabled", false).toBool();

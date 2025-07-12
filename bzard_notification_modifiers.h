@@ -26,8 +26,8 @@ template <class T, class... A> std::unique_ptr<T> make(A &&...args) {
 	return std::make_unique<T>(std::forward<A>(args)...);
 }
 
-struct BzardGenerator final : public BzardNotificationModifier {
-	BzardNotification::IdTemplate lastId{0};
+struct IDGenerator final : public BzardNotificationModifier {
+	BzardNotification::IdT lastId{0};
 
 	void modify(BzardNotification &notification) final;
 };

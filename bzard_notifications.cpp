@@ -27,8 +27,8 @@
 
 template <class T> using optional = std::experimental::optional<T>;
 
-BzardNotifications::BzardNotifications(
-	  BzardDisposition::PtrTemplate disposition_, QObject *parent)
+BzardNotifications::BzardNotifications(BzardDisposition::PtrT disposition_,
+                                       QObject *parent)
 	  : BzardNotificationReceiver(parent),
 		BzardConfigurable{"popup_notifications"},
 		disposition{std::move(disposition_)} {
@@ -41,14 +41,14 @@ BzardNotifications::BzardNotifications(
 	connect(this, &BzardNotifications::dropNotification, disposition.get(),
 	        &BzardDisposition::remove);
 	connect(disposition.get(), &BzardDisposition::moveNotification,
-	        [this](BzardNotification::IdTemplate id, QPoint position) {
+	        [this](BzardNotification::IdT id, QPoint position) {
 				emit moveNotification(static_cast<int>(id), position);
 				checkExtraNotifications();
 			});
 }
 
 BzardNotifications *
-BzardNotifications::get(BzardDisposition::PtrTemplate disposition) {
+BzardNotifications::get(BzardDisposition::PtrT disposition) {
 	static BzardNotifications *ptr_{nullptr};
 	if (!ptr_) {
 		if (!disposition)
@@ -119,7 +119,7 @@ void BzardNotifications::onCreateNotification(
 	}
 }
 
-void BzardNotifications::onDropNotification(BzardNotification::IdTemplate id) {
+void BzardNotifications::onDropNotification(BzardNotification::IdT id) {
 	emit dropNotification(static_cast<int>(id));
 	emit notificationDroppedSignal(id,
 	                               BzardNotification::CR_NOTIFICATION_CLOSED);
@@ -128,25 +128,23 @@ void BzardNotifications::onDropNotification(BzardNotification::IdTemplate id) {
 void BzardNotifications::onCloseButtonPressed(int id) {
 	emit dropNotification(id);
 	emit notificationDroppedSignal(
-		  static_cast<BzardNotification::IdTemplate>(id),
+		  static_cast<BzardNotification::IdT>(id),
 		  BzardNotification::CR_NOTIFICATION_DISMISSED);
 	checkExtraNotifications();
 }
 
-void BzardNotifications::onActionButtonPressed(int id, const QString &ACTION) {
+void BzardNotifications::onActionButtonPressed(int id, const QString &action) {
 	emit dropNotification(id);
-	emit actionInvokedSignal(static_cast<BzardNotification::IdTemplate>(id),
-	                         ACTION);
+	emit actionInvokedSignal(static_cast<BzardNotification::IdT>(id), action);
 	emit notificationDroppedSignal(
-		  static_cast<BzardNotification::IdTemplate>(id),
+		  static_cast<BzardNotification::IdT>(id),
 		  BzardNotification::CR_NOTIFICATION_DISMISSED);
 }
 
 void BzardNotifications::onExpired(int id) {
 	emit dropNotification(id);
-	emit notificationDroppedSignal(
-		  static_cast<BzardNotification::IdTemplate>(id),
-		  BzardNotification::CR_NOTIFICATION_EXPIRED);
+	emit notificationDroppedSignal(static_cast<BzardNotification::IdT>(id),
+	                               BzardNotification::CR_NOTIFICATION_EXPIRED);
 }
 
 void BzardNotifications::onDropAll() {
@@ -201,7 +199,7 @@ QMargins BzardNotifications::margins() const {
 	if (configMargin) {
 		return *configMargin;
 	} else {
-		auto screen = disposition->SCREEN()->availableSize();
+		auto screen = disposition->screen()->availableSize();
 		auto margin = GLOBAL_MARGINS_DEFAULT_FACTOR * screen.height();
 		auto margin_ = static_cast<int>(margin);
 		return {margin_, margin_, margin_, margin_};
@@ -213,14 +211,12 @@ QSize BzardNotifications::windowSize() const {
 	                  HEIGHT_DEFAULT_FACTOR);
 }
 
-QSize BzardNotifications::windowSize(const QString &WIDTH_KEY,
-                                     const QString &HEIGTH_KEY,
+QSize BzardNotifications::windowSize(const QString &widthKey,
+                                     const QString &heightKey,
                                      double widthFactor,
                                      double heightFactor) const {
-	// TODO: cache values
-
 	auto getWindowSizeFromConfig =
-		  [WIDTH_KEY, HEIGTH_KEY](const auto &CONFIG) -> optional<QSize> {
+		  [widthKey, heightKey](const auto &CONFIG) -> optional<QSize> {
 		auto get = [&CONFIG](auto key) {
 			bool ok{true};
 			auto value = CONFIG.value(key, 0).toInt(&ok);
@@ -231,8 +227,8 @@ QSize BzardNotifications::windowSize(const QString &WIDTH_KEY,
 			return value;
 		};
 
-		auto width = get(WIDTH_KEY); /*!!!!!*/
-		auto height = get(HEIGTH_KEY);
+		auto width = get(widthKey);
+		auto height = get(heightKey);
 
 		if (!width || !height)
 			return {};
@@ -244,7 +240,7 @@ QSize BzardNotifications::windowSize(const QString &WIDTH_KEY,
 	if (configSize) {
 		return *configSize;
 	} else {
-		auto screen = disposition->SCREEN()->availableSize();
+		auto screen = disposition->screen()->availableSize();
 		auto width = widthFactor * screen.width();
 		auto height = heightFactor * screen.height();
 		return QSize{static_cast<int>(width), static_cast<int>(height)};
@@ -262,16 +258,16 @@ QPoint BzardNotifications::extraWindowPosition() const {
 }
 
 bool BzardNotifications::createNotificationIfSpaceAvailable(
-	  const BzardNotification &NOTIFICATION) {
+	  const BzardNotification &notification) {
 	auto size = windowSize();
-	auto position = disposition->poses(NOTIFICATION.id, size);
+	auto position = disposition->poses(notification.id, size);
 	if (position) {
-		auto id = NOTIFICATION.replacesId ? NOTIFICATION.replacesId
-		                                  : NOTIFICATION.id;
+		auto id = notification.replacesId ? notification.replacesId
+		                                  : notification.id;
 		emit createNotification(
-			  static_cast<int>(id), size, *position, NOTIFICATION.expireTimeout,
-			  NOTIFICATION.application, NOTIFICATION.body, NOTIFICATION.title,
-			  NOTIFICATION.iconUrl, NOTIFICATION.actions);
+			  static_cast<int>(id), size, *position, notification.expireTimeout,
+			  notification.application, notification.body, notification.title,
+			  notification.iconUrl, notification.actions);
 		return true;
 	} else {
 		return false;

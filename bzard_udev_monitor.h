@@ -5,8 +5,6 @@
 #include <QString>
 #include <libudev.h>
 
-// struct udevDevice;
-
 /**
  * @brief Monitors udev events using a socket notifier.
  *
@@ -19,6 +17,7 @@
  * 5. Connect to the errorOccurred(errorString) signal for initialization
  * errors.
  */
+
 class UdevMonitor : public QObject {
 	Q_OBJECT
 
@@ -27,11 +26,11 @@ class UdevMonitor : public QObject {
 	~UdevMonitor() override;
 
 	bool initialize();
-	bool addSubsystemFilter(const QString &SUBSYSTEM);
+	bool addSubsystemFilter(const QString &subsystem);
 
   signals:
-	void udevEvent(const QString &ACTION, const QString &SYS_PATH);
-	void errorOccurred(const QString &ERROR_STRING);
+	void udevEvent(const QString &action, const QString &sysPath);
+	void errorOccurred(const QString &errorString);
 
   private slots:
 	void onUdevFdReadable();

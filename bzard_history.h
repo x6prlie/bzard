@@ -36,7 +36,7 @@ class BzardHistoryNotification : public QObject {
 	Q_PROPERTY(QString iconUrl READ iconUrl CONSTANT)
   public:
 	BzardHistoryNotification() = default;
-	BzardHistoryNotification(const BzardNotification &NOTIFICATION,
+	BzardHistoryNotification(const BzardNotification &notification,
 	                         QObject *parent = nullptr);
 
 	uint id_() const;
@@ -68,8 +68,8 @@ class BzardHistory : public BzardNotificationReceiver,
 	/*
 	 * External slots
 	 */
-	void onCreateNotification(const BzardNotification &NOTIFICATION) final;
-	void onDropNotification(BzardNotification::IdTemplate id) final;
+	void onCreateNotification(const BzardNotification &notification) final;
+	void onDropNotification(BzardNotification::IdT id) final;
 
 	/*
 	 * QML slots
@@ -80,7 +80,7 @@ class BzardHistory : public BzardNotificationReceiver,
 	void rowInserted();
 
   private:
-	using PtrTemplate = BzardHistory *;
+	using PtrT = BzardHistory *;
 	std::deque<std::unique_ptr<BzardHistoryNotification>> historyList;
 	std::unique_ptr<BzardHistoryModel> model_;
 
@@ -89,7 +89,7 @@ class BzardHistory : public BzardNotificationReceiver,
 
 class BzardHistoryModel : public QAbstractListModel {
 	Q_OBJECT
-  public: /*Enum value*/
+  public:
 	enum HistoryRoles {
 		HR_ID_ROLE = Qt::UserRole + 1,
 		HR_APPLICATION_ROLE,
@@ -97,11 +97,11 @@ class BzardHistoryModel : public QAbstractListModel {
 		HR_BODY_ROLE,
 		HR_ICON_URL_ROLE
 	};
-	explicit BzardHistoryModel(BzardHistory::PtrTemplate history_);
-	int rowCount(const QModelIndex &PARETN) const final;
-	QVariant data(const QModelIndex &INDEX, int role) const final;
-	bool insertRows(int row, int count, const QModelIndex &PARENT) final;
-	bool removeRows(int row, int count, const QModelIndex &PARENT) final;
+	explicit BzardHistoryModel(BzardHistory::PtrT history_);
+	int rowCount(const QModelIndex &parent) const final;
+	QVariant data(const QModelIndex &index, int role) const final;
+	bool insertRows(int row, int count, const QModelIndex &parent) final;
+	bool removeRows(int row, int count, const QModelIndex &parent) final;
 	QHash<int, QByteArray> roleNames() const final;
 
   private slots:
