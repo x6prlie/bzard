@@ -73,7 +73,7 @@ void BzardConfig::setValue(const QString &KEY, const QVariant &VALUE) {
 #define BZARD_MACRO_STRING(S) BZARD_MACRO_STRING__(S)
 #define BZARD_MACRO_STRING__(S) #S
 QString BzardConfig::applicationName() {
-	return QStringLiteral(BZARD_MACRO_STRING(GBZARD_APP_NAME));
+	return QStringLiteral(BZARD_MACRO_STRING(BZARD_APP_NAME));
 }
 
 QString BzardConfig::configDir() {
