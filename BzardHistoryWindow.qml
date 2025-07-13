@@ -100,7 +100,7 @@ BzardPopup {
                               BzardThemes.historyWindowTheme.nBodyFontSize :
                               height * 0.11111111111111111111
                 onRemoveNotification: {
-                    BzardHistory.remove(index)
+                    BzardHistory.remove(listView.index)
                 }
             }
         }
