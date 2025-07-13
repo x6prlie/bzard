@@ -46,6 +46,7 @@ BzardFancyContainer {
     property int expirationBarHeight: BzardThemes.notificationsTheme.expirationBarHeight
 
     property int contentMargin: referenceHeight*spacingFactor*2
+    // TODO: write theme.font and use it instead
     property int fontPointSize: BzardThemes.notificationsTheme.fontSize ?
                                     BzardThemes.notificationsTheme.fontSize :
                                     referenceHeight * fontPointSizeFactor
