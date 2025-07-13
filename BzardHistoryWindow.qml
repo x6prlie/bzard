@@ -83,6 +83,7 @@ BzardPopup {
 
             model: BzardHistory.model
             delegate: BzardHistoryNotification {
+                width: listView.width
                 height: BzardThemes.historyWindowTheme.notificationHeight ?
                             BzardThemes.historyWindowTheme.notificationHeight : 70
                 color: BzardThemes.historyWindowTheme.nBgColor

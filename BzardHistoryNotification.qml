@@ -2,8 +2,6 @@ import QtQuick
 
 Rectangle {
     id: root
-    width: parent.width
-    height: 72
     opacity: mouseArea.containsMouse ? 0.9 : 1
 
     signal removeNotification(int index)
