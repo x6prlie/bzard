@@ -22,22 +22,19 @@
 
 #include "notificationsadaptor.h"
 
-#include "bzarddbusservice.h"
-#include "bzardexpirationcontroller.h"
-#include "bzardhistory.h"
-#include "bzardnotificationmodifiers.h"
-#include "bzardnotifications.h"
-#include "bzardthemes.h"
-#include "bzardtopdown.h"
-#include "bzardtrayicon.h"
+#include "bzard_dbus_service.h"
+#include "bzard_expiration_controller.h"
+#include "bzard_history.h"
+#include "bzard_notification_modifiers.h"
+#include "bzard_notifications.h"
+#include "bzard_themes.h"
+#include "bzard_top_down.h"
+#include "bzard_tray_icon.h"
 
-#ifdef IQ_X11
+#ifdef BZARD_X11
 #include "X11-plugin/x11fullscreendetector.h"
 #endif
 
-/*
- * Should be called first
- */
 static BzardDBusService *get_service();
 static BzardHistory *get_history();
 static QDBusConnection connect_to_session_bus(BzardDBusService *service);
@@ -47,7 +44,7 @@ static QObject *bzardthemes_provider(QQmlEngine *engine,
                                      QJSEngine *scriptEngine);
 
 BzardDBusService *get_service() {
-	using namespace BzardNotificationModifiers; // NOLINT
+	using namespace BzardNotificationModifiers;
 
 	auto disposition = std::make_unique<BzardTopDown>();
 	auto dbus_service =
@@ -65,10 +62,10 @@ BzardDBusService *get_service() {
 	if (get_history()->isEnabled())
 		dbus_service->connectReceiver(get_history());
 
-	std::unique_ptr<IQFullscreenDetector> fullscreenDetector;
-#ifdef IQ_X11
+	std::unique_ptr<BzardFullscreenDetector> fullscreenDetector;
+#ifdef BZARD_X11
 	fullscreenDetector = std::make_unique<X11FullscreenDetector>();
-#endif // IQ_X11
+#endif
 	notifications->setFullscreenDetector(std::move(fullscreenDetector));
 	return dbus_service;
 }
@@ -100,10 +97,12 @@ QObject *bzardhistory_provider(QQmlEngine *engine, QJSEngine *scriptEngine) {
 
 QDBusConnection connect_to_session_bus(BzardDBusService *service) {
 	auto connection = QDBusConnection::sessionBus();
+	new NotificationsAdaptor(service);
+
 	if (!connection.registerService("org.freedesktop.Notifications")) {
 		throw std::runtime_error{"DBus Service already registered!"};
 	}
-	new NotificationsAdaptor(service);
+
 	if (!connection.registerObject("/org/freedesktop/Notifications", service)) {
 		throw std::runtime_error{"Can't register DBus service object!"};
 	}
@@ -111,8 +110,8 @@ QDBusConnection connect_to_session_bus(BzardDBusService *service) {
 }
 
 int main(int argc, char *argv[]) {
-	// qputenv("QT_QPA_PLATFORM", QByteArray("wayland"));
-	qputenv("QT_WAYLAND_SHELL_INTEGRATION", QByteArray("layer-shell"));
+	if (qgetenv("XDG_SESSION_TYPE") == QByteArray("wayland"))
+		qputenv("QT_WAYLAND_SHELL_INTEGRATION", QByteArray("layer-shell"));
 
 	QApplication app(argc, argv);
 	app.setQuitOnLastWindowClosed(false);

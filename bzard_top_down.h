@@ -1,0 +1,52 @@
+/*
+ *     This file is part of bzard.
+ *
+ * bzard is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * bzard is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with bzard.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#pragma once
+
+#include <map>
+
+#include <QObject>
+#include <QPoint>
+
+#include <bzard_disposition.h>
+
+class BzardTopDown final : public BzardDisposition {
+	Q_OBJECT
+
+  public:
+	using BzardDisposition::Optional;
+
+	explicit BzardTopDown(QObject *parent = nullptr);
+
+	Optional<QPoint> poses(BzardNotification::IdT id, QSize size) final;
+
+	QPoint externalWindowPosition() const final;
+
+	void setExtraWindowSize(const QSize &value) final;
+
+	void setSpacing(int value) final;
+
+  public slots:
+	void remove(BzardNotification::IdT id) final;
+	void removeAll() final;
+
+  private:
+	std::map<BzardNotification::IdT, QRect> dispositions;
+
+	void recalculateAvailableScreenGeometry() final;
+	QRect availableGeometry() const;
+};
