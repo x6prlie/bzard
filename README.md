@@ -41,10 +41,9 @@ sudo apt install \
 
 ```bash
 git clone https://github.com/x6prl/bzard.git
-mkdir bzard/build; cd bzard/build
-# set X11 if you want X11 plugin
-cmake -DCMAKE_BUILD_TYPE=Release -DX11 ..
-make
+cd bzard
+cmake -S . -B build
+cmake --build build --config Release 
 ```
 
 ## Screenshots
