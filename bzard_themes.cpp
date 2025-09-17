@@ -42,6 +42,11 @@ BzardThemes::BzardThemes()
 		  std::make_unique<HistoryWindowTheme>(themeConfig, themeDir);
 }
 
+BzardThemes &BzardThemes::instance() {
+	static BzardThemes instance;
+	return instance;
+}
+
 NotificationsTheme *BzardThemes::notificationsTheme() const {
 	return notificationsTheme_.get();
 }
@@ -122,6 +127,22 @@ uint NotificationsTheme::barFontSize() const {
 
 uint NotificationsTheme::iconSize() const {
 	return BZARD_THEME_UINT(CONFIG_ICON_SIZE);
+}
+
+uint NotificationsTheme::width() const {
+	return BZARD_THEME_UINT(CONFIG_WIDTH);
+}
+
+uint NotificationsTheme::height() const {
+	return BZARD_THEME_UINT(CONFIG_HEIGHT);
+}
+
+uint NotificationsTheme::extraWindowWidth() const {
+	return BZARD_THEME_UINT(CONFIG_EXTRA_WINDOW_WIDTH);
+}
+
+uint NotificationsTheme::extraWindowHeight() const {
+	return BZARD_THEME_UINT(CONFIG_EXTRA_WINDOW_HEIGHT);
 }
 
 uint NotificationsTheme::barHeight() const {

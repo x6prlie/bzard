@@ -17,6 +17,8 @@
 
 #include "bzard_notifications.h"
 
+#include "bzard_themes.h"
+
 #include <experimental/optional>
 #include <memory>
 #include <utility>
@@ -207,54 +209,38 @@ QMargins BzardNotifications::margins() const {
 }
 
 QSize BzardNotifications::windowSize() const {
-	return windowSize(CONFIG_WIDTH, CONFIG_HEIGHT, WIDTH_DEFAULT_FACTOR,
-	                  HEIGHT_DEFAULT_FACTOR);
-}
-
-QSize BzardNotifications::windowSize(const QString &widthKey,
-                                     const QString &heightKey,
-                                     double widthFactor,
-                                     double heightFactor) const {
-	auto getWindowSizeFromConfig =
-		  [widthKey, heightKey](const auto &CONFIG) -> optional<QSize> {
-		auto get = [&CONFIG](auto key) {
-			bool ok{true};
-			auto value = CONFIG.value(key, 0).toInt(&ok);
-			if (!ok || value < 0)
-				throw std::logic_error{"BzardConfig: window or "
-				                       "extra_window size "
-				                       "wrong value!"};
-			return value;
-		};
-
-		auto width = get(widthKey);
-		auto height = get(heightKey);
-
-		if (!width || !height)
-			return {};
-		else
-			return {QSize{width, height}};
-	};
-
-	auto configSize = getWindowSizeFromConfig(config);
-	if (configSize) {
-		return *configSize;
-	} else {
-		auto screen = disposition->screen()->availableSize();
-		auto width = widthFactor * screen.width();
-		auto height = heightFactor * screen.height();
-		return QSize{static_cast<int>(width), static_cast<int>(height)};
+	auto notificationsTheme = BzardThemes::instance().notificationsTheme();
+	if (notificationsTheme) {
+		auto width = notificationsTheme->width();
+		auto height = notificationsTheme->height();
+		if (width > 0 && height > 0)
+			return QSize{static_cast<int>(width), static_cast<int>(height)};
 	}
+	return autoWindowSize(WIDTH_DEFAULT_FACTOR, HEIGHT_DEFAULT_FACTOR);
 }
 
 QSize BzardNotifications::extraWindowSize() const {
-	return windowSize(CONFIG_EXTRA_WINDOW_WIDTH, CONFIG_EXTRA_WINDOW_HEIGHT,
-	                  EXTRA_WINDOW_WIDTH_DEFAULT_FACTOR,
-	                  EXTRA_WINDOW_HEIGHT_DEFAULT_FACTOR);
+	auto notificationsTheme = BzardThemes::instance().notificationsTheme();
+	if (notificationsTheme) {
+		auto width = notificationsTheme->extraWindowWidth();
+		auto height = notificationsTheme->extraWindowHeight();
+		if (width > 0 && height > 0)
+			return QSize{static_cast<int>(width), static_cast<int>(height)};
+	}
+	return autoWindowSize(EXTRA_WINDOW_WIDTH_DEFAULT_FACTOR,
+	                     EXTRA_WINDOW_HEIGHT_DEFAULT_FACTOR);
 }
 
 QPoint BzardNotifications::extraWindowPosition() const {
 	return disposition->externalWindowPosition();
+}
+
+QSize BzardNotifications::autoWindowSize(double widthFactor,
+                                        double heightFactor) const {
+	auto screen = disposition->screen()->availableSize();
+	auto width = widthFactor * screen.width();
+	auto height = heightFactor * screen.height();
+	return QSize{static_cast<int>(width), static_cast<int>(height)};
 }
 
 bool BzardNotifications::createNotificationIfSpaceAvailable(

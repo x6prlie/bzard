@@ -85,8 +85,7 @@ QObject *bzardnotifications_provider(QQmlEngine *engine,
 QObject *bzardthemes_provider(QQmlEngine *engine, QJSEngine *scriptEngine) {
 	Q_UNUSED(engine);
 	Q_UNUSED(scriptEngine);
-	static BzardThemes theme;
-	return &theme;
+	return &BzardThemes::instance();
 }
 
 QObject *bzardhistory_provider(QQmlEngine *engine, QJSEngine *scriptEngine) {

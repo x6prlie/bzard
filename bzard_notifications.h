@@ -113,12 +113,6 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	BZARD_CONFIG_VAR(SPACING, "spacing", 0)
 	BZARD_CONFIG_FACTOR(GLOBAL_MARGINS, "global_margins",
 	                    0.02610966057441253264)
-	BZARD_CONFIG_FACTOR(EXTRA_WINDOW_WIDTH, "extra_window_width",
-	                    0.21961932650073206442)
-	BZARD_CONFIG_FACTOR(EXTRA_WINDOW_HEIGHT, "extra_window_height",
-	                    0.08355091383812010444 / 2)
-	BZARD_CONFIG_FACTOR(WIDTH, "width", 0.21961932650073206442)
-	BZARD_CONFIG_FACTOR(HEIGHT, "height", 0.28198433420365535248)
 	BZARD_CONFIG_VAR(DONT_SHOW_WHEN_FULLSCREEN_ANY,
 	                 "dont_show_when_fullscreen_any", false)
 
@@ -132,11 +126,17 @@ class BzardNotifications final : public BzardNotificationReceiver,
 	std::queue<BzardNotification> extraNotifications;
 	std::unique_ptr<BzardFullscreenDetector> fullscreenDetector;
 
+	static constexpr double WIDTH_DEFAULT_FACTOR = 0.21961932650073206442;
+	static constexpr double HEIGHT_DEFAULT_FACTOR = 0.28198433420365535248;
+	static constexpr double EXTRA_WINDOW_WIDTH_DEFAULT_FACTOR =
+		  0.21961932650073206442;
+	static constexpr double EXTRA_WINDOW_HEIGHT_DEFAULT_FACTOR =
+		  0.08355091383812010444 / 2;
+
 	int spacing() const;
 	QMargins margins() const;
 	QSize windowSize() const;
-	QSize windowSize(const QString &widthKey, const QString &heightKey,
-	                 double widthFactor, double heightFactor) const;
+	QSize autoWindowSize(double widthFactor, double heightFactor) const;
 	bool
 	createNotificationIfSpaceAvailable(const BzardNotification &notification);
 	void checkExtraNotifications();

@@ -39,6 +39,7 @@ class BzardThemes : public QObject {
 
   public:
 	BzardThemes();
+	static BzardThemes &instance();
 
 	NotificationsTheme *notificationsTheme() const;
 	TrayIconTheme *trayIconTheme() const;
@@ -81,6 +82,10 @@ class NotificationsTheme : public BzardTheme {
 	Q_PROPERTY(uint fontSize READ fontSize CONSTANT)
 	Q_PROPERTY(uint barFontSize READ barFontSize CONSTANT)
 	Q_PROPERTY(uint iconSize READ iconSize CONSTANT)
+	Q_PROPERTY(uint width READ width CONSTANT)
+	Q_PROPERTY(uint height READ height CONSTANT)
+	Q_PROPERTY(uint extraWindowWidth READ extraWindowWidth CONSTANT)
+	Q_PROPERTY(uint extraWindowHeight READ extraWindowHeight CONSTANT)
 	Q_PROPERTY(uint barHeight READ barHeight CONSTANT)
 	Q_PROPERTY(uint expirationBarHeight READ expirationBarHeight CONSTANT)
 	Q_PROPERTY(uint showAnimationDuration READ showAnimationDuration CONSTANT)
@@ -114,6 +119,10 @@ class NotificationsTheme : public BzardTheme {
 	uint fontSize() const;
 	uint barFontSize() const;
 	uint iconSize() const;
+	uint width() const;
+	uint height() const;
+	uint extraWindowWidth() const;
+	uint extraWindowHeight() const;
 	uint barHeight() const;
 	uint expirationBarHeight() const;
 	uint showAnimationDuration() const;
@@ -143,6 +152,12 @@ class NotificationsTheme : public BzardTheme {
 	BZARD_CONFIG_VAR(FONT_SIZE, "popup_notifications/font_size", 0)
 	BZARD_CONFIG_VAR(BAR_FONT_SIZE, "popup_notifications/bar_font_size", 0)
 	BZARD_CONFIG_VAR(ICON_SIZE, "popup_notifications/icon_size", 0)
+	BZARD_CONFIG_VAR(WIDTH, "popup_notifications/width", 0)
+	BZARD_CONFIG_VAR(HEIGHT, "popup_notifications/height", 0)
+	BZARD_CONFIG_VAR(EXTRA_WINDOW_WIDTH,
+	                 "popup_notifications/extra_window_width", 0)
+	BZARD_CONFIG_VAR(EXTRA_WINDOW_HEIGHT,
+	                 "popup_notifications/extra_window_height", 0)
 	BZARD_CONFIG_VAR(BAR_HEIGHT, "popup_notifications/bar_height", 0)
 	BZARD_CONFIG_VAR(EXPIRATION_BAR_HEIGHT,
 	                 "popup_notifications/expiration_bar_height", 0)
