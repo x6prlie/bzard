@@ -8,11 +8,11 @@ set(VERSION_PATCH 0)
 
 set(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
-add_definitions(-DIQ_VERSION_MAJOR=${VERSION_MAJOR})
-add_definitions(-DIQ_VERSION_MINOR=${VERSION_MINOR})
-add_definitions(-DIQ_VERSION_PATCH=${VERSION_PATCH})
-add_definitions(-DIQ_VERSION=${VERSION})
-add_definitions(-DIQ_APP_NAME=${PROJECT_NAME})
+add_definitions(-DBZARD_VERSION_MAJOR=${VERSION_MAJOR})
+add_definitions(-DBZARD_VERSION_MINOR=${VERSION_MINOR})
+add_definitions(-DBZARD_VERSION_PATCH=${VERSION_PATCH})
+add_definitions(-DBZARD_VERSION=${VERSION})
+add_definitions(-DBZARD_APP_NAME=${PROJECT_NAME})
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
@@ -39,7 +39,7 @@ qt_standard_project_setup(REQUIRES 6.5)
 
 qt6_add_dbus_adaptor(SRC_LIST
      org.freedesktop.Notifications.xml
-     bzarddbusservice.h BzardDBusService
+     bzard_dbus_service.h BzardDBusService
 )
 
 # if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
@@ -74,17 +74,17 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 #     URI ${PROJECT_NAME}
 #     VERSION 1.0
 #     QML_FILES
-#         IQButton.qml
-#         IQExtraNotifications.qml
+#         BzardButton.qml
+#         BzardExtraNotifications.qml
 #         BzardHistoryNotification.qml
-#         IQNotificationBar.qml
-#         IQNotification.qml
+#         BzardNotificationBar.qml
+#         BzardNotification.qml
 #         main.qml
-#         IQExpirationBar.qml
-#         IQFancyContainer.qml
+#         BzardExpirationBar.qml
+#         BzardFancyContainer.qml
 #         BzardHistoryWindow.qml
-#         IQNotificationContainer.qml
-#         IQPopup.qml
+#         BzardNotificationContainer.qml
+#         BzardPopup.qml
 # )
 # target_link_libraries(${PROJECT_NAME} Qt5::Qml)
 # target_link_libraries(${PROJECT_NAME} Qt5::Quick)

@@ -22,8 +22,8 @@ import bzard 1.0
 BzardPopup {
     id: root
     visible: BzardNotifications.extraNotifications > 0
-    x: BzardNotifications.extraWindowPos.x
-    y: BzardNotifications.extraWindowPos.y
+    x: BzardNotifications.extraWindowPosition.x
+    y: BzardNotifications.extraWindowPosition.y
     width: BzardNotifications.extraWindowSize.width
     height: BzardNotifications.extraWindowSize.height
 

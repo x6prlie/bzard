@@ -2,8 +2,6 @@ import QtQuick
 
 Rectangle {
     id: root
-    width: parent.width
-    height: 72
     opacity: mouseArea.containsMouse ? 0.9 : 1
 
     signal removeNotification(int index)
@@ -72,19 +70,29 @@ Rectangle {
         onClicked: removeNotification(index)
     }
 
-    ListView.onAdd: ParallelAnimation {
+    ParallelAnimation {
+        id: addAnimation
         NumberAnimation { target: root; property: "scale"; from: 0; to: 1; duration: 250; easing.type: Easing.InOutQuad }
         NumberAnimation { target: root; property: "height"; from: 0; to: height; duration: 250; easing.type: Easing.InOutQuad }
     }
 
-    ListView.onRemove: SequentialAnimation {
-        PropertyAction { target: root; property: "ListView.delayRemove"; value: true }
-        ParallelAnimation{
-            NumberAnimation { target: root; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
-            NumberAnimation { target: root; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
+    SequentialAnimation {
+        id: removeAnimation
+            PropertyAction { target: root; property: "ListView.delayRemove"; value: true }
+            ParallelAnimation{
+                NumberAnimation { target: root; property: "scale"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
+                NumberAnimation { target: root; property: "height"; to: 0; duration: 250; easing.type: Easing.InOutQuad }
+            }
+
+            // Make sure delayRemove is set back to false so that the item can be destroyed
+            PropertyAction { target: root; property: "ListView.delayRemove"; value: false }
         }
 
-        // Make sure delayRemove is set back to false so that the item can be destroyed
-        PropertyAction { target: root; property: "ListView.delayRemove"; value: false }
+    ListView.onAdd: {
+       addAnimation.start()
+    }
+
+    ListView.onRemove: {
+        removeAnimation.start()
     }
 }
